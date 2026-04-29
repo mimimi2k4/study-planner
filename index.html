@@ -1,428 +1,909 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudyFlow - Smart Learning System</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<script>
-tailwind.config={theme:{extend:{fontFamily:{display:['Space Grotesk','sans-serif'],body:['DM Sans','sans-serif']}}}}
-</script>
-<style>
-:root{--bg:#040906;--bg2:#08130d;--card:#0d1d14;--card-h:#142b1e;--accent:#22c55e;--accent-g:rgba(34,197,94,.1);--ember:#f59e0b;--ember-g:rgba(245,158,11,.1);--fg:#e2ede7;--fg2:#a3c4b0;--muted:#3d5a49;--border:#152c1f;--danger:#ef4444}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--fg);overflow:hidden;height:100vh}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--muted)}
-.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 600px 400px at 15% 25%,rgba(34,197,94,.08),transparent),radial-gradient(ellipse 500px 500px at 85% 75%,rgba(245,158,11,.05),transparent)}
-.sidebar{width:260px;min-width:260px;background:rgba(8,19,13,.9);backdrop-filter:blur(24px);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:10;transition:transform .3s}
-.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;margin:3px 12px;border-radius:12px;cursor:pointer;transition:all .3s ease;color:var(--fg2);font-size:14px;font-weight:500}
-.nav-item:hover{background:var(--accent-g);color:var(--fg);transform:translateX(5px)}
-.nav-item.active{background:var(--accent-g);color:var(--accent);font-weight:600;box-shadow:inset 4px 0 0 var(--accent)}
-.view{display:none;padding:32px 40px;animation:fadeSlideUp .4s cubic-bezier(0.16, 1, 0.3, 1)}
-.view.active{display:block}@keyframes fadeSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 10px 30px -10px rgba(0,0,0,0.5)}
-.stat-card:hover{background:var(--card-h);transform:translateY(-4px);border-color:var(--muted);box-shadow:0 15px 40px -10px rgba(34,197,94,0.15)}
-.btn{padding:10px 22px;border-radius:12px;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;border:none}
-.btn-primary{background:var(--accent);color:#042416}.btn-primary:hover{filter:brightness(1.1);box-shadow:0 0 25px var(--accent-g)}
-.btn-secondary{background:var(--bg2);color:var(--fg);border:1px solid var(--border)}.btn-secondary:hover{background:var(--card)}
-.input-field{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--fg);font-size:14px;width:100%;outline:none;transition:all .2s}
-.input-field:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-g)}
-.timer-display{font-family:'Space Grotesk',sans-serif;font-size:5rem;font-weight:700;letter-spacing:-2px;color:var(--fg);text-shadow:0 0 40px rgba(34,197,94,0.3)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;animation:fadeIn .2s ease}
-.modal-overlay.active{display:flex}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal-content{background:var(--card);width:90%;max-width:500px;border-radius:24px;padding:32px;border:1px solid var(--border);animation:popIn .3s cubic-bezier(0.34, 1.56, 0.64, 1)}
-@keyframes popIn{from{transform:scale(0.9) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-.toast{position:fixed;bottom:24px;right:24px;padding:12px 24px;background:var(--card);border:1px solid var(--accent);border-radius:12px;color:var(--accent);font-size:14px;font-weight:600;z-index:200;display:none;animation:slideUp .3s ease, fadeOut .3s ease 2.7s forwards}
-@keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}@keyframes fadeOut{to{opacity:0}}
-.task-item{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;transition:all .2s;cursor:pointer}
-.task-item:hover{border-color:var(--muted);background:var(--card)}
-.progress-bar{height:8px;background:var(--bg2);border-radius:4px;position:relative;overflow:visible}
-.progress-fill{height:100%;border-radius:4px;transition:width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)}
-</style>
-</head>
-<body>
-<div class="bg-mesh"></div>
-<div id="toast" class="toast"></div>
-
-<div class="flex h-screen relative z-[1]">
-<aside class="sidebar">
-  <div class="px-6 py-8 border-b border-[var(--border)]">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-900/20"><i class="fas fa-leaf text-white"></i></div>
-      <div><h1 class="font-display font-bold text-lg tracking-tight text-white">StudyFlow</h1><p class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">Core Workspace</p></div>
-    </div>
-  </div>
-  <nav class="flex-1 py-6 overflow-y-auto" id="nav">
-    <div class="px-6 mb-3 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Overview</div>
-    <div class="nav-item active" data-view="dashboard"><i class="fas fa-grid-2"></i>Dashboard</div>
-    <div class="nav-item" data-view="pomodoro"><i class="fas fa-stopwatch"></i>Focus Timer</div>
-    <div class="px-6 mt-8 mb-3 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Planning</div>
-    <div class="nav-item" data-view="analysis"><i class="fas fa-wand-magic-sparkles"></i>Auto-Analyze</div>
-    <div class="nav-item" data-view="plans"><i class="fas fa-list-check"></i>Study Routes</div>
-    <div class="nav-item" data-view="review"><i class="fas fa-brain-circuit"></i>Recall Box</div>
-  </nav>
-  <div class="p-6 border-t border-[var(--border)]">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-full bg-[var(--bg2)] border border-[var(--border)]"></div>
-      <div class="text-xs font-semibold">Guest Admin</div>
-    </div>
-  </div>
-</aside>
-
-<main class="flex-1 overflow-y-auto" id="main-content">
-  <!-- DASHBOARD -->
-  <div class="view active" id="view-dashboard">
-    <div class="flex justify-between items-center mb-8">
-      <div><h2 class="font-display font-bold text-3xl mb-1">Welcome back</h2><p class="text-[var(--fg2)]">Here's your learning progress for today.</p></div>
-      <div class="flex gap-3"><button class="btn btn-secondary" onclick="openModal('add-task')"><i class="fas fa-plus"></i>Quick Task</button></div>
-    </div>
-    
-    <div class="grid grid-cols-4 gap-5 mb-8">
-      <div class="stat-card"><div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Current Streak</div><div class="text-3xl font-display font-bold text-[var(--ember)]" id="streak-val">🔥 0 days</div></div>
-      <div class="stat-card"><div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Study Time</div><div class="text-3xl font-display font-bold text-[var(--accent)]" id="time-val">0h</div></div>
-      <div class="stat-card"><div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Tasks Done</div><div class="text-3xl font-display font-bold" id="task-val">0/0</div></div>
-      <div class="stat-card"><div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Goal Status</div><div class="text-3xl font-display font-bold text-blue-400">On Track</div></div>
-    </div>
-
-    <div class="grid grid-cols-3 gap-6">
-      <div class="col-span-2 stat-card" style="height: 480px;">
-        <div class="flex justify-between mb-4"><h3 class="font-display font-bold">Knowledge Evolution Tree</h3><span class="text-[10px] text-[var(--muted)] uppercase font-bold">Live Data</span></div>
-        <canvas id="tree-canvas" style="width:100%;height:380px;background:rgba(0,0,0,0.1);border-radius:12px"></canvas>
-      </div>
-      <div class="space-y-6">
-        <div class="stat-card" style="height: 230px;"><h3 class="font-display font-bold text-sm mb-4">Categories</h3><canvas id="cat-chart"></canvas></div>
-        <div class="stat-card" style="height: 225px;"><h3 class="font-display font-bold text-sm mb-4">Milestone Progress</h3>
-          <div class="progress-bar mb-10"><div class="progress-fill bg-[var(--accent)]" id="milestone-fill" style="width: 0%"></div></div>
-          <div class="space-y-2 text-[11px] font-bold uppercase text-[var(--muted)]" id="milestone-labels"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- POMODORO -->
-  <div class="view" id="view-pomodoro">
-    <div class="flex flex-col items-center justify-center min-h-[70vh]">
-      <div class="stat-card w-full max-w-lg text-center p-12">
-        <div class="text-[10px] font-bold uppercase tracking-widest text-[var(--accent)] mb-6" id="timer-label">Focusing Session</div>
-        <div class="timer-display mb-10" id="timer-val">25:00</div>
-        <div class="flex gap-4 justify-center">
-          <button class="btn btn-primary px-12 py-3 text-sm" id="timer-toggle" onclick="toggleTimer()">Start Focus</button>
-          <button class="btn btn-secondary px-8 py-3 text-sm" onclick="resetTimer()">Reset</button>
-        </div>
-        <div class="mt-12 flex items-center justify-center gap-3 text-xs text-[var(--fg2)]">
-          <i class="fas fa-shield-halved text-[var(--accent)]"></i>
-          <span>Distraction-free mode enabled</span>
-        </div>
-      </div>
-      <div class="mt-8 text-center"><p class="text-sm font-bold text-[var(--muted)] uppercase tracking-wider">Next Task</p><p class="text-lg font-display font-bold mt-2" id="next-task-name">No active tasks</p></div>
-    </div>
-  </div>
-
-  <!-- ANALYSIS -->
-  <div class="view" id="view-analysis">
-    <div class="mb-10"><h2 class="font-display font-bold text-3xl mb-2">Smart Analysis Engine</h2><p class="text-[var(--fg2)]">Paste your learning materials to auto-generate a structured route.</p></div>
-    <div class="grid grid-cols-2 gap-8">
-      <div class="space-y-4">
-        <label class="text-[10px] font-bold uppercase text-[var(--muted)]">Paste Material Contents</label>
-        <textarea id="ai-input" class="input-field h-[350px]" placeholder="Chapter 1: Basics of JLPT...&#10;1.1 Vocabulary basics...&#10;1.2 Grammar structures..."></textarea>
-        <button class="btn btn-primary w-full py-4 text-sm font-bold" onclick="runAnalysis()">Analyze & Generate Route</button>
-      </div>
-      <div class="stat-card relative flex flex-col min-h-[460px]">
-        <div class="flex justify-between mb-6"><h3 class="font-display font-bold">Analysis Result</h3><span class="text-[10px] text-[var(--accent)] font-bold uppercase" id="ana-count">0 items</span></div>
-        <div id="ana-result" class="flex-1 overflow-y-auto pr-2 flex flex-col items-center justify-center text-[var(--muted)]">
-          <i class="fas fa-microchip text-4xl mb-4 opacity-20"></i>
-          <p class="text-xs font-bold uppercase tracking-widest">Awaiting Input...</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ROUTES/PLANS -->
-  <div class="view" id="view-plans">
-     <div class="flex justify-between items-center mb-10"><div><h2 class="font-display font-bold text-3xl mb-1">Active Study Routes</h2><p class="text-[var(--fg2)]">Detailed breakdown of your generated learning paths.</p></div></div>
-     <div id="plans-container" class="grid grid-cols-1 gap-6"></div>
-  </div>
-
-  <!-- REVIEW -->
-  <div class="view" id="view-review">
-    <div class="mb-10"><h2 class="font-display font-bold text-3xl mb-2">Spaced Repetition Recall</h2><p class="text-[var(--fg2)]">Review items you struggled with during previous sessions.</p></div>
-    <div id="review-container" class="grid gap-4"></div>
-  </div>
-</main>
-</div>
-
-<!-- MODALS -->
-<div class="modal-overlay" id="modal-add-task">
-  <div class="modal-content">
-    <h3 class="font-display font-bold text-xl mb-6">Quick Task</h3>
-    <div class="space-y-4">
-      <div><label class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 block">Task Name</label><input type="text" id="mt-name" class="input-field" placeholder="Vocabulary review..."></div>
-      <div><label class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 block">Category</label><select id="mt-cat" class="input-field"><option value="1">Vocabulary</option><option value="2">Grammar</option><option value="3">Listening</option><option value="4">Reading</option></select></div>
-      <div class="flex gap-3 pt-4"><button class="btn btn-primary flex-1 justify-center" onclick="saveTask()">Add Task</button><button class="btn btn-secondary flex-1 justify-center" onclick="closeModal()">Cancel</button></div>
-    </div>
-  </div>
-</div>
-
-<script>
-// --- STATE & UTILS ---
-const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
-let state = {
-  tasks: [],
-  categories: [
-    {id:1, name:'Vocabulary', color:'#22c55e'},
-    {id:2, name:'Grammar', color:'#3b82f6'},
-    {id:3, name:'Listening', color:'#f59e0b'},
-    {id:4, name:'Reading', color:'#ef4444'}
-  ],
-  streak: 5,
-  studyTime: 2.5,
-  currentView: 'dashboard',
-  timer: { active: false, time: 1500, mode: 'focus' }
-};
-
-const save = () => localStorage.setItem('sf_state', JSON.stringify(state));
-const load = () => {
-  const saved = localStorage.getItem('sf_state');
-  if(saved) state = JSON.parse(saved);
-  renderDashboard();
-};
-
-const showToast = (msg) => {
-  const t = $('#toast');
-  t.textContent = msg;
-  t.style.display = 'block';
-  setTimeout(()=>t.style.display='none', 3000);
-}
-
-// --- NAVIGATION ---
-$$('.nav-item').forEach(n => n.onclick = () => {
-  $$('.nav-item').forEach(x=>x.classList.remove('active'));
-  n.classList.add('active');
-  $$('.view').forEach(v=>v.classList.remove('active'));
-  const view = n.dataset.view;
-  $(`#view-${view}`).classList.add('active');
-  if(view === 'dashboard') renderDashboard();
-  if(view === 'plans') renderPlans();
-  if(view === 'review') renderReview();
-});
-
-// --- DASHBOARD ---
-let charts = {};
-const renderDashboard = () => {
-  const done = state.tasks.filter(t=>t.done).length;
-  const total = state.tasks.length;
-  const pct = total === 0 ? 0 : Math.round((done/total)*100);
-  
-  $('#streak-val').textContent = `🔥 ${state.streak} days`;
-  $('#time-val').textContent = `${state.studyTime}h`;
-  $('#task-val').textContent = `${done}/${total}`;
-  $('#milestone-fill').style.width = pct + '%';
-  
-  initCatChart();
-  initTree();
-  save();
-};
-
-const initCatChart = () => {
-  const ctx = $('#cat-chart');
-  if(charts.cat) charts.cat.destroy();
-  const data = state.categories.map(c => state.tasks.filter(t=>t.catId == c.id).length);
-  charts.cat = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: state.categories.map(c=>c.name),
-      datasets: [{
-        data: data.every(x=>x===0) ? [1,1,1,1] : data,
-        backgroundColor: state.categories.map(c=>c.color),
-        borderWidth: 0
-      }]
-    },
-    options: { cutout: '80%', plugins: { legend: { display: false } } }
-  });
-};
-
-const initTree = () => {
-  const canvas = $('#tree-canvas');
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = canvas.offsetWidth * dpr;
-  canvas.height = canvas.offsetHeight * dpr;
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const centerX = canvas.offsetWidth / 2;
-  const centerY = canvas.offsetHeight - 40;
-
-  // Render organic tree based on tasks
-  const drawBranch = (sx, sy, angle, len, depth, tasks) => {
-    if(depth > 4 || tasks.length === 0) return;
-    const ex = sx + Math.cos(angle) * len;
-    const ey = sy + Math.sin(angle) * len;
-
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-    ctx.lineTo(ex, ey);
-    ctx.strokeStyle = `rgba(34, 197, 94, ${0.2 + (depth*0.15)})`;
-    ctx.lineWidth = 10 / (depth + 1);
-    ctx.stroke();
-
-    // Split tasks for next branches
-    const mid = Math.ceil(tasks.length / 2);
-    const leftTasks = tasks.slice(0, mid);
-    const rightTasks = tasks.slice(mid);
-
-    if(depth < 3) {
-      drawBranch(ex, ey, angle - 0.4, len * 0.75, depth + 1, leftTasks);
-      drawBranch(ex, ey, angle + 0.4, len * 0.75, depth + 1, rightTasks);
-    } else {
-      // Draw leaves for final tasks
-      tasks.forEach((t, i) => {
-        const lx = ex + (i - tasks.length/2) * 15;
-        const ly = ey - Math.random() * 20;
-        ctx.beginPath();
-        ctx.arc(lx, ly, 4, 0, Math.PI*2);
-        ctx.fillStyle = t.done ? '#22c55e' : '#152c1f';
-        ctx.fill();
-        if(t.done) {
-          ctx.shadowBlur = 10; ctx.shadowColor = '#22c55e'; ctx.fill(); ctx.shadowBlur = 0;
-        }
-      });
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyFlow - Smart Learning System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+  <!-- FIX #8: Load Chart.js before any script that uses it -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { display: ['Space Grotesk', 'sans-serif'], body: ['DM Sans', 'sans-serif'] } } } }
+  </script>
+  <style>
+    :root {
+      --bg: #040906;
+      --bg2: #08130d;
+      --card: #0d1d14;
+      --card-h: #142b1e;
+      --accent: #22c55e;
+      --accent-g: rgba(34, 197, 94, .1);
+      --ember: #f59e0b;
+      --ember-g: rgba(245, 158, 11, .1);
+      --fg: #e2ede7;
+      --fg2: #a3c4b0;
+      --muted: #3d5a49;
+      --border: #152c1f;
+      --danger: #ef4444
     }
-  };
 
-  drawBranch(centerX, centerY, -Math.PI/2, 80, 0, state.tasks.length ? state.tasks : [{id:0, done:false}]);
-};
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-// --- POMODORO ---
-let timerInterval;
-const toggleTimer = () => {
-  if(state.timer.active) {
-    clearInterval(timerInterval);
-    state.timer.active = false;
-    $('#timer-toggle').textContent = 'Start Focus';
-  } else {
-    state.timer.active = true;
-    $('#timer-toggle').textContent = 'Pause Session';
-    timerInterval = setInterval(tick, 1000);
-  }
-};
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      overflow: hidden;
+      height: 100vh
+    }
 
-const tick = () => {
-  if(state.timer.time <= 0) {
-    clearInterval(timerInterval);
-    showToast(`${state.timer.mode === 'focus' ? 'Focus' : 'Break'} complete!`);
-    resetTimer();
-    return;
-  }
-  state.timer.time--;
-  const m = Math.floor(state.timer.time / 60);
-  const s = state.timer.time % 60;
-  $('#timer-val').textContent = `${m}:${s < 10 ? '0'+s : s}`;
-};
+    ::-webkit-scrollbar {
+      width: 6px
+    }
 
-const resetTimer = () => {
-  clearInterval(timerInterval);
-  state.timer.active = false;
-  state.timer.time = 1500;
-  $('#timer-val').textContent = '25:00';
-  $('#timer-toggle').textContent = 'Start Focus';
-};
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
 
-// --- ANALYSIS ---
-const runAnalysis = () => {
-  const input = $('#ai-input').value.trim();
-  if(!input) return showToast('Please paste content first');
-  
-  $('#ana-result').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] font-bold uppercase">Processing Materials...</p></div>';
-  
-  setTimeout(() => {
-    const lines = input.split('\n').filter(l=>l.trim());
-    const generated = lines.map((l, i) => ({
-      id: Date.now() + i,
-      name: l.replace(/^[0-9\.\- ]+/, ''),
-      catId: Math.floor(Math.random() * 4) + 1,
-      done: false
-    }));
-    
-    window._tempTasks = generated;
-    $('#ana-count').textContent = `${generated.length} items`;
-    $('#ana-result').innerHTML = `
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--muted)
+    }
+
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 600px 400px at 15% 25%, rgba(34, 197, 94, .08), transparent), radial-gradient(ellipse 500px 500px at 85% 75%, rgba(245, 158, 11, .05), transparent)
+    }
+
+    .sidebar {
+      width: 260px;
+      min-width: 260px;
+      background: rgba(8, 19, 13, .9);
+      backdrop-filter: blur(24px);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      transition: transform .3s
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      margin: 3px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all .3s ease;
+      color: var(--fg2);
+      font-size: 14px;
+      font-weight: 500
+    }
+
+    .nav-item:hover {
+      background: var(--accent-g);
+      color: var(--fg);
+      transform: translateX(5px)
+    }
+
+    .nav-item.active {
+      background: var(--accent-g);
+      color: var(--accent);
+      font-weight: 600;
+      box-shadow: inset 4px 0 0 var(--accent)
+    }
+
+    .view {
+      display: none;
+      padding: 32px 40px;
+      animation: fadeSlideUp .4s cubic-bezier(0.16, 1, 0.3, 1)
+    }
+
+    .view.active {
+      display: block
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      transition: all .3s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5)
+    }
+
+    .stat-card:hover {
+      background: var(--card-h);
+      transform: translateY(-4px);
+      border-color: var(--muted);
+      box-shadow: 0 15px 40px -10px rgba(34, 197, 94, 0.15)
+    }
+
+    .btn {
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: none
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #042416
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 0 25px var(--accent-g)
+    }
+
+    .btn-secondary {
+      background: var(--bg2);
+      color: var(--fg);
+      border: 1px solid var(--border)
+    }
+
+    .btn-secondary:hover {
+      background: var(--card)
+    }
+
+    .input-field {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--fg);
+      font-size: 14px;
+      width: 100%;
+      outline: none;
+      transition: all .2s
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-g)
+    }
+
+    .timer-display {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 5rem;
+      font-weight: 700;
+      letter-spacing: -2px;
+      color: var(--fg);
+      text-shadow: 0 0 40px rgba(34, 197, 94, 0.3)
+    }
+
+    /* FIX #7: Modal closes on overlay click via JS, using pointer-events on content to stop propagation */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn .2s ease
+    }
+
+    .modal-overlay.active {
+      display: flex
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .modal-content {
+      background: var(--card);
+      width: 90%;
+      max-width: 500px;
+      border-radius: 24px;
+      padding: 32px;
+      border: 1px solid var(--border);
+      animation: popIn .3s cubic-bezier(0.34, 1.56, 0.64, 1)
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.9) translateY(20px);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1
+      }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 24px;
+      background: var(--card);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 200;
+      display: none;
+      animation: slideUp .3s ease, fadeOut .3s ease 2.7s forwards
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1
+      }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0
+      }
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      transition: all .2s;
+      cursor: pointer
+    }
+
+    .task-item:hover {
+      border-color: var(--muted);
+      background: var(--card)
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--bg2);
+      border-radius: 4px;
+      position: relative;
+      overflow: visible
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)
+    }
+
+    .review-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+      transition: all .2s
+    }
+
+    .review-card:hover {
+      border-color: var(--muted)
+    }
+
+    .review-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-mesh"></div>
+  <div id="toast" class="toast"></div>
+
+  <div class="flex h-screen relative z-[1]">
+    <aside class="sidebar">
+      <div class="px-6 py-8 border-b border-[var(--border)]">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-900/20">
+            <i class="fas fa-leaf text-white"></i></div>
+          <div>
+            <h1 class="font-display font-bold text-lg tracking-tight text-white">StudyFlow</h1>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">Core Workspace</p>
+          </div>
+        </div>
+      </div>
+      <nav class="flex-1 py-6 overflow-y-auto" id="nav">
+        <div class="px-6 mb-3 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Overview</div>
+        <div class="nav-item active" data-view="dashboard"><i class="fas fa-grid-2"></i>Dashboard</div>
+        <div class="nav-item" data-view="pomodoro"><i class="fas fa-stopwatch"></i>Focus Timer</div>
+        <div class="px-6 mt-8 mb-3 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Planning</div>
+        <div class="nav-item" data-view="analysis"><i class="fas fa-wand-magic-sparkles"></i>Auto-Analyze</div>
+        <div class="nav-item" data-view="plans"><i class="fas fa-list-check"></i>Study Routes</div>
+        <div class="nav-item" data-view="review"><i class="fas fa-brain-circuit"></i>Recall Box</div>
+      </nav>
+      <div class="p-6 border-t border-[var(--border)]">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-[var(--bg2)] border border-[var(--border)]"></div>
+          <div class="text-xs font-semibold">Guest Admin</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto" id="main-content">
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div class="flex justify-between items-center mb-8">
+          <div>
+            <h2 class="font-display font-bold text-3xl mb-1">Welcome back</h2>
+            <p class="text-[var(--fg2)]">Here's your learning progress for today.</p>
+          </div>
+          <div class="flex gap-3"><button class="btn btn-secondary" onclick="openModal('add-task')"><i
+                class="fas fa-plus"></i>Quick Task</button></div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-5 mb-8">
+          <div class="stat-card">
+            <div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Current Streak</div>
+            <div class="text-3xl font-display font-bold text-[var(--ember)]" id="streak-val">🔥 0 days</div>
+          </div>
+          <div class="stat-card">
+            <div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Study Time</div>
+            <div class="text-3xl font-display font-bold text-[var(--accent)]" id="time-val">0h</div>
+          </div>
+          <div class="stat-card">
+            <div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Tasks Done</div>
+            <div class="text-3xl font-display font-bold" id="task-val">0/0</div>
+          </div>
+          <div class="stat-card">
+            <div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Goal Status</div>
+            <div class="text-3xl font-display font-bold text-blue-400">On Track</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6">
+          <div class="col-span-2 stat-card" style="height: 480px;">
+            <div class="flex justify-between mb-4">
+              <h3 class="font-display font-bold">Knowledge Evolution Tree</h3><span
+                class="text-[10px] text-[var(--muted)] uppercase font-bold">Live Data</span>
+            </div>
+            <canvas id="tree-canvas"
+              style="width:100%;height:380px;background:rgba(0,0,0,0.1);border-radius:12px"></canvas>
+          </div>
+          <div class="space-y-6">
+            <div class="stat-card" style="height: 230px;">
+              <h3 class="font-display font-bold text-sm mb-4">Categories</h3><canvas id="cat-chart"></canvas>
+            </div>
+            <div class="stat-card" style="height: 225px;">
+              <h3 class="font-display font-bold text-sm mb-4">Milestone Progress</h3>
+              <div class="progress-bar mb-4">
+                <div class="progress-fill bg-[var(--accent)]" id="milestone-fill" style="width: 0%"></div>
+              </div>
+              <!-- FIX #4: milestone-labels now populated by renderDashboard() -->
+              <div class="space-y-2 text-[11px] font-bold" id="milestone-labels"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POMODORO -->
+      <div class="view" id="view-pomodoro">
+        <div class="flex flex-col items-center justify-center min-h-[70vh]">
+          <div class="stat-card w-full max-w-lg text-center p-12">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-[var(--accent)] mb-6" id="timer-label">
+              Focusing Session</div>
+            <div class="timer-display mb-10" id="timer-val">25:00</div>
+            <div class="flex gap-4 justify-center">
+              <button class="btn btn-primary px-12 py-3 text-sm" id="timer-toggle" onclick="toggleTimer()">Start
+                Focus</button>
+              <button class="btn btn-secondary px-8 py-3 text-sm" onclick="resetTimer()">Reset</button>
+            </div>
+            <div class="mt-12 flex items-center justify-center gap-3 text-xs text-[var(--fg2)]">
+              <i class="fas fa-shield-halved text-[var(--accent)]"></i>
+              <span>Distraction-free mode enabled</span>
+            </div>
+          </div>
+          <!-- FIX #9: Next task pulled from state -->
+          <div class="mt-8 text-center">
+            <p class="text-sm font-bold text-[var(--muted)] uppercase tracking-wider">Next Task</p>
+            <p class="text-lg font-display font-bold mt-2" id="next-task-name">No active tasks</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYSIS -->
+      <div class="view" id="view-analysis">
+        <div class="mb-10">
+          <h2 class="font-display font-bold text-3xl mb-2">Smart Analysis Engine</h2>
+          <p class="text-[var(--fg2)]">Paste your learning materials to auto-generate a structured route.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-8">
+          <div class="space-y-4">
+            <label class="text-[10px] font-bold uppercase text-[var(--muted)]">Paste Material Contents</label>
+            <textarea id="ai-input" class="input-field h-[350px]"
+              placeholder="Chapter 1: Basics of JLPT...&#10;1.1 Vocabulary basics...&#10;1.2 Grammar structures..."></textarea>
+            <button class="btn btn-primary w-full py-4 text-sm font-bold" onclick="runAnalysis()">Analyze & Generate
+              Route</button>
+          </div>
+          <div class="stat-card relative flex flex-col min-h-[460px]">
+            <div class="flex justify-between mb-6">
+              <h3 class="font-display font-bold">Analysis Result</h3><span
+                class="text-[10px] text-[var(--accent)] font-bold uppercase" id="ana-count">0 items</span>
+            </div>
+            <div id="ana-result"
+              class="flex-1 overflow-y-auto pr-2 flex flex-col items-center justify-center text-[var(--muted)]">
+              <i class="fas fa-microchip text-4xl mb-4 opacity-20"></i>
+              <p class="text-xs font-bold uppercase tracking-widest">Awaiting Input...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROUTES/PLANS -->
+      <div class="view" id="view-plans">
+        <div class="flex justify-between items-center mb-10">
+          <div>
+            <h2 class="font-display font-bold text-3xl mb-1">Active Study Routes</h2>
+            <p class="text-[var(--fg2)]">Detailed breakdown of your generated learning paths.</p>
+          </div>
+        </div>
+        <div id="plans-container" class="grid grid-cols-1 gap-6"></div>
+      </div>
+
+      <!-- REVIEW -->
+      <!-- FIX #2: Full renderReview() implementation -->
+      <div class="view" id="view-review">
+        <div class="mb-10">
+          <h2 class="font-display font-bold text-3xl mb-2">Spaced Repetition Recall</h2>
+          <p class="text-[var(--fg2)]">Review items you struggled with during previous sessions.</p>
+        </div>
+        <div id="review-container" class="grid gap-4"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALS -->
+  <!-- FIX #7: onclick on overlay calls closeModal(), stopPropagation on content -->
+  <div class="modal-overlay" id="modal-add-task" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h3 class="font-display font-bold text-xl mb-6">Quick Task</h3>
+      <div class="space-y-4">
+        <div><label class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 block">Task Name</label><input
+            type="text" id="mt-name" class="input-field" placeholder="Vocabulary review..."></div>
+        <div><label class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 block">Category</label><select
+            id="mt-cat" class="input-field">
+            <option value="1">Vocabulary</option>
+            <option value="2">Grammar</option>
+            <option value="3">Listening</option>
+            <option value="4">Reading</option>
+          </select></div>
+        <div class="flex gap-3 pt-4"><button class="btn btn-primary flex-1 justify-center" onclick="saveTask()">Add
+            Task</button><button class="btn btn-secondary flex-1 justify-center" onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    let state = {
+      tasks: [],
+      categories: [
+        { id: 1, name: 'Vocabulary', color: '#22c55e' },
+        { id: 2, name: 'Grammar', color: '#3b82f6' },
+        { id: 3, name: 'Listening', color: '#f59e0b' },
+        { id: 4, name: 'Reading', color: '#ef4444' }
+      ],
+      streak: 5,
+      studyTime: 0,
+      currentView: 'dashboard',
+      timer: { active: false, time: 1500, mode: 'focus' },
+      // FIX #5: tempTasks lives in state, not window global
+      tempTasks: []
+    };
+
+    const save = () => localStorage.setItem('sf_state', JSON.stringify(state));
+    const load = () => {
+      const saved = localStorage.getItem('sf_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Merge to avoid losing new state keys on old saves
+        state = Object.assign(state, parsed);
+        if (!state.tempTasks) state.tempTasks = [];
+      }
+      renderDashboard();
+    };
+
+    const showToast = (msg) => {
+      const t = $('#toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      clearTimeout(t._tid);
+      t._tid = setTimeout(() => t.style.display = 'none', 3000);
+    };
+
+    // --- NAVIGATION ---
+    // FIX #1: switchView() defined here and reused by nav + code
+    const switchView = (viewName) => {
+      $$('.nav-item').forEach(x => x.classList.remove('active'));
+      const navItem = document.querySelector(`.nav-item[data-view="${viewName}"]`);
+      if (navItem) navItem.classList.add('active');
+      $$('.view').forEach(v => v.classList.remove('active'));
+      $(`#view-${viewName}`).classList.add('active');
+      state.currentView = viewName;
+      if (viewName === 'dashboard') renderDashboard();
+      if (viewName === 'plans') renderPlans();
+      if (viewName === 'review') renderReview();
+      if (viewName === 'pomodoro') renderPomodoro();
+    };
+
+    $$('.nav-item').forEach(n => n.onclick = () => switchView(n.dataset.view));
+
+    // --- DASHBOARD ---
+    let charts = {};
+
+    const renderDashboard = () => {
+      const done = state.tasks.filter(t => t.done).length;
+      const total = state.tasks.length;
+      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+      $('#streak-val').textContent = `🔥 ${state.streak} days`;
+      $('#time-val').textContent = `${state.studyTime.toFixed(1)}h`;
+      $('#task-val').textContent = `${done}/${total}`;
+      $('#milestone-fill').style.width = pct + '%';
+
+      // FIX #4: Populate milestone labels
+      const labels = $('#milestone-labels');
+      const milestones = [
+        { pct: 25, label: 'Starter', color: '#3b82f6' },
+        { pct: 50, label: 'Midway', color: '#f59e0b' },
+        { pct: 75, label: 'Advanced', color: '#22c55e' },
+        { pct: 100, label: 'Mastered', color: '#a855f7' }
+      ];
+      labels.innerHTML = milestones.map(m => `
+    <div class="flex items-center gap-2">
+      <div style="width:8px;height:8px;border-radius:50%;background:${pct >= m.pct ? m.color : 'var(--muted)'}"></div>
+      <span style="color:${pct >= m.pct ? m.color : 'var(--muted)'};">${m.label} (${m.pct}%)</span>
+    </div>
+  `).join('');
+
+      save();
+      initCatChart();
+      // FIX #6: defer canvas render until layout is complete
+      requestAnimationFrame(() => initTree());
+    };
+
+    const initCatChart = () => {
+      const ctx = $('#cat-chart');
+      if (!ctx) return;
+      if (charts.cat) charts.cat.destroy();
+      const data = state.categories.map(c => state.tasks.filter(t => t.catId == c.id).length);
+      charts.cat = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: state.categories.map(c => c.name),
+          datasets: [{
+            data: data.every(x => x === 0) ? [1, 1, 1, 1] : data,
+            backgroundColor: state.categories.map(c => c.color),
+            borderWidth: 0
+          }]
+        },
+        options: { cutout: '80%', plugins: { legend: { display: false } }, animation: { duration: 600 } }
+      });
+    };
+
+    const initTree = () => {
+      const canvas = $('#tree-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      // FIX #6: use offsetWidth only after requestAnimationFrame ensures layout
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, W, H);
+
+      const centerX = W / 2;
+      const centerY = H - 30;
+
+      const drawBranch = (sx, sy, angle, len, depth, tasks) => {
+        if (depth > 4 || tasks.length === 0) return;
+        const ex = sx + Math.cos(angle) * len;
+        const ey = sy + Math.sin(angle) * len;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(ex, ey);
+        ctx.strokeStyle = `rgba(34,197,94,${0.2 + depth * 0.15})`;
+        ctx.lineWidth = 10 / (depth + 1);
+        ctx.stroke();
+        const mid = Math.ceil(tasks.length / 2);
+        const leftTasks = tasks.slice(0, mid);
+        const rightTasks = tasks.slice(mid);
+        if (depth < 3) {
+          drawBranch(ex, ey, angle - 0.4, len * 0.75, depth + 1, leftTasks);
+          drawBranch(ex, ey, angle + 0.4, len * 0.75, depth + 1, rightTasks);
+        } else {
+          tasks.forEach((t, i) => {
+            const lx = ex + (i - tasks.length / 2) * 15;
+            const ly = ey - 10 - (i % 2) * 8;
+            ctx.beginPath();
+            ctx.arc(lx, ly, 4, 0, Math.PI * 2);
+            ctx.fillStyle = t.done ? '#22c55e' : '#152c1f';
+            ctx.fill();
+            if (t.done) {
+              ctx.shadowBlur = 10;
+              ctx.shadowColor = '#22c55e';
+              ctx.fill();
+              ctx.shadowBlur = 0;
+            }
+          });
+        }
+      };
+
+      const treeData = state.tasks.length ? state.tasks : [{ id: 0, done: false }];
+      drawBranch(centerX, centerY, -Math.PI / 2, 80, 0, treeData);
+    };
+
+    // --- POMODORO ---
+    let timerInterval;
+
+    // FIX #9: populate next task from state
+    const renderPomodoro = () => {
+      const nextTask = state.tasks.find(t => !t.done);
+      $('#next-task-name').textContent = nextTask ? nextTask.name : 'No active tasks';
+    };
+
+    const toggleTimer = () => {
+      if (state.timer.active) {
+        clearInterval(timerInterval);
+        state.timer.active = false;
+        $('#timer-toggle').textContent = 'Start Focus';
+      } else {
+        state.timer.active = true;
+        $('#timer-toggle').textContent = 'Pause Session';
+        timerInterval = setInterval(tick, 1000);
+      }
+    };
+
+    const tick = () => {
+      if (state.timer.time <= 0) {
+        clearInterval(timerInterval);
+        state.timer.active = false;
+        // FIX #3: increment studyTime when a focus session completes
+        if (state.timer.mode === 'focus') {
+          state.studyTime = parseFloat((state.studyTime + 25 / 60).toFixed(2));
+        }
+        showToast(`${state.timer.mode === 'focus' ? 'Focus' : 'Break'} complete! +0.4h logged`);
+        resetTimer();
+        renderDashboard();
+        return;
+      }
+      state.timer.time--;
+      const m = Math.floor(state.timer.time / 60);
+      const s = state.timer.time % 60;
+      $('#timer-val').textContent = `${m}:${s < 10 ? '0' + s : s}`;
+    };
+
+    const resetTimer = () => {
+      clearInterval(timerInterval);
+      state.timer.active = false;
+      state.timer.time = 1500;
+      $('#timer-val').textContent = '25:00';
+      $('#timer-toggle').textContent = 'Start Focus';
+    };
+
+    // --- ANALYSIS ---
+    const runAnalysis = () => {
+      const input = $('#ai-input').value.trim();
+      if (!input) return showToast('Please paste content first');
+
+      $('#ana-result').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] font-bold uppercase">Processing Materials...</p></div>';
+
+      setTimeout(() => {
+        const lines = input.split('\n').filter(l => l.trim());
+        const generated = lines.map((l, i) => ({
+          id: Date.now() + i,
+          name: l.replace(/^[0-9\.\-\s]+/, '').trim() || l.trim(),
+          catId: Math.floor(Math.random() * 4) + 1,
+          done: false
+        })).filter(t => t.name.length > 0);
+
+        // FIX #5: store in state.tempTasks, not window global
+        state.tempTasks = generated;
+        $('#ana-count').textContent = `${generated.length} items`;
+        $('#ana-result').innerHTML = `
       <div class="space-y-2 w-full">
-        ${generated.slice(0, 8).map(t => `<div class="task-item py-2 px-3"><i class="fas fa-magic text-[var(--accent)] text-[10px]"></i><span class="text-xs font-semibold">${t.name}</span></div>`).join('')}
-        ${generated.length > 8 ? `<p class="text-[10px] text-center text-[var(--muted)]">+ ${generated.length-8} more items</p>` : ''}
-        <button class="btn btn-primary w-full mt-4" onclick="confirmAnalysis()">Merge to Life-Path</button>
+        ${generated.slice(0, 8).map(t => `
+          <div class="task-item py-2 px-3">
+            <i class="fas fa-magic text-[var(--accent)] text-[10px]"></i>
+            <span class="text-xs font-semibold">${t.name}</span>
+          </div>`).join('')}
+        ${generated.length > 8 ? `<p class="text-[10px] text-center text-[var(--muted)]">+ ${generated.length - 8} more items</p>` : ''}
+        <button class="btn btn-primary w-full mt-4" onclick="confirmAnalysis()">Merge to Study Route</button>
       </div>
     `;
-    showToast('Analysis successful!');
-  }, 1200);
-};
+        showToast('Analysis successful!');
+      }, 1200);
+    };
 
-const confirmAnalysis = () => {
-  state.tasks = [...state.tasks, ...window._tempTasks];
-  window._tempTasks = [];
-  showToast('Route merged successfully!');
-  renderDashboard();
-  switchView('plans');
-};
+    const confirmAnalysis = () => {
+      // FIX #5: pull from state.tempTasks
+      state.tasks = [...state.tasks, ...state.tempTasks];
+      state.tempTasks = [];
+      save();
+      showToast('Route merged successfully!');
+      renderDashboard();
+      // FIX #1: switchView is now defined
+      switchView('plans');
+    };
 
-const renderPlans = () => {
-  const container = $('#plans-container');
-  if(state.tasks.length === 0) {
-    container.innerHTML = '<div class="stat-card text-center py-20 text-[var(--muted)]">No active routes. Use the Analyzer to create one.</div>';
-    return;
-  }
-  // Group by category for visual organization
-  const cats = [...new Set(state.tasks.map(t=>t.catId))];
-  container.innerHTML = cats.map(cid => {
-    const cat = state.categories.find(c=>c.id == cid);
-    const ts = state.tasks.filter(t=>t.catId == cid);
-    return `
+    // --- PLANS ---
+    const renderPlans = () => {
+      const container = $('#plans-container');
+      if (state.tasks.length === 0) {
+        container.innerHTML = '<div class="stat-card text-center py-20 text-[var(--muted)]"><i class="fas fa-route text-4xl mb-4 opacity-20 block"></i><p class="text-xs font-bold uppercase tracking-widest">No active routes. Use the Analyzer to create one.</p></div>';
+        return;
+      }
+      const cats = [...new Set(state.tasks.map(t => t.catId))];
+      container.innerHTML = cats.map(cid => {
+        const cat = state.categories.find(c => c.id == cid);
+        const ts = state.tasks.filter(t => t.catId == cid);
+        const donePct = ts.length ? Math.round((ts.filter(t => t.done).length / ts.length) * 100) : 0;
+        return `
       <div class="stat-card">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex justify-between items-center mb-3">
           <h4 class="font-display font-bold flex items-center gap-2" style="color:${cat.color}"><i class="fas fa-folder"></i> ${cat.name}</h4>
-          <span class="text-[10px] font-bold uppercase text-[var(--muted)]">${ts.filter(t=>t.done).length}/${ts.length} Done</span>
+          <span class="text-[10px] font-bold uppercase text-[var(--muted)]">${ts.filter(t => t.done).length}/${ts.length} Done</span>
         </div>
+        <div class="progress-bar mb-4"><div class="progress-fill" style="width:${donePct}%;background:${cat.color}"></div></div>
         <div class="space-y-2">
           ${ts.map(t => `
             <div class="task-item" onclick="toggleTask(${t.id})">
               <i class="fas ${t.done ? 'fa-check-circle text-[var(--accent)]' : 'fa-circle opacity-10'}"></i>
               <span class="text-sm ${t.done ? 'line-through opacity-40' : ''}">${t.name}</span>
-            </div>
-          `).join('')}
+            </div>`).join('')}
         </div>
-      </div>
-    `;
-  }).join('');
-};
+      </div>`;
+      }).join('');
+    };
 
-// --- MODAL & TASK ---
-const openModal = (id) => $(`#modal-${id}`).classList.add('active');
-const closeModal = () => $$('.modal-overlay').forEach(m=>m.classList.remove('active'));
-const toggleTask = (id) => {
-  const t = state.tasks.find(x=>x.id == id);
-  if(t) {
-    t.done = !t.done;
-    if(t.done) showToast('Task completed!');
-    renderDashboard();
-    renderPlans();
-  }
-};
+    // FIX #2: Full renderReview() implementation
+    const renderReview = () => {
+      const container = $('#review-container');
+      const pending = state.tasks.filter(t => !t.done);
 
-const saveTask = () => {
-  const name = $('#mt-name').value.trim();
-  const catId = $('#mt-cat').value;
-  if(!name) return;
-  state.tasks.push({ id: Date.now(), name, catId, done: false });
-  $('#mt-name').value = '';
-  closeModal();
-  renderDashboard();
-  showToast('Task added!');
-};
+      if (pending.length === 0) {
+        container.innerHTML = `
+      <div class="stat-card text-center py-20 text-[var(--muted)]">
+        <i class="fas fa-party-horn text-4xl mb-4 opacity-20 block"></i>
+        <p class="text-xs font-bold uppercase tracking-widest">All tasks completed! Nothing to review.</p>
+      </div>`;
+        return;
+      }
 
-window.onload = load;
-</script>
+      container.innerHTML = pending.map(t => {
+        const cat = state.categories.find(c => c.id == t.catId) || { name: 'Other', color: '#888' };
+        return `
+      <div class="review-card">
+        <div class="flex items-center justify-between mb-3">
+          <span class="review-tag" style="background:${cat.color}22;color:${cat.color}">${cat.name}</span>
+          <span class="text-[10px] text-[var(--muted)] font-bold uppercase">Due for review</span>
+        </div>
+        <p class="text-sm font-semibold mb-4">${t.name}</p>
+        <div class="flex gap-2">
+          <button class="btn btn-primary text-xs py-2 px-4" onclick="markReviewed(${t.id}, true)">
+            <i class="fas fa-check"></i> Got it
+          </button>
+          <button class="btn btn-secondary text-xs py-2 px-4" onclick="markReviewed(${t.id}, false)">
+            <i class="fas fa-rotate-right"></i> Again
+          </button>
+        </div>
+      </div>`;
+      }).join('');
+    };
+
+    const markReviewed = (id, passed) => {
+      if (passed) {
+        const t = state.tasks.find(x => x.id == id);
+        if (t) t.done = true;
+        save();
+        renderReview();
+        renderDashboard();
+        showToast('Marked as learned!');
+      } else {
+        showToast('Queued for another pass.');
+      }
+    };
+
+    // --- MODAL & TASK ---
+    const openModal = (id) => $(`#modal-${id}`).classList.add('active');
+    // FIX #7: closeModal called by overlay onclick
+    const closeModal = () => $$('.modal-overlay').forEach(m => m.classList.remove('active'));
+
+    const toggleTask = (id) => {
+      const t = state.tasks.find(x => x.id == id);
+      if (t) {
+        t.done = !t.done;
+        if (t.done) showToast('Task completed!');
+        save();
+        renderDashboard();
+        renderPlans();
+      }
+    };
+
+    const saveTask = () => {
+      const name = $('#mt-name').value.trim();
+      const catId = parseInt($('#mt-cat').value);
+      if (!name) return showToast('Task name cannot be empty');
+      state.tasks.push({ id: Date.now(), name, catId, done: false });
+      $('#mt-name').value = '';
+      closeModal();
+      save();
+      renderDashboard();
+      showToast('Task added!');
+    };
+
+    // FIX #8: Use DOMContentLoaded to guarantee Chart.js + DOM are both ready
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
 </body>
+
 </html>
