@@ -10,11 +10,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
     rel="stylesheet">
-  <!-- FIX #8: Load Chart.js before any script that uses it -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script>
-    tailwind.config = { theme: { extend: { fontFamily: { display: ['Space Grotesk', 'sans-serif'], body: ['DM Sans', 'sans-serif'] } } } }
-  </script>
+  <script>tailwind.config = { theme: { extend: { fontFamily: { display: ['Space Grotesk', 'sans-serif'], body: ['DM Sans', 'sans-serif'] } } } }</script>
   <style>
     :root {
       --bg: #040906;
@@ -29,7 +26,8 @@
       --fg2: #a3c4b0;
       --muted: #3d5a49;
       --border: #152c1f;
-      --danger: #ef4444
+      --danger: #ef4444;
+      --info: #3b82f6
     }
 
     * {
@@ -47,7 +45,7 @@
     }
 
     ::-webkit-scrollbar {
-      width: 6px
+      width: 5px
     }
 
     ::-webkit-scrollbar-track {
@@ -68,62 +66,72 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(ellipse 600px 400px at 15% 25%, rgba(34, 197, 94, .08), transparent), radial-gradient(ellipse 500px 500px at 85% 75%, rgba(245, 158, 11, .05), transparent)
+      background: radial-gradient(ellipse 600px 400px at 15% 25%, rgba(34, 197, 94, .07), transparent), radial-gradient(ellipse 500px 500px at 85% 75%, rgba(245, 158, 11, .04), transparent)
     }
 
     .sidebar {
-      width: 260px;
-      min-width: 260px;
-      background: rgba(8, 19, 13, .9);
+      width: 252px;
+      min-width: 252px;
+      background: rgba(8, 19, 13, .92);
       backdrop-filter: blur(24px);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      z-index: 10;
-      transition: transform .3s
+      z-index: 10
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      margin: 3px 12px;
-      border-radius: 12px;
+      gap: 11px;
+      padding: 10px 18px;
+      margin: 2px 10px;
+      border-radius: 11px;
       cursor: pointer;
-      transition: all .3s ease;
+      transition: all .25s ease;
       color: var(--fg2);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500
     }
 
     .nav-item:hover {
       background: var(--accent-g);
       color: var(--fg);
-      transform: translateX(5px)
+      transform: translateX(4px)
     }
 
     .nav-item.active {
       background: var(--accent-g);
       color: var(--accent);
       font-weight: 600;
-      box-shadow: inset 4px 0 0 var(--accent)
+      box-shadow: inset 3px 0 0 var(--accent)
+    }
+
+    .nav-section {
+      padding: 6px 18px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted)
     }
 
     .view {
       display: none;
-      padding: 32px 40px;
-      animation: fadeSlideUp .4s cubic-bezier(0.16, 1, 0.3, 1)
+      padding: 26px 34px;
+      animation: fadeUp .35s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+      height: 100%
     }
 
     .view.active {
       display: block
     }
 
-    @keyframes fadeSlideUp {
+    @keyframes fadeUp {
       from {
         opacity: 0;
-        transform: translateY(20px)
+        transform: translateY(14px)
       }
 
       to {
@@ -135,32 +143,28 @@
     .stat-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 22px;
-      transition: all .3s;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5)
+      border-radius: 16px;
+      padding: 20px;
+      transition: all .25s
     }
 
     .stat-card:hover {
       background: var(--card-h);
-      transform: translateY(-4px);
-      border-color: var(--muted);
-      box-shadow: 0 15px 40px -10px rgba(34, 197, 94, 0.15)
+      border-color: var(--muted)
     }
 
     .btn {
-      padding: 10px 22px;
-      border-radius: 12px;
+      padding: 8px 18px;
+      border-radius: 11px;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
-      transition: all .2s;
+      transition: all .18s;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      border: none
+      gap: 7px;
+      border: none;
+      font-family: 'DM Sans', sans-serif
     }
 
     .btn-primary {
@@ -169,8 +173,8 @@
     }
 
     .btn-primary:hover {
-      filter: brightness(1.1);
-      box-shadow: 0 0 25px var(--accent-g)
+      filter: brightness(1.08);
+      transform: translateY(-1px)
     }
 
     .btn-secondary {
@@ -183,16 +187,27 @@
       background: var(--card)
     }
 
+    .btn-danger {
+      background: rgba(239, 68, 68, .12);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, .2)
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, .22)
+    }
+
     .input-field {
       background: var(--bg2);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 16px;
+      border-radius: 11px;
+      padding: 10px 14px;
       color: var(--fg);
-      font-size: 14px;
+      font-size: 13px;
       width: 100%;
       outline: none;
-      transition: all .2s
+      transition: all .18s;
+      font-family: 'DM Sans', sans-serif
     }
 
     .input-field:focus {
@@ -204,51 +219,38 @@
       font-family: 'Space Grotesk', sans-serif;
       font-size: 5rem;
       font-weight: 700;
-      letter-spacing: -2px;
-      color: var(--fg);
-      text-shadow: 0 0 40px rgba(34, 197, 94, 0.3)
+      letter-spacing: -3px;
+      text-shadow: 0 0 40px rgba(34, 197, 94, 0.25)
     }
 
-    /* FIX #7: Modal closes on overlay click via JS, using pointer-events on content to stop propagation */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, .75);
       backdrop-filter: blur(8px);
       z-index: 100;
       display: none;
       align-items: center;
-      justify-content: center;
-      animation: fadeIn .2s ease
+      justify-content: center
     }
 
     .modal-overlay.active {
       display: flex
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0
-      }
-
-      to {
-        opacity: 1
-      }
-    }
-
     .modal-content {
       background: var(--card);
       width: 90%;
       max-width: 500px;
-      border-radius: 24px;
-      padding: 32px;
+      border-radius: 22px;
+      padding: 30px;
       border: 1px solid var(--border);
-      animation: popIn .3s cubic-bezier(0.34, 1.56, 0.64, 1)
+      animation: popIn .28s cubic-bezier(0.34, 1.56, 0.64, 1)
     }
 
     @keyframes popIn {
       from {
-        transform: scale(0.9) translateY(20px);
+        transform: scale(.92) translateY(16px);
         opacity: 0
       }
 
@@ -260,49 +262,29 @@
 
     .toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 12px 24px;
+      bottom: 22px;
+      right: 22px;
+      padding: 11px 20px;
       background: var(--card);
-      border: 1px solid var(--accent);
-      border-radius: 12px;
-      color: var(--accent);
-      font-size: 14px;
+      border-radius: 11px;
+      font-size: 13px;
       font-weight: 600;
       z-index: 200;
       display: none;
-      animation: slideUp .3s ease, fadeOut .3s ease 2.7s forwards
-    }
-
-    @keyframes slideUp {
-      from {
-        transform: translateY(50px);
-        opacity: 0
-      }
-
-      to {
-        transform: translateY(0);
-        opacity: 1
-      }
-    }
-
-    @keyframes fadeOut {
-      to {
-        opacity: 0
-      }
+      max-width: 300px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .4)
     }
 
     .task-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
+      gap: 10px;
+      padding: 11px 14px;
       background: var(--bg2);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      margin-bottom: 10px;
-      transition: all .2s;
-      cursor: pointer
+      border-radius: 12px;
+      margin-bottom: 7px;
+      transition: all .18s
     }
 
     .task-item:hover {
@@ -311,40 +293,105 @@
     }
 
     .progress-bar {
-      height: 8px;
+      height: 5px;
       background: var(--bg2);
-      border-radius: 4px;
-      position: relative;
-      overflow: visible
+      border-radius: 3px;
+      overflow: hidden
     }
 
     .progress-fill {
       height: 100%;
-      border-radius: 4px;
-      transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)
+      border-radius: 3px;
+      transition: width .7s cubic-bezier(0.34, 1.56, 0.64, 1)
+    }
+
+    .cat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    .day-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--fg2);
+      white-space: nowrap
+    }
+
+    .range-input {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: transform .15s
+    }
+
+    .range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.2)
     }
 
     .review-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 12px;
-      transition: all .2s
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 10px
     }
 
-    .review-card:hover {
-      border-color: var(--muted)
+    .hour-block {
+      flex: 1;
+      height: 10px;
+      border-radius: 2px;
+      transition: background .3s
     }
 
-    .review-tag {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 99px;
-      font-size: 11px;
+    .pomo-stat {
+      background: var(--bg2);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 22px
+    }
+
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .05em
+      font-size: 22px;
+      margin-bottom: 3px
+    }
+
+    .page-sub {
+      color: var(--fg2);
+      font-size: 13px
     }
   </style>
 </head>
@@ -354,192 +401,426 @@
   <div id="toast" class="toast"></div>
 
   <div class="flex h-screen relative z-[1]">
+
+    <!-- ============================================================ SIDEBAR -->
     <aside class="sidebar">
-      <div class="px-6 py-8 border-b border-[var(--border)]">
+      <div class="px-5 py-6 border-b border-[var(--border)]">
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-900/20">
-            <i class="fas fa-leaf text-white"></i></div>
+            class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center">
+            <i class="fas fa-leaf text-white text-sm"></i></div>
           <div>
-            <h1 class="font-display font-bold text-lg tracking-tight text-white">StudyFlow</h1>
-            <p class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">Core Workspace</p>
+            <div class="font-display font-bold text-base text-white tracking-tight">StudyFlow</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">MVP Workspace</div>
           </div>
         </div>
       </div>
-      <nav class="flex-1 py-6 overflow-y-auto" id="nav">
-        <div class="px-6 mb-3 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Overview</div>
-        <div class="nav-item active" data-view="dashboard"><i class="fas fa-grid-2"></i>Dashboard</div>
-        <div class="nav-item" data-view="pomodoro"><i class="fas fa-stopwatch"></i>Focus Timer</div>
-        <div class="px-6 mt-8 mb-3 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Planning</div>
-        <div class="nav-item" data-view="analysis"><i class="fas fa-wand-magic-sparkles"></i>Auto-Analyze</div>
-        <div class="nav-item" data-view="plans"><i class="fas fa-list-check"></i>Study Routes</div>
-        <div class="nav-item" data-view="review"><i class="fas fa-brain-circuit"></i>Recall Box</div>
+      <nav class="flex-1 py-4 overflow-y-auto">
+        <div class="nav-section mt-1">Overview</div>
+        <div class="nav-item active" data-view="dashboard"><i class="fas fa-grid-2 w-4 text-center"></i>Dashboard</div>
+        <div class="nav-item" data-view="pomodoro"><i class="fas fa-stopwatch w-4 text-center"></i>Focus Timer</div>
+        <div class="nav-section mt-4">Goals</div>
+        <div class="nav-item" data-view="setup"><i class="fas fa-bullseye w-4 text-center"></i>Setup & Goals</div>
+        <div class="nav-section mt-4">Planning</div>
+        <div class="nav-item" data-view="analysis"><i
+            class="fas fa-wand-magic-sparkles w-4 text-center"></i>Auto-Analyze</div>
+        <div class="nav-item" data-view="plans"><i class="fas fa-list-check w-4 text-center"></i>Study Routes</div>
+        <div class="nav-item" data-view="review"><i class="fas fa-brain-circuit w-4 text-center"></i>Recall Box</div>
+        <div class="nav-item" data-view="categories"><i class="fas fa-tags w-4 text-center"></i>Categories</div>
       </nav>
-      <div class="p-6 border-t border-[var(--border)]">
+      <div class="p-4 border-t border-[var(--border)]">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-[var(--bg2)] border border-[var(--border)]"></div>
-          <div class="text-xs font-semibold">Guest Admin</div>
+          <div
+            class="w-7 h-7 rounded-full bg-[var(--bg2)] border border-[var(--border)] flex items-center justify-center">
+            <i class="fas fa-user text-[9px] text-[var(--muted)]"></i></div>
+          <div class="text-xs font-semibold">Guest User</div>
         </div>
       </div>
     </aside>
 
-    <main class="flex-1 overflow-y-auto" id="main-content">
-      <!-- DASHBOARD -->
+    <main class="flex-1 overflow-hidden">
+
+      <!-- ============================================================ DASHBOARD -->
       <div class="view active" id="view-dashboard">
-        <div class="flex justify-between items-center mb-8">
+        <div class="page-header">
           <div>
-            <h2 class="font-display font-bold text-3xl mb-1">Welcome back</h2>
-            <p class="text-[var(--fg2)]">Here's your learning progress for today.</p>
+            <div class="page-title">Dashboard</div>
+            <div class="page-sub" id="dash-sub">Your learning progress at a glance.</div>
           </div>
-          <div class="flex gap-3"><button class="btn btn-secondary" onclick="openModal('add-task')"><i
-                class="fas fa-plus"></i>Quick Task</button></div>
+          <button class="btn btn-secondary" onclick="openModal('add-task')"><i class="fas fa-plus"></i>Quick
+            Task</button>
         </div>
 
-        <div class="grid grid-cols-4 gap-5 mb-8">
+        <div class="grid grid-cols-5 gap-3 mb-5">
           <div class="stat-card">
-            <div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Current Streak</div>
-            <div class="text-3xl font-display font-bold text-[var(--ember)]" id="streak-val">🔥 0 days</div>
+            <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Streak</div>
+            <div class="text-2xl font-display font-bold text-[var(--ember)]" id="streak-val">🔥 0</div>
           </div>
           <div class="stat-card">
-            <div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Study Time</div>
-            <div class="text-3xl font-display font-bold text-[var(--accent)]" id="time-val">0h</div>
+            <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Study Time</div>
+            <div class="text-2xl font-display font-bold text-[var(--accent)]" id="time-val">0.0h</div>
           </div>
           <div class="stat-card">
-            <div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Tasks Done</div>
-            <div class="text-3xl font-display font-bold" id="task-val">0/0</div>
+            <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Tasks Done</div>
+            <div class="text-2xl font-display font-bold" id="task-val">0/0</div>
           </div>
           <div class="stat-card">
-            <div class="text-[10px] uppercase font-bold text-[var(--muted)] mb-1">Goal Status</div>
-            <div class="text-3xl font-display font-bold text-blue-400">On Track</div>
+            <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Days to Exam</div>
+            <div class="text-2xl font-display font-bold text-blue-400" id="countdown-val">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Tasks/Day Needed</div>
+            <div class="text-2xl font-display font-bold text-purple-400" id="tasks-day-val">—</div>
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-6">
-          <div class="col-span-2 stat-card" style="height: 480px;">
-            <div class="flex justify-between mb-4">
-              <h3 class="font-display font-bold">Knowledge Evolution Tree</h3><span
-                class="text-[10px] text-[var(--muted)] uppercase font-bold">Live Data</span>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="col-span-2 stat-card" style="height:380px">
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-display font-bold text-sm">Knowledge Evolution Tree</h3>
+              <span class="text-[9px] text-[var(--muted)] uppercase font-bold tracking-wider">Live</span>
             </div>
             <canvas id="tree-canvas"
-              style="width:100%;height:380px;background:rgba(0,0,0,0.1);border-radius:12px"></canvas>
+              style="width:100%;height:310px;background:rgba(0,0,0,0.12);border-radius:10px"></canvas>
           </div>
-          <div class="space-y-6">
-            <div class="stat-card" style="height: 230px;">
-              <h3 class="font-display font-bold text-sm mb-4">Categories</h3><canvas id="cat-chart"></canvas>
-            </div>
-            <div class="stat-card" style="height: 225px;">
-              <h3 class="font-display font-bold text-sm mb-4">Milestone Progress</h3>
-              <div class="progress-bar mb-4">
-                <div class="progress-fill bg-[var(--accent)]" id="milestone-fill" style="width: 0%"></div>
-              </div>
-              <!-- FIX #4: milestone-labels now populated by renderDashboard() -->
-              <div class="space-y-2 text-[11px] font-bold" id="milestone-labels"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- POMODORO -->
-      <div class="view" id="view-pomodoro">
-        <div class="flex flex-col items-center justify-center min-h-[70vh]">
-          <div class="stat-card w-full max-w-lg text-center p-12">
-            <div class="text-[10px] font-bold uppercase tracking-widest text-[var(--accent)] mb-6" id="timer-label">
-              Focusing Session</div>
-            <div class="timer-display mb-10" id="timer-val">25:00</div>
-            <div class="flex gap-4 justify-center">
-              <button class="btn btn-primary px-12 py-3 text-sm" id="timer-toggle" onclick="toggleTimer()">Start
-                Focus</button>
-              <button class="btn btn-secondary px-8 py-3 text-sm" onclick="resetTimer()">Reset</button>
-            </div>
-            <div class="mt-12 flex items-center justify-center gap-3 text-xs text-[var(--fg2)]">
-              <i class="fas fa-shield-halved text-[var(--accent)]"></i>
-              <span>Distraction-free mode enabled</span>
-            </div>
-          </div>
-          <!-- FIX #9: Next task pulled from state -->
-          <div class="mt-8 text-center">
-            <p class="text-sm font-bold text-[var(--muted)] uppercase tracking-wider">Next Task</p>
-            <p class="text-lg font-display font-bold mt-2" id="next-task-name">No active tasks</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- ANALYSIS -->
-      <div class="view" id="view-analysis">
-        <div class="mb-10">
-          <h2 class="font-display font-bold text-3xl mb-2">Smart Analysis Engine</h2>
-          <p class="text-[var(--fg2)]">Paste your learning materials to auto-generate a structured route.</p>
-        </div>
-        <div class="grid grid-cols-2 gap-8">
           <div class="space-y-4">
-            <label class="text-[10px] font-bold uppercase text-[var(--muted)]">Paste Material Contents</label>
-            <textarea id="ai-input" class="input-field h-[350px]"
-              placeholder="Chapter 1: Basics of JLPT...&#10;1.1 Vocabulary basics...&#10;1.2 Grammar structures..."></textarea>
-            <button class="btn btn-primary w-full py-4 text-sm font-bold" onclick="runAnalysis()">Analyze & Generate
-              Route</button>
+            <div class="stat-card" style="height:180px">
+              <h3 class="font-display font-bold text-xs mb-3">Categories</h3><canvas id="cat-chart"></canvas>
+            </div>
+            <div class="stat-card" style="height:180px">
+              <h3 class="font-display font-bold text-xs mb-3">Milestones</h3>
+              <div class="progress-bar mb-3">
+                <div class="progress-fill bg-[var(--accent)]" id="milestone-fill" style="width:0%"></div>
+              </div>
+              <div id="milestone-labels" class="space-y-2"></div>
+            </div>
           </div>
-          <div class="stat-card relative flex flex-col min-h-[460px]">
-            <div class="flex justify-between mb-6">
-              <h3 class="font-display font-bold">Analysis Result</h3><span
-                class="text-[10px] text-[var(--accent)] font-bold uppercase" id="ana-count">0 items</span>
+        </div>
+      </div>
+
+      <!-- ============================================================ POMODORO -->
+      <div class="view" id="view-pomodoro">
+        <div class="flex flex-col items-center justify-center" style="min-height:76vh">
+          <div class="stat-card w-full text-center" style="max-width:400px;padding:36px 32px">
+            <div class="text-[10px] font-bold uppercase tracking-widest mb-2" id="timer-mode-label"
+              style="color:var(--accent)">Focus Session</div>
+            <div class="timer-display mb-2" id="timer-val" style="color:var(--fg)">25:00</div>
+
+            <div id="break-bar" class="mb-5 hidden">
+              <div class="progress-bar">
+                <div class="progress-fill" id="break-fill" style="width:0%;background:var(--ember)"></div>
+              </div>
+              <div class="text-[10px] text-[var(--muted)] mt-1">Break progress</div>
+            </div>
+            <div class="mb-5" id="break-bar-spacer" style="height:20px"></div>
+
+            <div class="flex gap-3 justify-center mb-7">
+              <button class="btn btn-primary px-10 py-3" id="timer-toggle" onclick="toggleTimer()">Start Focus</button>
+              <button class="btn btn-secondary px-6 py-3" onclick="resetTimer()">Reset</button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <div class="pomo-stat">
+                <div class="text-[10px] text-[var(--muted)] mb-1">Sessions</div>
+                <div class="font-display font-bold" id="pomo-sessions">0</div>
+              </div>
+              <div class="pomo-stat">
+                <div class="text-[10px] text-[var(--muted)] mb-1">Focus</div>
+                <div class="font-display font-bold text-[var(--accent)]" id="pomo-time">0m</div>
+              </div>
+              <div class="pomo-stat">
+                <div class="text-[10px] text-[var(--muted)] mb-1">Breaks</div>
+                <div class="font-display font-bold text-[var(--ember)]" id="pomo-breaks">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 text-center">
+            <div class="text-[10px] font-bold uppercase text-[var(--muted)] tracking-widest mb-1">Next Task</div>
+            <div class="text-base font-display font-bold" id="next-task-name">No active tasks</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ SETUP & GOALS -->
+      <div class="view" id="view-setup">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Setup & Goals</div>
+            <div class="page-sub">Configure exam targets and daily schedule.</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-5">
+
+          <!-- Left -->
+          <div class="space-y-4">
+            <div class="stat-card">
+              <h3 class="font-display font-bold text-sm mb-4 flex items-center gap-2"><i
+                  class="fas fa-graduation-cap text-[var(--accent)]"></i>Exam Settings</h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Exam Date</label>
+                  <input type="date" id="exam-date-input" class="input-field" onchange="saveSetup()">
+                </div>
+                <div>
+                  <label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Target Score /
+                    Level</label>
+                  <input type="text" id="target-score-input" class="input-field"
+                    placeholder="e.g. N2, IELTS 7.0, 800/990..." oninput="saveSetup()">
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <h3 class="font-display font-bold text-sm mb-4 flex items-center gap-2"><i
+                  class="fas fa-clock text-[var(--ember)]"></i>Daily Hours Calculator</h3>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <label class="text-[9px] font-bold uppercase text-[var(--muted)]">Work / School</label>
+                    <span class="text-sm font-bold text-[var(--ember)]" id="work-lbl">8h</span>
+                  </div>
+                  <input type="range" class="range-input" id="work-input" min="0" max="16" step="1" value="8"
+                    oninput="updateHours()">
+                </div>
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <label class="text-[9px] font-bold uppercase text-[var(--muted)]">Sleep</label>
+                    <span class="text-sm font-bold text-[var(--fg2)]" id="sleep-lbl">8h</span>
+                  </div>
+                  <input type="range" class="range-input" id="sleep-input" min="4" max="12" step="1" value="8"
+                    oninput="updateHours()">
+                </div>
+                <div style="background:var(--bg2);border-radius:12px;padding:14px">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs text-[var(--fg2)]">Available study time/day</span>
+                    <span class="text-xl font-display font-bold text-[var(--accent)]" id="avail-lbl">8.0h</span>
+                  </div>
+                  <div class="flex gap-[2px]" id="hour-blocks"></div>
+                  <div class="flex justify-between text-[9px] text-[var(--muted)] mt-1">
+                    <span>Work <span id="work-pct"></span></span>
+                    <span>Study <span id="study-pct"></span></span>
+                    <span>Sleep <span id="sleep-pct"></span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <h3 class="font-display font-bold text-sm mb-3 flex items-center gap-2"><i
+                  class="fas fa-robot text-purple-400"></i>Auto-Distribute Tasks</h3>
+              <p class="text-xs text-[var(--fg2)] mb-3">Assign due dates to all pending tasks based on your available
+                time.</p>
+              <div class="flex items-center gap-2 mb-3">
+                <label class="text-[9px] font-bold uppercase text-[var(--muted)] whitespace-nowrap">Mins per
+                  task</label>
+                <input type="number" id="mins-per-task" class="input-field" style="width:72px" value="30" min="10"
+                  max="180">
+              </div>
+              <button class="btn btn-primary w-full justify-center" onclick="autoDistribute()"><i
+                  class="fas fa-magic-wand-sparkles"></i>Distribute tasks now</button>
+            </div>
+          </div>
+
+          <!-- Right -->
+          <div class="space-y-4">
+            <div class="stat-card text-center" style="padding:32px 24px">
+              <div class="text-[9px] font-bold uppercase tracking-widest text-[var(--muted)] mb-2">Days until exam</div>
+              <div class="font-display font-bold mb-2" id="big-countdown" style="font-size:4rem;color:var(--accent)">—
+              </div>
+              <div class="text-sm text-[var(--fg2)] mb-3" id="exam-date-label">No exam date set</div>
+              <div
+                style="background:var(--bg2);border-radius:10px;padding:8px 16px;display:inline-flex;align-items:center;gap:8px">
+                <i class="fas fa-bullseye text-[var(--ember)] text-xs"></i>
+                <span class="text-sm font-bold" id="target-score-label">No target set</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <h3 class="font-display font-bold text-sm mb-4">Study Plan Overview</h3>
+              <div id="plan-overview">
+                <div class="text-xs text-[var(--muted)] text-center py-4">Set exam date and add tasks to see plan</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <h3 class="font-display font-bold text-sm mb-3 flex items-center gap-2"><i
+                  class="fas fa-flag text-[var(--accent)]"></i>Milestone Labels</h3>
+              <p class="text-[10px] text-[var(--fg2)] mb-3">Edit milestone names — progress percentages are fixed.</p>
+              <div id="milestone-settings" class="space-y-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ ANALYSIS -->
+      <div class="view" id="view-analysis">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Auto-Analyze</div>
+            <div class="page-sub">Paste materials to generate a structured study route.</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-5">
+          <div class="space-y-3">
+            <label class="text-[9px] font-bold uppercase text-[var(--muted)]">Paste Material Contents</label>
+            <textarea id="ai-input" class="input-field" style="height:300px"
+              placeholder="Chapter 1: Basics of JLPT&#10;1.1 Vocabulary basics&#10;1.2 Grammar structures&#10;..."></textarea>
+            <div class="flex gap-2">
+              <div class="flex-1">
+                <label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-1 block">Assign to category</label>
+                <select id="default-cat" class="input-field"></select>
+              </div>
+              <div style="padding-top:20px">
+                <button class="btn btn-primary" style="height:42px" onclick="runAnalysis()"><i
+                    class="fas fa-wand-magic-sparkles"></i>Analyze</button>
+              </div>
+            </div>
+          </div>
+          <div class="stat-card flex flex-col" style="min-height:420px">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-display font-bold text-sm">Result</h3>
+              <span class="text-[9px] text-[var(--accent)] font-bold uppercase" id="ana-count">0 items</span>
             </div>
             <div id="ana-result"
-              class="flex-1 overflow-y-auto pr-2 flex flex-col items-center justify-center text-[var(--muted)]">
-              <i class="fas fa-microchip text-4xl mb-4 opacity-20"></i>
-              <p class="text-xs font-bold uppercase tracking-widest">Awaiting Input...</p>
+              class="flex-1 overflow-y-auto flex flex-col items-center justify-center text-[var(--muted)]">
+              <i class="fas fa-microchip text-3xl mb-3 opacity-20"></i>
+              <p class="text-[10px] font-bold uppercase tracking-widest">Awaiting input...</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ROUTES/PLANS -->
+      <!-- ============================================================ PLANS / STUDY ROUTES -->
       <div class="view" id="view-plans">
-        <div class="flex justify-between items-center mb-10">
+        <div class="page-header">
           <div>
-            <h2 class="font-display font-bold text-3xl mb-1">Active Study Routes</h2>
-            <p class="text-[var(--fg2)]">Detailed breakdown of your generated learning paths.</p>
+            <div class="page-title">Study Routes</div>
+            <div class="page-sub">All tasks organized by category.</div>
           </div>
+          <button class="btn btn-secondary" onclick="openModal('add-task')"><i class="fas fa-plus"></i>Add Task</button>
         </div>
-        <div id="plans-container" class="grid grid-cols-1 gap-6"></div>
+        <div id="plans-container" class="space-y-4"></div>
       </div>
 
-      <!-- REVIEW -->
-      <!-- FIX #2: Full renderReview() implementation -->
+      <!-- ============================================================ RECALL BOX (SPACED REPETITION) -->
       <div class="view" id="view-review">
-        <div class="mb-10">
-          <h2 class="font-display font-bold text-3xl mb-2">Spaced Repetition Recall</h2>
-          <p class="text-[var(--fg2)]">Review items you struggled with during previous sessions.</p>
+        <div class="page-header">
+          <div>
+            <div class="page-title">Recall Box</div>
+            <div class="page-sub">Spaced repetition — review at the right time.</div>
+          </div>
         </div>
-        <div id="review-container" class="grid gap-4"></div>
+        <div class="grid grid-cols-3 gap-3 mb-5">
+          <div class="stat-card text-center">
+            <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Due Now</div>
+            <div class="text-2xl font-display font-bold text-[var(--danger)]" id="review-due">0</div>
+          </div>
+          <div class="stat-card text-center">
+            <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Upcoming</div>
+            <div class="text-2xl font-display font-bold text-[var(--ember)]" id="review-upcoming">0</div>
+          </div>
+          <div class="stat-card text-center">
+            <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Mastered</div>
+            <div class="text-2xl font-display font-bold text-[var(--accent)]" id="review-mastered">0</div>
+          </div>
+        </div>
+        <div id="review-container"></div>
       </div>
+
+      <!-- ============================================================ CATEGORIES -->
+      <div class="view" id="view-categories">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Categories</div>
+            <div class="page-sub">Manage your learning domains.</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('add-category')"><i class="fas fa-plus"></i>New
+            Category</button>
+        </div>
+        <div id="categories-container" class="grid grid-cols-2 gap-4"></div>
+      </div>
+
     </main>
   </div>
 
-  <!-- MODALS -->
-  <!-- FIX #7: onclick on overlay calls closeModal(), stopPropagation on content -->
+  <!-- ============================================================ MODALS -->
   <div class="modal-overlay" id="modal-add-task" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <h3 class="font-display font-bold text-xl mb-6">Quick Task</h3>
+      <h3 class="font-display font-bold text-lg mb-5">Add Task</h3>
       <div class="space-y-4">
-        <div><label class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 block">Task Name</label><input
-            type="text" id="mt-name" class="input-field" placeholder="Vocabulary review..."></div>
-        <div><label class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 block">Category</label><select
-            id="mt-cat" class="input-field">
-            <option value="1">Vocabulary</option>
-            <option value="2">Grammar</option>
-            <option value="3">Listening</option>
-            <option value="4">Reading</option>
-          </select></div>
-        <div class="flex gap-3 pt-4"><button class="btn btn-primary flex-1 justify-center" onclick="saveTask()">Add
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Task Name</label><input
+            type="text" id="mt-name" class="input-field" placeholder="e.g. Review vocabulary set 3..."></div>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Category</label><select
+            id="mt-cat" class="input-field"></select></div>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Due Date
+            (optional)</label><input type="date" id="mt-date" class="input-field"></div>
+        <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center" onclick="saveTask()">Add
             Task</button><button class="btn btn-secondary flex-1 justify-center" onclick="closeModal()">Cancel</button>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="modal-overlay" id="modal-edit-task" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h3 class="font-display font-bold text-lg mb-5">Edit Task</h3>
+      <input type="hidden" id="et-id">
+      <div class="space-y-4">
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Task Name</label><input
+            type="text" id="et-name" class="input-field"></div>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Category</label><select
+            id="et-cat" class="input-field"></select></div>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Due Date</label><input
+            type="date" id="et-date" class="input-field"></div>
+        <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center" onclick="saveEditTask()">Save
+            Changes</button><button class="btn btn-secondary flex-1 justify-center"
+            onclick="closeModal()">Cancel</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-add-category" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h3 class="font-display font-bold text-lg mb-5">New Category</h3>
+      <div class="space-y-4">
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Name</label><input type="text"
+            id="nc-name" class="input-field" placeholder="Grammar, Kanji, Listening..."></div>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Color</label><input
+            type="color" id="nc-color" value="#22c55e"
+            style="width:100%;height:42px;border-radius:11px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;padding:4px 6px">
+        </div>
+        <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center"
+            onclick="addCategory()">Create</button><button class="btn btn-secondary flex-1 justify-center"
+            onclick="closeModal()">Cancel</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-edit-category" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h3 class="font-display font-bold text-lg mb-5">Edit Category</h3>
+      <input type="hidden" id="ec-id">
+      <div class="space-y-4">
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Name</label><input type="text"
+            id="ec-name" class="input-field"></div>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Color</label><input
+            type="color" id="ec-color"
+            style="width:100%;height:42px;border-radius:11px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;padding:4px 6px">
+        </div>
+        <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center"
+            onclick="saveEditCategory()">Save</button><button class="btn btn-secondary flex-1 justify-center"
+            onclick="closeModal()">Cancel</button></div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ============================================================
+    // STATE
+    // ============================================================
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
+    const todayStr = () => new Date().toISOString().split('T')[0];
 
     let state = {
       tasks: [],
@@ -549,83 +830,136 @@
         { id: 3, name: 'Listening', color: '#f59e0b' },
         { id: 4, name: 'Reading', color: '#ef4444' }
       ],
-      streak: 5,
+      streak: 0,
       studyTime: 0,
+      lastStudyDate: '',
       currentView: 'dashboard',
-      timer: { active: false, time: 1500, mode: 'focus' },
-      // FIX #5: tempTasks lives in state, not window global
-      tempTasks: []
+      timer: { active: false, time: 1500, mode: 'focus', sessions: 0, breaks: 0, totalFocusMin: 0 },
+      tempTasks: [],
+      // Goals
+      examDate: '',
+      targetScore: '',
+      workHours: 8,
+      sleepHours: 8,
+      // Review
+      reviewSchedule: {},  // {taskId: {nextDate, interval}}
+      // Milestones
+      milestones: [{ pct: 25, label: 'Starter' }, { pct: 50, label: 'Midway' }, { pct: 75, label: 'Advanced' }, { pct: 100, label: 'Mastered' }],
+      lastMilestonePct: -1
     };
 
-    const save = () => localStorage.setItem('sf_state', JSON.stringify(state));
+    const save = () => localStorage.setItem('sf_v3', JSON.stringify(state));
     const load = () => {
-      const saved = localStorage.getItem('sf_state');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // Merge to avoid losing new state keys on old saves
-        state = Object.assign(state, parsed);
-        if (!state.tempTasks) state.tempTasks = [];
+      const s = localStorage.getItem('sf_v3');
+      if (s) {
+        try {
+          const p = JSON.parse(s);
+          state = Object.assign({}, state, p);
+          if (!state.tempTasks) state.tempTasks = [];
+          if (!state.reviewSchedule) state.reviewSchedule = {};
+          if (!state.milestones) state.milestones = [{ pct: 25, label: 'Starter' }, { pct: 50, label: 'Midway' }, { pct: 75, label: 'Advanced' }, { pct: 100, label: 'Mastered' }];
+        } catch (e) { }
       }
+      populateCatSelects();
       renderDashboard();
+      // Real-time dashboard refresh every 60s
+      setInterval(() => { if (state.currentView === 'dashboard') renderDashboard(); }, 60000);
     };
 
-    const showToast = (msg) => {
+    // ============================================================
+    // UTILS
+    // ============================================================
+    const showToast = (msg, type = 'success') => {
       const t = $('#toast');
       t.textContent = msg;
+      const colors = { success: 'var(--accent)', warning: 'var(--ember)', danger: 'var(--danger)' };
+      t.style.border = `1px solid ${colors[type] || colors.success}`;
+      t.style.color = colors[type] || colors.success;
       t.style.display = 'block';
       clearTimeout(t._tid);
-      t._tid = setTimeout(() => t.style.display = 'none', 3000);
+      t._tid = setTimeout(() => t.style.display = 'none', 3200);
     };
 
-    // --- NAVIGATION ---
-    // FIX #1: switchView() defined here and reused by nav + code
-    const switchView = (viewName) => {
+    const getCat = id => state.categories.find(c => c.id == id) || { name: 'Other', color: '#888' };
+    const daysUntil = dateStr => {
+      if (!dateStr) return null;
+      return Math.ceil((new Date(dateStr) - new Date(todayStr())) / 86400000);
+    };
+    const totalPct = () => {
+      const done = state.tasks.filter(t => t.done).length, total = state.tasks.length;
+      return total === 0 ? 0 : Math.round(done / total * 100);
+    };
+
+    const populateCatSelects = () => {
+      const opts = state.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      ['#mt-cat', '#et-cat', '#default-cat'].forEach(sel => { const el = $(sel); if (el) el.innerHTML = opts; });
+    };
+
+    // ============================================================
+    // NAVIGATION
+    // ============================================================
+    const switchView = v => {
       $$('.nav-item').forEach(x => x.classList.remove('active'));
-      const navItem = document.querySelector(`.nav-item[data-view="${viewName}"]`);
-      if (navItem) navItem.classList.add('active');
-      $$('.view').forEach(v => v.classList.remove('active'));
-      $(`#view-${viewName}`).classList.add('active');
-      state.currentView = viewName;
-      if (viewName === 'dashboard') renderDashboard();
-      if (viewName === 'plans') renderPlans();
-      if (viewName === 'review') renderReview();
-      if (viewName === 'pomodoro') renderPomodoro();
+      const n = $(`.nav-item[data-view="${v}"]`);
+      if (n) n.classList.add('active');
+      $$('.view').forEach(x => x.classList.remove('active'));
+      $(`#view-${v}`).classList.add('active');
+      state.currentView = v;
+      if (v === 'dashboard') renderDashboard();
+      if (v === 'pomodoro') renderPomodoro();
+      if (v === 'setup') renderSetup();
+      if (v === 'plans') renderPlans();
+      if (v === 'review') renderReview();
+      if (v === 'categories') renderCategories();
+      if (v === 'analysis') populateCatSelects();
     };
-
     $$('.nav-item').forEach(n => n.onclick = () => switchView(n.dataset.view));
 
-    // --- DASHBOARD ---
+    // ============================================================
+    // DASHBOARD
+    // ============================================================
     let charts = {};
 
     const renderDashboard = () => {
-      const done = state.tasks.filter(t => t.done).length;
-      const total = state.tasks.length;
-      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+      const done = state.tasks.filter(t => t.done).length, total = state.tasks.length;
+      const pct = total === 0 ? 0 : Math.round(done / total * 100);
+      const days = daysUntil(state.examDate);
+      const avail = Math.max(0, 24 - state.workHours - state.sleepHours);
+      const pending = total - done;
 
-      $('#streak-val').textContent = `🔥 ${state.streak} days`;
+      $('#streak-val').textContent = `🔥 ${state.streak}`;
       $('#time-val').textContent = `${state.studyTime.toFixed(1)}h`;
       $('#task-val').textContent = `${done}/${total}`;
+      $('#countdown-val').textContent = days !== null ? `${Math.max(0, days)}d` : '—';
+      $('#tasks-day-val').textContent = (days > 0 && pending > 0) ? `${Math.ceil(pending / days)}` : '—';
       $('#milestone-fill').style.width = pct + '%';
 
-      // FIX #4: Populate milestone labels
-      const labels = $('#milestone-labels');
-      const milestones = [
-        { pct: 25, label: 'Starter', color: '#3b82f6' },
-        { pct: 50, label: 'Midway', color: '#f59e0b' },
-        { pct: 75, label: 'Advanced', color: '#22c55e' },
-        { pct: 100, label: 'Mastered', color: '#a855f7' }
-      ];
-      labels.innerHTML = milestones.map(m => `
-    <div class="flex items-center gap-2">
-      <div style="width:8px;height:8px;border-radius:50%;background:${pct >= m.pct ? m.color : 'var(--muted)'}"></div>
-      <span style="color:${pct >= m.pct ? m.color : 'var(--muted)'};">${m.label} (${m.pct}%)</span>
-    </div>
-  `).join('');
+      // Subtitle
+      if (state.examDate && days !== null) {
+        $('#dash-sub').textContent = `${Math.max(0, days)} days to exam · Target: ${state.targetScore || '—'} · ${avail.toFixed(1)}h/day available`;
+      }
+
+      // Milestone labels
+      $('#milestone-labels').innerHTML = state.milestones.map(m => `
+    <div class="flex items-center justify-between" style="font-size:11px">
+      <div class="flex items-center gap-2">
+        <div style="width:6px;height:6px;border-radius:50%;background:${pct >= m.pct ? 'var(--accent)' : 'var(--muted)'}"></div>
+        <span style="color:${pct >= m.pct ? 'var(--fg)' : 'var(--muted)'}">${m.label}</span>
+      </div>
+      <span style="color:${pct >= m.pct ? 'var(--accent)' : 'var(--muted)'};font-weight:600">${m.pct}%</span>
+    </div>`).join('');
+
+      // Milestone notification
+      const crossed = state.milestones.filter(m => m.pct <= pct && m.pct > state.lastMilestonePct);
+      if (crossed.length && state.lastMilestonePct >= 0) {
+        const top = crossed[crossed.length - 1];
+        showToast(`🏆 Milestone: ${top.label} (${top.pct}%)!`);
+      }
+      if (crossed.length) state.lastMilestonePct = crossed[crossed.length - 1].pct;
 
       save();
       initCatChart();
-      // FIX #6: defer canvas render until layout is complete
-      requestAnimationFrame(() => initTree());
+      requestAnimationFrame(initTree);
     };
 
     const initCatChart = () => {
@@ -635,273 +969,511 @@
       const data = state.categories.map(c => state.tasks.filter(t => t.catId == c.id).length);
       charts.cat = new Chart(ctx, {
         type: 'doughnut',
-        data: {
-          labels: state.categories.map(c => c.name),
-          datasets: [{
-            data: data.every(x => x === 0) ? [1, 1, 1, 1] : data,
-            backgroundColor: state.categories.map(c => c.color),
-            borderWidth: 0
-          }]
-        },
-        options: { cutout: '80%', plugins: { legend: { display: false } }, animation: { duration: 600 } }
+        data: { labels: state.categories.map(c => c.name), datasets: [{ data: data.every(x => x === 0) ? [1, 1, 1, 1] : data, backgroundColor: state.categories.map(c => c.color), borderWidth: 0 }] },
+        options: { cutout: '78%', plugins: { legend: { display: false } }, animation: { duration: 500 } }
       });
     };
 
     const initTree = () => {
       const canvas = $('#tree-canvas');
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const dpr = window.devicePixelRatio || 1;
-
-      // FIX #6: use offsetWidth only after requestAnimationFrame ensures layout
-      const W = canvas.offsetWidth;
-      const H = canvas.offsetHeight;
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, W, H);
-
-      const centerX = W / 2;
-      const centerY = H - 30;
-
+      const ctx = canvas.getContext('2d'), dpr = window.devicePixelRatio || 1;
+      const W = canvas.offsetWidth, H = canvas.offsetHeight;
+      if (!W || !H) return;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.scale(dpr, dpr); ctx.clearRect(0, 0, W, H);
+      const cx = W / 2, cy = H - 16;
       const drawBranch = (sx, sy, angle, len, depth, tasks) => {
-        if (depth > 4 || tasks.length === 0) return;
-        const ex = sx + Math.cos(angle) * len;
-        const ey = sy + Math.sin(angle) * len;
-        ctx.beginPath();
-        ctx.moveTo(sx, sy);
-        ctx.lineTo(ex, ey);
-        ctx.strokeStyle = `rgba(34,197,94,${0.2 + depth * 0.15})`;
-        ctx.lineWidth = 10 / (depth + 1);
-        ctx.stroke();
+        if (depth > 4 || !tasks.length) return;
+        const ex = sx + Math.cos(angle) * len, ey = sy + Math.sin(angle) * len;
+        ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey);
+        ctx.strokeStyle = `rgba(34,197,94,${0.12 + depth * 0.15})`; ctx.lineWidth = 8 / (depth + 1); ctx.stroke();
         const mid = Math.ceil(tasks.length / 2);
-        const leftTasks = tasks.slice(0, mid);
-        const rightTasks = tasks.slice(mid);
-        if (depth < 3) {
-          drawBranch(ex, ey, angle - 0.4, len * 0.75, depth + 1, leftTasks);
-          drawBranch(ex, ey, angle + 0.4, len * 0.75, depth + 1, rightTasks);
-        } else {
-          tasks.forEach((t, i) => {
-            const lx = ex + (i - tasks.length / 2) * 15;
-            const ly = ey - 10 - (i % 2) * 8;
-            ctx.beginPath();
-            ctx.arc(lx, ly, 4, 0, Math.PI * 2);
-            ctx.fillStyle = t.done ? '#22c55e' : '#152c1f';
-            ctx.fill();
-            if (t.done) {
-              ctx.shadowBlur = 10;
-              ctx.shadowColor = '#22c55e';
-              ctx.fill();
-              ctx.shadowBlur = 0;
-            }
-          });
-        }
+        if (depth < 3) { drawBranch(ex, ey, angle - .42, len * .74, depth + 1, tasks.slice(0, mid)); drawBranch(ex, ey, angle + .42, len * .74, depth + 1, tasks.slice(mid)); }
+        else tasks.forEach((t, i) => {
+          const lx = ex + (i - tasks.length / 2) * 13, ly = ey - 7 - (i % 2) * 5;
+          ctx.beginPath(); ctx.arc(lx, ly, 4, 0, Math.PI * 2);
+          ctx.fillStyle = t.done ? '#22c55e' : '#152c1f'; ctx.fill();
+          if (t.done) { ctx.shadowBlur = 10; ctx.shadowColor = '#22c55e'; ctx.fill(); ctx.shadowBlur = 0; }
+        });
       };
-
-      const treeData = state.tasks.length ? state.tasks : [{ id: 0, done: false }];
-      drawBranch(centerX, centerY, -Math.PI / 2, 80, 0, treeData);
+      drawBranch(cx, cy, -Math.PI / 2, 65, 0, state.tasks.length ? state.tasks : [{ done: false }]);
     };
 
-    // --- POMODORO ---
+    // ============================================================
+    // POMODORO (with break timer + notifications)
+    // ============================================================
     let timerInterval;
 
-    // FIX #9: populate next task from state
     const renderPomodoro = () => {
-      const nextTask = state.tasks.find(t => !t.done);
-      $('#next-task-name').textContent = nextTask ? nextTask.name : 'No active tasks';
+      const next = state.tasks.find(t => !t.done);
+      $('#next-task-name').textContent = next ? next.name : 'No active tasks';
+      $('#pomo-sessions').textContent = state.timer.sessions;
+      $('#pomo-breaks').textContent = state.timer.breaks;
+      $('#pomo-time').textContent = state.timer.totalFocusMin + 'm';
     };
 
     const toggleTimer = () => {
       if (state.timer.active) {
         clearInterval(timerInterval);
         state.timer.active = false;
-        $('#timer-toggle').textContent = 'Start Focus';
+        $('#timer-toggle').textContent = state.timer.mode === 'focus' ? 'Start Focus' : 'Start Break';
       } else {
         state.timer.active = true;
-        $('#timer-toggle').textContent = 'Pause Session';
+        $('#timer-toggle').textContent = 'Pause';
         timerInterval = setInterval(tick, 1000);
       }
     };
 
     const tick = () => {
       if (state.timer.time <= 0) {
-        clearInterval(timerInterval);
-        state.timer.active = false;
-        // FIX #3: increment studyTime when a focus session completes
+        clearInterval(timerInterval); state.timer.active = false;
         if (state.timer.mode === 'focus') {
+          state.timer.sessions++;
+          state.timer.totalFocusMin += 25;
           state.studyTime = parseFloat((state.studyTime + 25 / 60).toFixed(2));
+          updateStreak();
+          showToast('Focus complete! 5-min break starting... 🌿', 'success');
+          if (state.currentView === 'dashboard') renderDashboard();
+          save();
+          setTimeout(() => startBreak(), 600);
+        } else {
+          state.timer.breaks++;
+          showToast('Break over! Ready to focus again? 💪', 'warning');
+          save();
+          startFocus();
         }
-        showToast(`${state.timer.mode === 'focus' ? 'Focus' : 'Break'} complete! +0.4h logged`);
-        resetTimer();
-        renderDashboard();
+        renderPomodoro();
         return;
       }
       state.timer.time--;
-      const m = Math.floor(state.timer.time / 60);
-      const s = state.timer.time % 60;
+      const m = Math.floor(state.timer.time / 60), s = state.timer.time % 60;
       $('#timer-val').textContent = `${m}:${s < 10 ? '0' + s : s}`;
+      if (state.timer.mode === 'break') {
+        $('#break-fill').style.width = Math.round((1 - state.timer.time / 300) * 100) + '%';
+      }
+    };
+
+    const startFocus = () => {
+      state.timer.mode = 'focus'; state.timer.time = 1500;
+      $('#timer-mode-label').textContent = 'Focus Session';
+      $('#timer-mode-label').style.color = 'var(--accent)';
+      $('#timer-val').style.color = 'var(--fg)';
+      $('#timer-val').textContent = '25:00';
+      $('#timer-toggle').textContent = 'Start Focus';
+      $('#break-bar').classList.add('hidden');
+      $('#break-bar-spacer').style.display = 'block';
+    };
+
+    const startBreak = () => {
+      state.timer.mode = 'break'; state.timer.time = 300;
+      $('#timer-mode-label').textContent = 'Break Time ☕';
+      $('#timer-mode-label').style.color = 'var(--ember)';
+      $('#timer-val').style.color = 'var(--ember)';
+      $('#timer-val').textContent = '5:00';
+      $('#timer-toggle').textContent = 'Start Break';
+      $('#break-bar').classList.remove('hidden');
+      $('#break-bar-spacer').style.display = 'none';
+      $('#break-fill').style.width = '0%';
     };
 
     const resetTimer = () => {
-      clearInterval(timerInterval);
-      state.timer.active = false;
-      state.timer.time = 1500;
-      $('#timer-val').textContent = '25:00';
-      $('#timer-toggle').textContent = 'Start Focus';
+      clearInterval(timerInterval); state.timer.active = false; startFocus();
     };
 
-    // --- ANALYSIS ---
+    const updateStreak = () => {
+      const td = todayStr();
+      if (state.lastStudyDate === td) return;
+      if (state.lastStudyDate) {
+        const diff = Math.round((new Date(td) - new Date(state.lastStudyDate)) / 86400000);
+        state.streak = diff === 1 ? state.streak + 1 : 1;
+      } else { state.streak = 1; }
+      state.lastStudyDate = td;
+    };
+
+    // ============================================================
+    // SETUP & GOALS
+    // ============================================================
+    const renderSetup = () => {
+      if (state.examDate) $('#exam-date-input').value = state.examDate;
+      if (state.targetScore) $('#target-score-input').value = state.targetScore;
+      $('#work-input').value = state.workHours;
+      $('#sleep-input').value = state.sleepHours;
+      updateHours();
+      updateCountdown();
+      renderMilestoneSettings();
+      renderPlanOverview();
+    };
+
+    const saveSetup = () => {
+      state.examDate = ($('#exam-date-input') || {}).value || state.examDate;
+      state.targetScore = ($('#target-score-input') || {}).value || state.targetScore;
+      save(); updateCountdown(); renderPlanOverview();
+    };
+
+    const updateHours = () => {
+      state.workHours = parseInt($('#work-input').value) || 8;
+      state.sleepHours = parseInt($('#sleep-input').value) || 8;
+      const avail = Math.max(0, 24 - state.workHours - state.sleepHours);
+      $('#work-lbl').textContent = state.workHours + 'h';
+      $('#sleep-lbl').textContent = state.sleepHours + 'h';
+      $('#avail-lbl').textContent = avail.toFixed(1) + 'h';
+      $('#work-pct').textContent = state.workHours + 'h';
+      $('#study-pct').textContent = avail.toFixed(0) + 'h';
+      $('#sleep-pct').textContent = state.sleepHours + 'h';
+      // 24-block visual
+      $('#hour-blocks').innerHTML = Array.from({ length: 24 }, (_, i) => {
+        const isWork = i < state.workHours, isSleep = i >= (24 - state.sleepHours);
+        const color = isWork ? '#3b82f6' : isSleep ? '#3d5a49' : 'var(--accent)';
+        return `<div class="hour-block" style="background:${color}"></div>`;
+      }).join('');
+      save();
+    };
+
+    const updateCountdown = () => {
+      const days = daysUntil(state.examDate);
+      $('#big-countdown').textContent = days !== null ? Math.max(0, days) : '—';
+      $('#exam-date-label').textContent = state.examDate
+        ? new Date(state.examDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })
+        : 'No exam date set';
+      $('#target-score-label').textContent = state.targetScore || 'No target set';
+    };
+
+    const renderMilestoneSettings = () => {
+      $('#milestone-settings').innerHTML = state.milestones.map((m, i) => `
+    <div class="flex items-center gap-2">
+      <span class="text-[9px] text-[var(--muted)] font-bold w-8 text-right">${m.pct}%</span>
+      <input type="text" value="${m.label}" class="input-field text-xs" style="padding:7px 12px;flex:1"
+        onchange="state.milestones[${i}].label=this.value;save();if(state.currentView==='dashboard')renderDashboard()">
+      <div style="width:9px;height:9px;border-radius:50%;background:${totalPct() >= m.pct ? 'var(--accent)' : 'var(--muted)'}"></div>
+    </div>`).join('');
+    };
+
+    const renderPlanOverview = () => {
+      const el = $('#plan-overview');
+      const pending = state.tasks.filter(t => !t.done).length;
+      const days = daysUntil(state.examDate);
+      if (!state.examDate || pending === 0) {
+        el.innerHTML = '<div class="text-xs text-[var(--muted)] text-center py-4">Set exam date and add tasks to see plan</div>';
+        return;
+      }
+      const avail = Math.max(1, 24 - state.workHours - state.sleepHours);
+      const tasksPerDay = days > 0 ? Math.ceil(pending / days) : pending;
+      const minsNeeded = pending * 30;
+      const hrsNeeded = (minsNeeded / 60).toFixed(1);
+      const feasible = (tasksPerDay * 0.5) <= avail;
+      el.innerHTML = `
+    <div class="grid grid-cols-2 gap-2">
+      <div style="background:var(--bg2);border-radius:10px;padding:12px;text-align:center">
+        <div class="text-[9px] text-[var(--muted)] mb-1">Pending tasks</div>
+        <div class="text-xl font-display font-bold">${pending}</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:12px;text-align:center">
+        <div class="text-[9px] text-[var(--muted)] mb-1">Tasks/day</div>
+        <div class="text-xl font-display font-bold text-[var(--accent)]">${tasksPerDay}</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:12px;text-align:center">
+        <div class="text-[9px] text-[var(--muted)] mb-1">Total hours needed</div>
+        <div class="text-xl font-display font-bold text-[var(--ember)]">${hrsNeeded}h</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:12px;text-align:center">
+        <div class="text-[9px] text-[var(--muted)] mb-1">Feasibility</div>
+        <div class="text-xl font-display font-bold" style="color:${feasible ? 'var(--accent)' : 'var(--danger)'}">${feasible ? 'On Track ✓' : 'Tight ⚠'}</div>
+      </div>
+    </div>`;
+    };
+
+    const autoDistribute = () => {
+      const pending = state.tasks.filter(t => !t.done);
+      if (!pending.length) return showToast('No pending tasks to distribute', 'warning');
+      const minsPerTask = parseInt($('#mins-per-task').value) || 30;
+      const avail = Math.max(1, 24 - state.workHours - state.sleepHours);
+      const tasksPerDay = Math.max(1, Math.floor(avail * 60 / minsPerTask));
+      let dayOffset = 0, taskInDay = 0;
+      pending.forEach(t => {
+        if (taskInDay >= tasksPerDay) { dayOffset++; taskInDay = 0; }
+        const d = new Date(); d.setDate(d.getDate() + dayOffset);
+        t.dueDate = d.toISOString().split('T')[0];
+        taskInDay++;
+      });
+      save();
+      showToast(`Distributed ${pending.length} tasks across ${dayOffset + 1} day(s) ✓`);
+      renderPlanOverview();
+      renderPlans();
+    };
+
+    // ============================================================
+    // ANALYSIS
+    // ============================================================
     const runAnalysis = () => {
       const input = $('#ai-input').value.trim();
-      if (!input) return showToast('Please paste content first');
-
-      $('#ana-result').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin text-2xl mb-2"></i><p class="text-[10px] font-bold uppercase">Processing Materials...</p></div>';
-
+      if (!input) return showToast('Please paste content first', 'warning');
+      const catId = parseInt($('#default-cat').value) || state.categories[0]?.id || 1;
+      $('#ana-result').innerHTML = '<div style="text-align:center;padding:40px"><i class="fas fa-spinner fa-spin" style="font-size:22px;margin-bottom:8px;display:block;color:var(--accent)"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted)">Processing...</p></div>';
       setTimeout(() => {
-        const lines = input.split('\n').filter(l => l.trim());
+        const lines = input.split('\n').filter(l => l.trim().length > 2);
         const generated = lines.map((l, i) => ({
           id: Date.now() + i,
-          name: l.replace(/^[0-9\.\-\s]+/, '').trim() || l.trim(),
-          catId: Math.floor(Math.random() * 4) + 1,
-          done: false
-        })).filter(t => t.name.length > 0);
-
-        // FIX #5: store in state.tempTasks, not window global
+          name: l.replace(/^[\d\.\-\s*#>]+/, '').trim(),
+          catId: catId, done: false, dueDate: ''
+        })).filter(t => t.name.length > 1);
         state.tempTasks = generated;
         $('#ana-count').textContent = `${generated.length} items`;
         $('#ana-result').innerHTML = `
-      <div class="space-y-2 w-full">
-        ${generated.slice(0, 8).map(t => `
-          <div class="task-item py-2 px-3">
-            <i class="fas fa-magic text-[var(--accent)] text-[10px]"></i>
-            <span class="text-xs font-semibold">${t.name}</span>
+      <div style="width:100%">
+        ${generated.slice(0, 10).map(t => `
+          <div class="task-item" style="margin-bottom:6px">
+            <i class="fas fa-sparkles" style="color:var(--accent);font-size:10px"></i>
+            <span style="font-size:12px;font-weight:600;flex:1">${t.name}</span>
           </div>`).join('')}
-        ${generated.length > 8 ? `<p class="text-[10px] text-center text-[var(--muted)]">+ ${generated.length - 8} more items</p>` : ''}
-        <button class="btn btn-primary w-full mt-4" onclick="confirmAnalysis()">Merge to Study Route</button>
-      </div>
-    `;
-        showToast('Analysis successful!');
-      }, 1200);
+        ${generated.length > 10 ? `<p style="font-size:10px;text-align:center;color:var(--muted);padding:6px 0">+ ${generated.length - 10} more items</p>` : ''}
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px" onclick="confirmAnalysis()"><i class="fas fa-check"></i>Merge to Study Routes</button>
+      </div>`;
+        showToast(`${generated.length} tasks generated!`);
+      }, 1000);
     };
 
     const confirmAnalysis = () => {
-      // FIX #5: pull from state.tempTasks
       state.tasks = [...state.tasks, ...state.tempTasks];
       state.tempTasks = [];
-      save();
-      showToast('Route merged successfully!');
-      renderDashboard();
-      // FIX #1: switchView is now defined
-      switchView('plans');
+      save(); showToast('Route merged! ✓'); renderDashboard(); switchView('plans');
     };
 
-    // --- PLANS ---
+    // ============================================================
+    // STUDY ROUTES / PLANS
+    // ============================================================
     const renderPlans = () => {
-      const container = $('#plans-container');
-      if (state.tasks.length === 0) {
-        container.innerHTML = '<div class="stat-card text-center py-20 text-[var(--muted)]"><i class="fas fa-route text-4xl mb-4 opacity-20 block"></i><p class="text-xs font-bold uppercase tracking-widest">No active routes. Use the Analyzer to create one.</p></div>';
+      const c = $('#plans-container');
+      if (!state.tasks.length) {
+        c.innerHTML = `<div class="stat-card" style="text-align:center;padding:60px 20px;color:var(--muted)"><i class="fas fa-route" style="font-size:2rem;margin-bottom:12px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em">No tasks yet. Use Analyzer or Add Task.</p></div>`;
         return;
       }
       const cats = [...new Set(state.tasks.map(t => t.catId))];
-      container.innerHTML = cats.map(cid => {
-        const cat = state.categories.find(c => c.id == cid);
+      c.innerHTML = cats.map(cid => {
+        const cat = getCat(cid);
         const ts = state.tasks.filter(t => t.catId == cid);
-        const donePct = ts.length ? Math.round((ts.filter(t => t.done).length / ts.length) * 100) : 0;
+        const done = ts.filter(t => t.done).length;
+        const pct = Math.round(done / ts.length * 100);
         return `
       <div class="stat-card">
-        <div class="flex justify-between items-center mb-3">
-          <h4 class="font-display font-bold flex items-center gap-2" style="color:${cat.color}"><i class="fas fa-folder"></i> ${cat.name}</h4>
-          <span class="text-[10px] font-bold uppercase text-[var(--muted)]">${ts.filter(t => t.done).length}/${ts.length} Done</span>
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <div style="width:9px;height:9px;border-radius:50%;background:${cat.color}"></div>
+            <h4 class="font-display font-bold" style="font-size:14px">${cat.name}</h4>
+          </div>
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted)">${done}/${ts.length} · ${pct}%</span>
         </div>
-        <div class="progress-bar mb-4"><div class="progress-fill" style="width:${donePct}%;background:${cat.color}"></div></div>
-        <div class="space-y-2">
-          ${ts.map(t => `
-            <div class="task-item" onclick="toggleTask(${t.id})">
-              <i class="fas ${t.done ? 'fa-check-circle text-[var(--accent)]' : 'fa-circle opacity-10'}"></i>
-              <span class="text-sm ${t.done ? 'line-through opacity-40' : ''}">${t.name}</span>
-            </div>`).join('')}
-        </div>
+        <div class="progress-bar mb-4"><div class="progress-fill" style="width:${pct}%;background:${cat.color}"></div></div>
+        ${ts.map(t => `
+          <div class="task-item">
+            <div style="display:flex;align-items:center;gap:9px;flex:1;cursor:pointer" onclick="toggleTask(${t.id})">
+              <i class="fas ${t.done ? 'fa-check-circle' : 'fa-circle'}" style="font-size:14px;color:${t.done ? cat.color : 'var(--muted)'}"></i>
+              <span style="font-size:13px;flex:1;${t.done ? 'text-decoration:line-through;opacity:.4' : ''}">${t.name}</span>
+              ${t.dueDate ? `<span class="day-badge">${t.dueDate}</span>` : ''}
+            </div>
+            <div style="display:flex;gap:5px;margin-left:8px">
+              <button class="btn btn-secondary" style="padding:5px 9px;font-size:10px" onclick="openEditTask(${t.id})"><i class="fas fa-pen" style="font-size:9px"></i></button>
+              <button class="btn btn-danger" style="padding:5px 9px;font-size:10px" onclick="deleteTask(${t.id})"><i class="fas fa-trash" style="font-size:9px"></i></button>
+            </div>
+          </div>`).join('')}
       </div>`;
       }).join('');
     };
 
-    // FIX #2: Full renderReview() implementation
-    const renderReview = () => {
-      const container = $('#review-container');
-      const pending = state.tasks.filter(t => !t.done);
+    const toggleTask = id => {
+      const t = state.tasks.find(x => x.id == id); if (!t) return;
+      t.done = !t.done;
+      if (t.done) showToast('Task completed! 🎉');
+      save(); renderDashboard(); renderPlans();
+    };
 
-      if (pending.length === 0) {
-        container.innerHTML = `
-      <div class="stat-card text-center py-20 text-[var(--muted)]">
-        <i class="fas fa-party-horn text-4xl mb-4 opacity-20 block"></i>
-        <p class="text-xs font-bold uppercase tracking-widest">All tasks completed! Nothing to review.</p>
-      </div>`;
+    const openEditTask = id => {
+      const t = state.tasks.find(x => x.id == id); if (!t) return;
+      populateCatSelects();
+      $('#et-id').value = id; $('#et-name').value = t.name;
+      $('#et-cat').value = t.catId; $('#et-date').value = t.dueDate || '';
+      openModal('edit-task');
+    };
+
+    const saveEditTask = () => {
+      const id = parseInt($('#et-id').value), t = state.tasks.find(x => x.id == id);
+      if (!t) return;
+      t.name = $('#et-name').value.trim() || t.name;
+      t.catId = parseInt($('#et-cat').value);
+      t.dueDate = $('#et-date').value;
+      closeModal(); save(); renderPlans(); showToast('Task updated ✓');
+    };
+
+    const deleteTask = id => {
+      if (!confirm('Delete this task?')) return;
+      state.tasks = state.tasks.filter(x => x.id != id);
+      delete state.reviewSchedule[id];
+      save(); renderPlans(); renderDashboard(); showToast('Task deleted', 'danger');
+    };
+
+    // ============================================================
+    // RECALL BOX — SPACED REPETITION
+    // ============================================================
+    const renderReview = () => {
+      const td = todayStr(), sched = state.reviewSchedule;
+      const pending = state.tasks.filter(t => !t.done);
+      const mastered = state.tasks.filter(t => t.done);
+      const due = pending.filter(t => !sched[t.id] || sched[t.id].nextDate <= td);
+      const upcoming = pending.filter(t => sched[t.id] && sched[t.id].nextDate > td);
+
+      $('#review-due').textContent = due.length;
+      $('#review-upcoming').textContent = upcoming.length;
+      $('#review-mastered').textContent = mastered.length;
+
+      const c = $('#review-container');
+      if (!state.tasks.length) {
+        c.innerHTML = `<div class="stat-card" style="text-align:center;padding:60px 20px;color:var(--muted)"><i class="fas fa-inbox" style="font-size:2rem;margin-bottom:12px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase">No tasks added yet</p></div>`;
         return;
       }
 
-      container.innerHTML = pending.map(t => {
-        const cat = state.categories.find(c => c.id == t.catId) || { name: 'Other', color: '#888' };
+      let html = '';
+      if (due.length) {
+        html += `<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--danger);margin-bottom:8px">Due Now (${due.length})</div>`;
+        html += due.map(t => {
+          const cat = getCat(t.catId);
+          const interval = sched[t.id]?.interval || 1;
+          return `
+        <div class="review-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span class="cat-chip" style="background:${cat.color}20;color:${cat.color}">${cat.name}</span>
+            <span style="font-size:10px;color:var(--muted);font-weight:600">Current interval: ${interval}d</span>
+          </div>
+          <p style="font-size:13px;font-weight:600;margin-bottom:12px">${t.name}</p>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary" style="font-size:11px;padding:7px 14px" onclick="reviewGotIt(${t.id})"><i class="fas fa-check"></i>Got it (+${interval * 2}d)</button>
+            <button class="btn btn-secondary" style="font-size:11px;padding:7px 14px" onclick="reviewAgain(${t.id})"><i class="fas fa-rotate-right"></i>Again (1d)</button>
+            <button class="btn btn-danger" style="font-size:11px;padding:7px 14px;margin-left:auto" onclick="markMastered(${t.id})"><i class="fas fa-trophy"></i>Mastered</button>
+          </div>
+        </div>`}).join('');
+      }
+
+      if (upcoming.length) {
+        html += `<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ember);margin:16px 0 8px">Upcoming (${upcoming.length})</div>`;
+        html += upcoming.map(t => {
+          const cat = getCat(t.catId);
+          const daysLeft = Math.ceil((new Date(sched[t.id].nextDate) - new Date(td)) / 86400000);
+          return `
+        <div class="task-item">
+          <i class="fas fa-clock" style="color:var(--ember);font-size:13px"></i>
+          <span style="font-size:13px;flex:1">${t.name}</span>
+          <span class="cat-chip" style="background:${cat.color}20;color:${cat.color}">${cat.name}</span>
+          <span class="day-badge">in ${daysLeft}d</span>
+        </div>`}).join('');
+      }
+
+      if (!due.length && !upcoming.length) {
+        html = `<div class="stat-card" style="text-align:center;padding:60px 20px;color:var(--muted)"><i class="fas fa-party-horn" style="font-size:2rem;margin-bottom:12px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase">All caught up! No reviews due.</p></div>`;
+      }
+
+      c.innerHTML = html;
+    };
+
+    const reviewGotIt = id => {
+      const prev = state.reviewSchedule[id] || { interval: 1 };
+      const newInt = Math.min(prev.interval * 2, 64);
+      const next = new Date(); next.setDate(next.getDate() + newInt);
+      state.reviewSchedule[id] = { nextDate: next.toISOString().split('T')[0], interval: newInt };
+      save(); renderReview(); showToast(`Scheduled in ${newInt} days ✓`);
+    };
+
+    const reviewAgain = id => {
+      const next = new Date(); next.setDate(next.getDate() + 1);
+      state.reviewSchedule[id] = { nextDate: next.toISOString().split('T')[0], interval: 1 };
+      save(); renderReview(); showToast('Queued for tomorrow', 'warning');
+    };
+
+    const markMastered = id => {
+      const t = state.tasks.find(x => x.id == id);
+      if (t) { t.done = true; delete state.reviewSchedule[id]; }
+      save(); renderReview(); renderDashboard(); showToast('Marked as mastered! 🏆');
+    };
+
+    // ============================================================
+    // CATEGORIES
+    // ============================================================
+    const renderCategories = () => {
+      const c = $('#categories-container');
+      c.innerHTML = state.categories.map(cat => {
+        const count = state.tasks.filter(t => t.catId == cat.id).length;
+        const done = state.tasks.filter(t => t.catId == cat.id && t.done).length;
+        const pct = count ? Math.round(done / count * 100) : 0;
         return `
-      <div class="review-card">
-        <div class="flex items-center justify-between mb-3">
-          <span class="review-tag" style="background:${cat.color}22;color:${cat.color}">${cat.name}</span>
-          <span class="text-[10px] text-[var(--muted)] font-bold uppercase">Due for review</span>
+      <div class="stat-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="width:38px;height:38px;border-radius:11px;background:${cat.color}20;display:flex;align-items:center;justify-content:center">
+            <div style="width:13px;height:13px;border-radius:50%;background:${cat.color}"></div>
+          </div>
+          <div style="flex:1">
+            <div class="font-display font-bold" style="font-size:14px">${cat.name}</div>
+            <div style="font-size:11px;color:var(--muted)">${done}/${count} tasks done</div>
+          </div>
         </div>
-        <p class="text-sm font-semibold mb-4">${t.name}</p>
-        <div class="flex gap-2">
-          <button class="btn btn-primary text-xs py-2 px-4" onclick="markReviewed(${t.id}, true)">
-            <i class="fas fa-check"></i> Got it
-          </button>
-          <button class="btn btn-secondary text-xs py-2 px-4" onclick="markReviewed(${t.id}, false)">
-            <i class="fas fa-rotate-right"></i> Again
-          </button>
+        <div class="progress-bar mb-4"><div class="progress-fill" style="width:${pct}%;background:${cat.color}"></div></div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:11px" onclick="openEditCat(${cat.id})"><i class="fas fa-pen" style="font-size:10px"></i>Edit</button>
+          <button class="btn btn-danger" style="flex:1;justify-content:center;font-size:11px" onclick="deleteCategory(${cat.id})"><i class="fas fa-trash" style="font-size:10px"></i>Delete</button>
         </div>
       </div>`;
       }).join('');
     };
 
-    const markReviewed = (id, passed) => {
-      if (passed) {
-        const t = state.tasks.find(x => x.id == id);
-        if (t) t.done = true;
-        save();
-        renderReview();
-        renderDashboard();
-        showToast('Marked as learned!');
-      } else {
-        showToast('Queued for another pass.');
-      }
+    const addCategory = () => {
+      const name = $('#nc-name').value.trim(), color = $('#nc-color').value;
+      if (!name) return showToast('Name required', 'warning');
+      state.categories.push({ id: Date.now(), name, color });
+      $('#nc-name').value = '';
+      closeModal(); save(); populateCatSelects(); renderCategories();
+      showToast('Category created ✓');
     };
 
-    // --- MODAL & TASK ---
-    const openModal = (id) => $(`#modal-${id}`).classList.add('active');
-    // FIX #7: closeModal called by overlay onclick
+    const openEditCat = id => {
+      const cat = state.categories.find(c => c.id == id); if (!cat) return;
+      $('#ec-id').value = id; $('#ec-name').value = cat.name; $('#ec-color').value = cat.color;
+      openModal('edit-category');
+    };
+
+    const saveEditCategory = () => {
+      const id = parseInt($('#ec-id').value), cat = state.categories.find(c => c.id == id);
+      if (!cat) return;
+      cat.name = $('#ec-name').value.trim() || cat.name;
+      cat.color = $('#ec-color').value;
+      closeModal(); save(); populateCatSelects(); renderCategories(); renderDashboard();
+      showToast('Category updated ✓');
+    };
+
+    const deleteCategory = id => {
+      if (state.tasks.some(t => t.catId == id)) return showToast('Reassign or delete tasks in this category first', 'danger');
+      if (!confirm('Delete this category?')) return;
+      state.categories = state.categories.filter(c => c.id != id);
+      save(); populateCatSelects(); renderCategories();
+      showToast('Category deleted', 'danger');
+    };
+
+    // ============================================================
+    // MODALS & TASK UTILS
+    // ============================================================
+    const openModal = id => { populateCatSelects(); $(`#modal-${id}`).classList.add('active'); };
     const closeModal = () => $$('.modal-overlay').forEach(m => m.classList.remove('active'));
-
-    const toggleTask = (id) => {
-      const t = state.tasks.find(x => x.id == id);
-      if (t) {
-        t.done = !t.done;
-        if (t.done) showToast('Task completed!');
-        save();
-        renderDashboard();
-        renderPlans();
-      }
-    };
 
     const saveTask = () => {
       const name = $('#mt-name').value.trim();
       const catId = parseInt($('#mt-cat').value);
-      if (!name) return showToast('Task name cannot be empty');
-      state.tasks.push({ id: Date.now(), name, catId, done: false });
-      $('#mt-name').value = '';
-      closeModal();
-      save();
-      renderDashboard();
-      showToast('Task added!');
+      const date = $('#mt-date').value;
+      if (!name) return showToast('Task name required', 'warning');
+      state.tasks.push({ id: Date.now(), name, catId, done: false, dueDate: date });
+      $('#mt-name').value = ''; $('#mt-date').value = '';
+      closeModal(); save(); renderDashboard(); renderPlans();
+      showToast('Task added ✓');
     };
 
-    // FIX #8: Use DOMContentLoaded to guarantee Chart.js + DOM are both ready
+    // ============================================================
+    // INIT
+    // ============================================================
     document.addEventListener('DOMContentLoaded', load);
   </script>
 </body>
