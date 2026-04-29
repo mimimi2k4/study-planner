@@ -393,6 +393,134 @@
       color: var(--fg2);
       font-size: 13px
     }
+
+    /* ONBOARDING */
+    .ob-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .82);
+      backdrop-filter: blur(10px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center
+    }
+
+    .ob-overlay.active {
+      display: flex
+    }
+
+    .ob-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 32px;
+      width: 90%;
+      max-width: 460px;
+      animation: popIn .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      text-align: center
+    }
+
+    .ob-steps {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 28px
+    }
+
+    .ob-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all .25s
+    }
+
+    .ob-dot.active {
+      background: var(--accent);
+      width: 22px;
+      border-radius: 4px
+    }
+
+    .ob-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px
+    }
+
+    .ob-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 10px
+    }
+
+    .ob-desc {
+      color: var(--fg2);
+      font-size: 14px;
+      line-height: 1.65;
+      margin-bottom: 28px
+    }
+
+    .ob-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 24px;
+      flex-wrap: wrap
+    }
+
+    .ob-step-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--bg2);
+      border: 1px solid var(--border)
+    }
+
+    .ob-arrow {
+      color: var(--muted);
+      font-size: 11px
+    }
+
+    /* TOOLTIP highlight */
+    .tip-glow {
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, .5), 0 0 20px rgba(34, 197, 94, .2) !important;
+      transition: box-shadow .3s
+    }
+
+    /* RESET button in sidebar */
+    .reset-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all .2s;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      width: 100%;
+      margin-top: 6px
+    }
+
+    .reset-btn:hover {
+      background: rgba(239, 68, 68, .1);
+      color: var(--danger)
+    }
   </style>
 </head>
 
@@ -429,12 +557,16 @@
         <div class="nav-item" data-view="categories"><i class="fas fa-tags w-4 text-center"></i>Categories</div>
       </nav>
       <div class="p-4 border-t border-[var(--border)]">
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 mb-2">
           <div
             class="w-7 h-7 rounded-full bg-[var(--bg2)] border border-[var(--border)] flex items-center justify-center">
             <i class="fas fa-user text-[9px] text-[var(--muted)]"></i></div>
           <div class="text-xs font-semibold">Guest User</div>
+          <button class="btn btn-secondary ml-auto" style="padding:4px 10px;font-size:10px" onclick="showOnboarding()"
+            title="View guide"><i class="fas fa-question" style="font-size:9px"></i></button>
         </div>
+        <button class="reset-btn" onclick="resetDemo()"><i class="fas fa-arrow-rotate-left"
+            style="font-size:11px"></i>Reset demo data</button>
       </div>
     </aside>
 
@@ -814,6 +946,21 @@
     </div>
   </div>
 
+  <!-- ============================================================ ONBOARDING MODAL -->
+  <div class="ob-overlay" id="ob-overlay">
+    <div class="ob-card" id="ob-card">
+      <div class="ob-steps" id="ob-dots"></div>
+      <div class="ob-icon" id="ob-icon"></div>
+      <div class="ob-title" id="ob-title"></div>
+      <div class="ob-desc" id="ob-desc"></div>
+      <div id="ob-extra"></div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-secondary" id="ob-skip" onclick="closeOnboarding()" style="min-width:90px">Skip</button>
+        <button class="btn btn-primary" id="ob-next" onclick="nextOnboarding()" style="min-width:110px">Next →</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ============================================================
     // STATE
@@ -855,15 +1002,8 @@
         try {
           const p = JSON.parse(s);
           state = Object.assign({}, state, p);
-          if (!state.tempTasks) state.tempTasks = [];
-          if (!state.reviewSchedule) state.reviewSchedule = {};
-          if (!state.milestones) state.milestones = [{ pct: 25, label: 'Starter' }, { pct: 50, label: 'Midway' }, { pct: 75, label: 'Advanced' }, { pct: 100, label: 'Mastered' }];
         } catch (e) { }
       }
-      populateCatSelects();
-      renderDashboard();
-      // Real-time dashboard refresh every 60s
-      setInterval(() => { if (state.currentView === 'dashboard') renderDashboard(); }, 60000);
     };
 
     // ============================================================
@@ -1472,9 +1612,206 @@
     };
 
     // ============================================================
+    // SAMPLE DATA
+    // ============================================================
+    const SAMPLE_DATA = () => {
+      const today = new Date();
+      const fmtDate = (daysOffset) => {
+        const d = new Date(today);
+        d.setDate(d.getDate() + daysOffset);
+        return d.toISOString().split('T')[0];
+      };
+      const examDate = fmtDate(60);
+      return {
+        tasks: [
+          // Vocabulary (catId 1)
+          { id: 1001, name: 'JLPT N2 - Từ vựng chủ đề giao tiếp hàng ngày', catId: 1, done: true, dueDate: fmtDate(-5) },
+          { id: 1002, name: 'JLPT N2 - Từ vựng chủ đề kinh tế & xã hội', catId: 1, done: true, dueDate: fmtDate(-3) },
+          { id: 1003, name: 'JLPT N2 - Từ vựng chủ đề thiên nhiên & môi trường', catId: 1, done: true, dueDate: fmtDate(-1) },
+          { id: 1004, name: 'JLPT N2 - Từ vựng chủ đề y tế & sức khỏe', catId: 1, done: false, dueDate: fmtDate(1) },
+          { id: 1005, name: 'JLPT N2 - Từ vựng chủ đề công nghệ & khoa học', catId: 1, done: false, dueDate: fmtDate(3) },
+          { id: 1006, name: 'JLPT N2 - Từ vựng chủ đề văn hóa & nghệ thuật', catId: 1, done: false, dueDate: fmtDate(5) },
+          // Grammar (catId 2)
+          { id: 2001, name: 'Mẫu ngữ pháp ～にもかかわらず (despite)', catId: 2, done: true, dueDate: fmtDate(-4) },
+          { id: 2002, name: 'Mẫu ngữ pháp ～ものの (although)', catId: 2, done: true, dueDate: fmtDate(-2) },
+          { id: 2003, name: 'Mẫu ngữ pháp ～に対して (toward / in contrast)', catId: 2, done: false, dueDate: fmtDate(2) },
+          { id: 2004, name: 'Mẫu ngữ pháp ～に関して (regarding)', catId: 2, done: false, dueDate: fmtDate(4) },
+          { id: 2005, name: 'Mẫu ngữ pháp ～をめぐって (surrounding the issue)', catId: 2, done: false, dueDate: fmtDate(6) },
+          { id: 2006, name: 'Mẫu ngữ pháp ～に基づいて (based on)', catId: 2, done: false, dueDate: fmtDate(8) },
+          // Listening (catId 3)
+          { id: 3001, name: 'Luyện nghe: Hội thoại ngắn trong siêu thị', catId: 3, done: true, dueDate: fmtDate(-3) },
+          { id: 3002, name: 'Luyện nghe: Thông báo tại nhà ga / sân bay', catId: 3, done: false, dueDate: fmtDate(3) },
+          { id: 3003, name: 'Luyện nghe: Bản tin thời sự NHK Easy', catId: 3, done: false, dueDate: fmtDate(7) },
+          // Reading (catId 4)
+          { id: 4001, name: 'Đọc hiểu: Email / thư trao đổi công việc', catId: 4, done: true, dueDate: fmtDate(-2) },
+          { id: 4002, name: 'Đọc hiểu: Bài báo về văn hóa Nhật Bản', catId: 4, done: false, dueDate: fmtDate(4) },
+          { id: 4003, name: 'Đọc hiểu: Đoạn văn mô tả số liệu / biểu đồ', catId: 4, done: false, dueDate: fmtDate(8) },
+        ],
+        categories: [
+          { id: 1, name: 'Vocabulary', color: '#22c55e' },
+          { id: 2, name: 'Grammar', color: '#3b82f6' },
+          { id: 3, name: 'Listening', color: '#f59e0b' },
+          { id: 4, name: 'Reading', color: '#ef4444' }
+        ],
+        streak: 5,
+        studyTime: 4.2,
+        lastStudyDate: fmtDate(-1),
+        examDate: examDate,
+        targetScore: 'JLPT N2',
+        workHours: 8,
+        sleepHours: 7,
+        currentView: 'dashboard',
+        timer: { active: false, time: 1500, mode: 'focus', sessions: 3, breaks: 2, totalFocusMin: 75 },
+        tempTasks: [],
+        reviewSchedule: {
+          1001: { nextDate: fmtDate(0), interval: 4 },
+          1002: { nextDate: fmtDate(1), interval: 2 },
+          2001: { nextDate: fmtDate(0), interval: 4 },
+          3001: { nextDate: fmtDate(2), interval: 2 },
+          4001: { nextDate: fmtDate(0), interval: 2 },
+        },
+        milestones: [
+          { pct: 25, label: 'Starter' },
+          { pct: 50, label: 'Midway' },
+          { pct: 75, label: 'Advanced' },
+          { pct: 100, label: 'Mastered' }
+        ],
+        lastMilestonePct: -1,
+        onboardingDone: false
+      };
+    };
+
+    const resetDemo = () => {
+      if (!confirm('Reset toàn bộ dữ liệu về demo mặc định?')) return;
+      const fresh = SAMPLE_DATA();
+      fresh.onboardingDone = true;
+      Object.assign(state, fresh);
+      save(); populateCatSelects();
+      switchView('dashboard');
+      showToast('Demo data reset ✓');
+    };
+
+    // ============================================================
+    // ONBOARDING
+    // ============================================================
+    const OB_STEPS = [
+      {
+        icon: '🎯', iconBg: 'rgba(34,197,94,.15)',
+        title: 'Chào mừng đến StudyFlow!',
+        desc: 'Ứng dụng giúp bạn lên kế hoạch học tập thông minh — từ việc phân tích tài liệu đến theo dõi tiến độ theo thời gian thực.',
+        extra: `<div class="ob-flow" style="margin-bottom:20px">
+      <span class="ob-step-chip" style="color:var(--accent)"><i class="fas fa-bullseye"></i>Setup</span>
+      <span class="ob-arrow">→</span>
+      <span class="ob-step-chip"><i class="fas fa-wand-magic-sparkles"></i>Analyze</span>
+      <span class="ob-arrow">→</span>
+      <span class="ob-step-chip"><i class="fas fa-stopwatch"></i>Focus</span>
+      <span class="ob-arrow">→</span>
+      <span class="ob-step-chip"><i class="fas fa-brain-circuit"></i>Review</span>
+    </div>`
+      },
+      {
+        icon: '📅', iconBg: 'rgba(59,130,246,.15)',
+        title: 'Bắt đầu từ Setup & Goals',
+        desc: 'Nhập ngày thi, điểm mục tiêu và số giờ rảnh mỗi ngày. StudyFlow sẽ tự tính số task cần làm mỗi ngày để kịp kỳ thi.',
+        extra: '', nav: 'setup'
+      },
+      {
+        icon: '🪄', iconBg: 'rgba(168,85,247,.15)',
+        title: 'Dán tài liệu → Auto-Analyze',
+        desc: 'Copy nội dung sách, giáo trình hoặc syllabus rồi dán vào ô Analyze. Hệ thống sẽ tự chia thành các task nhỏ theo từng chủ đề.',
+        extra: '', nav: 'analysis'
+      },
+      {
+        icon: '⏱️', iconBg: 'rgba(245,158,11,.15)',
+        title: 'Focus Timer — học sâu hơn',
+        desc: 'Mỗi session 25 phút tập trung, sau đó nghỉ 5 phút. Thời gian học được ghi lại tự động vào Dashboard.',
+        extra: '', nav: 'pomodoro'
+      },
+      {
+        icon: '🧠', iconBg: 'rgba(239,68,68,.15)',
+        title: 'Recall Box — ôn đúng lúc',
+        desc: 'Những task bạn đã học sẽ được lên lịch ôn lại theo khoảng cách tăng dần (1 → 2 → 4 → 8 ngày). Nhấn "Got it" để tăng interval, "Again" nếu cần ôn thêm.',
+        extra: '', nav: 'review'
+      },
+      {
+        icon: '✅', iconBg: 'rgba(34,197,94,.15)',
+        title: 'Sẵn sàng rồi!',
+        desc: 'Bạn đang xem demo với dữ liệu học JLPT N2 có sẵn. Hãy khám phá các tab, hoặc dùng nút "Reset demo data" ở cuối sidebar để bắt đầu lại.',
+        extra: `<div style="background:var(--bg2);border-radius:12px;padding:14px;font-size:12px;color:var(--fg2);text-align:left;margin-bottom:4px">
+      <div style="font-weight:700;color:var(--fg);margin-bottom:8px">Sample data đã có sẵn:</div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div>📗 18 tasks học JLPT N2 (7 done / 11 pending)</div>
+        <div>🔥 Streak 5 ngày · 4.2h study time</div>
+        <div>📅 Ngày thi: 60 ngày nữa</div>
+        <div>🧠 5 items trong Recall Box</div>
+      </div>
+    </div>`
+      }
+    ];
+
+    let obStep = 0;
+
+    const showOnboarding = () => {
+      obStep = 0;
+      renderObStep();
+      $('#ob-overlay').classList.add('active');
+    };
+
+    const closeOnboarding = () => {
+      $('#ob-overlay').classList.remove('active');
+      state.onboardingDone = true;
+      save();
+    };
+
+    const nextOnboarding = () => {
+      const step = OB_STEPS[obStep];
+      if (step.nav) switchView(step.nav);
+      if (obStep < OB_STEPS.length - 1) {
+        obStep++;
+        renderObStep();
+      } else {
+        closeOnboarding();
+      }
+    };
+
+    const renderObStep = () => {
+      const step = OB_STEPS[obStep];
+      const total = OB_STEPS.length;
+      $('#ob-dots').innerHTML = Array.from({ length: total }, (_, i) => `<div class="ob-dot${i === obStep ? ' active' : ''}"></div>`).join('');
+      $('#ob-icon').style.background = step.iconBg;
+      $('#ob-icon').textContent = step.icon;
+      $('#ob-title').textContent = step.title;
+      $('#ob-desc').textContent = step.desc;
+      $('#ob-extra').innerHTML = step.extra || '';
+      $('#ob-next').textContent = obStep === total - 1 ? 'Bắt đầu! 🚀' : 'Tiếp →';
+      $('#ob-skip').style.display = obStep === total - 1 ? 'none' : '';
+    };
+
+    // ============================================================
     // INIT
     // ============================================================
-    document.addEventListener('DOMContentLoaded', load);
+    document.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('sf_v3');
+      if (!saved) {
+        // First visit — load sample data then show onboarding
+        const sample = SAMPLE_DATA();
+        Object.assign(state, sample);
+        save();
+      } else {
+        load();
+        // Re-merge any missing keys
+        if (!state.tempTasks) state.tempTasks = [];
+        if (!state.reviewSchedule) state.reviewSchedule = {};
+        if (!state.milestones) state.milestones = [{ pct: 25, label: 'Starter' }, { pct: 50, label: 'Midway' }, { pct: 75, label: 'Advanced' }, { pct: 100, label: 'Mastered' }];
+      }
+      populateCatSelects();
+      renderDashboard();
+      setInterval(() => { if (state.currentView === 'dashboard') renderDashboard(); }, 60000);
+      // Show onboarding if first visit
+      if (!state.onboardingDone) {
+        setTimeout(showOnboarding, 500);
+      }
+    });
   </script>
 </body>
 
