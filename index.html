@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StudyFlow - Smart Learning System</title>
+  <title>StudyFlow - Hệ Thống Học Tập Thông Minh</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link
@@ -64,7 +64,6 @@
       border-radius: 3px
     }
 
-    /* ── MESH BG ── */
     .bg-mesh {
       position: fixed;
       inset: 0;
@@ -73,7 +72,6 @@
       background: radial-gradient(ellipse 600px 400px at 15% 25%, rgba(34, 197, 94, .07), transparent), radial-gradient(ellipse 500px 500px at 85% 75%, rgba(245, 158, 11, .04), transparent)
     }
 
-    /* ── MOBILE TOP BAR ── */
     .mobile-bar {
       display: none;
       position: fixed;
@@ -113,7 +111,6 @@
       color: var(--accent)
     }
 
-    /* ── SIDEBAR ── */
     .sidebar {
       position: fixed;
       top: 0;
@@ -138,7 +135,6 @@
       backdrop-filter: blur(2px)
     }
 
-    /* ── MAIN CONTENT ── */
     .main-wrap {
       position: fixed;
       top: 0;
@@ -149,7 +145,6 @@
       z-index: 1
     }
 
-    /* ── NAV ── */
     .nav-item {
       display: flex;
       align-items: center;
@@ -186,7 +181,6 @@
       color: var(--muted)
     }
 
-    /* ── MOBILE BOTTOM NAV ── */
     .bottom-nav {
       display: none;
       position: fixed;
@@ -233,7 +227,6 @@
       color: var(--accent)
     }
 
-    /* ── VIEWS ── */
     .view {
       display: none;
       padding: 24px 28px;
@@ -258,7 +251,6 @@
       }
     }
 
-    /* ── CARDS ── */
     .stat-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -272,7 +264,6 @@
       border-color: var(--muted)
     }
 
-    /* ── BUTTONS ── */
     .btn {
       padding: 8px 16px;
       border-radius: 11px;
@@ -321,7 +312,6 @@
       background: rgba(239, 68, 68, .22)
     }
 
-    /* ── INPUTS ── */
     .input-field {
       background: var(--bg2);
       border: 1px solid var(--border);
@@ -341,7 +331,6 @@
       box-shadow: 0 0 0 3px var(--accent-g)
     }
 
-    /* ── TIMER ── */
     .timer-display {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 5rem;
@@ -350,7 +339,6 @@
       text-shadow: 0 0 40px rgba(34, 197, 94, .25)
     }
 
-    /* ── MODALS ── */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -389,7 +377,6 @@
       }
     }
 
-    /* drag handle */
     .modal-handle {
       width: 36px;
       height: 4px;
@@ -398,7 +385,6 @@
       margin: 0 auto 20px
     }
 
-    /* ── TOAST ── */
     .toast {
       position: fixed;
       bottom: calc(70px + env(safe-area-inset-bottom, 0));
@@ -415,7 +401,6 @@
       text-align: center
     }
 
-    /* ── MISC ── */
     .task-item {
       display: flex;
       align-items: center;
@@ -552,7 +537,6 @@
       color: var(--danger)
     }
 
-    /* ── ONBOARDING ── */
     .ob-overlay {
       position: fixed;
       inset: 0;
@@ -666,11 +650,6 @@
       font-size: 10px
     }
 
-    /* ═══════════════════════════════════════
-   RESPONSIVE BREAKPOINTS
-═══════════════════════════════════════ */
-
-    /* TABLET (≤900px): collapse sidebar to drawer */
     @media(max-width:900px) {
       .sidebar {
         transform: translateX(-100%)
@@ -709,7 +688,6 @@
         border-radius: 22px 22px 0 0
       }
 
-      /* full-width grids → single col */
       .grid-dash-top {
         grid-template-columns: repeat(3, 1fr) !important
       }
@@ -731,7 +709,6 @@
       }
     }
 
-    /* PHONE (≤480px) */
     @media(max-width:480px) {
       .grid-dash-top {
         grid-template-columns: repeat(2, 1fr) !important
@@ -759,7 +736,6 @@
       }
     }
 
-    /* DESKTOP: sidebar always visible, no mobile chrome */
     @media(min-width:901px) {
 
       .mobile-bar,
@@ -784,15 +760,15 @@
   <div id="toast" class="toast"></div>
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-  <!-- ═══ MOBILE TOP BAR ═══ -->
+  <!-- THANH ĐIỀU HƯỚNG MOBILE -->
   <div class="mobile-bar">
     <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
     <span class="logo-txt">StudyFlow</span>
     <button class="btn btn-secondary" style="padding:6px 12px;font-size:11px" onclick="openModal('add-task')"><i
-        class="fas fa-plus"></i>Task</button>
+        class="fas fa-plus"></i>Nhiệm vụ</button>
   </div>
 
-  <!-- ═══ SIDEBAR ═══ -->
+  <!-- THANH BÊN -->
   <aside class="sidebar" id="sidebar">
     <div class="px-5 py-5 border-b border-[var(--border)]">
       <div class="flex items-center gap-3">
@@ -802,31 +778,30 @@
         </div>
         <div>
           <div class="font-display font-bold text-base text-white tracking-tight">StudyFlow</div>
-          <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">MVP Workspace</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">Không gian học tập</div>
         </div>
-        <!-- close btn on mobile -->
         <button class="hamburger ml-auto md:hidden" onclick="closeSidebar()" style="display:none" id="sidebar-close"><i
             class="fas fa-xmark"></i></button>
       </div>
     </div>
     <nav class="flex-1 py-4 overflow-y-auto">
-      <div class="nav-section mt-1">Overview</div>
+      <div class="nav-section mt-1">Tổng quan</div>
       <div class="nav-item active" data-view="dashboard" onclick="navTo('dashboard')"><i
-          class="fas fa-grid-2 w-4 text-center"></i>Dashboard</div>
+          class="fas fa-grid-2 w-4 text-center"></i>Bảng điều khiển</div>
       <div class="nav-item" data-view="pomodoro" onclick="navTo('pomodoro')"><i
-          class="fas fa-stopwatch w-4 text-center"></i>Focus Timer</div>
-      <div class="nav-section mt-4">Goals</div>
+          class="fas fa-stopwatch w-4 text-center"></i>Hẹn giờ tập trung</div>
+      <div class="nav-section mt-4">Mục tiêu</div>
       <div class="nav-item" data-view="setup" onclick="navTo('setup')"><i
-          class="fas fa-bullseye w-4 text-center"></i>Setup & Goals</div>
-      <div class="nav-section mt-4">Planning</div>
+          class="fas fa-bullseye w-4 text-center"></i>Cài đặt & Mục tiêu</div>
+      <div class="nav-section mt-4">Kế hoạch</div>
       <div class="nav-item" data-view="analysis" onclick="navTo('analysis')"><i
-          class="fas fa-wand-magic-sparkles w-4 text-center"></i>Auto-Analyze</div>
+          class="fas fa-wand-magic-sparkles w-4 text-center"></i>Tự động phân tích</div>
       <div class="nav-item" data-view="plans" onclick="navTo('plans')"><i
-          class="fas fa-list-check w-4 text-center"></i>Study Routes</div>
+          class="fas fa-list-check w-4 text-center"></i>Lộ trình học</div>
       <div class="nav-item" data-view="review" onclick="navTo('review')"><i
-          class="fas fa-brain-circuit w-4 text-center"></i>Recall Box</div>
+          class="fas fa-brain-circuit w-4 text-center"></i>Hộp ôn tập</div>
       <div class="nav-item" data-view="categories" onclick="navTo('categories')"><i
-          class="fas fa-tags w-4 text-center"></i>Categories</div>
+          class="fas fa-tags w-4 text-center"></i>Danh mục</div>
     </nav>
     <div class="p-4 border-t border-[var(--border)]">
       <div class="flex items-center gap-2 mb-2">
@@ -834,69 +809,67 @@
           class="w-7 h-7 rounded-full bg-[var(--bg2)] border border-[var(--border)] flex items-center justify-center flex-shrink-0">
           <i class="fas fa-user text-[9px] text-[var(--muted)]"></i>
         </div>
-        <div class="text-xs font-semibold truncate">Guest User</div>
+        <div class="text-xs font-semibold truncate">Khách</div>
         <button class="btn btn-secondary ml-auto flex-shrink-0" style="padding:4px 9px;font-size:10px"
           onclick="showOnboarding()"><i class="fas fa-question" style="font-size:9px"></i></button>
       </div>
-      <button class="reset-btn" onclick="resetDemo()"><i class="fas fa-arrow-rotate-left"
-          style="font-size:11px"></i>Reset demo data</button>
+      <button class="reset-btn" onclick="resetDemo()"><i class="fas fa-arrow-rotate-left" style="font-size:11px"></i>Đặt
+        lại dữ liệu mẫu</button>
     </div>
   </aside>
 
-  <!-- ═══ MAIN ═══ -->
+  <!-- NỘI DUNG CHÍNH -->
   <div class="main-wrap">
 
-    <!-- DASHBOARD -->
+    <!-- BẢNG ĐIỀU KHIỂN -->
     <div class="view active" id="view-dashboard">
       <div class="page-header">
         <div>
-          <div class="page-title">Dashboard</div>
-          <div class="page-sub" id="dash-sub">Your learning progress.</div>
+          <div class="page-title">Bảng điều khiển</div>
+          <div class="page-sub" id="dash-sub">Tiến độ học tập của bạn.</div>
         </div>
         <button class="btn btn-secondary hidden md:inline-flex" onclick="openModal('add-task')"><i
-            class="fas fa-plus"></i>Task</button>
+            class="fas fa-plus"></i>Nhiệm vụ</button>
       </div>
 
-      <!-- top stats: 5 cols desktop → 3 tablet → 2 mobile -->
       <div class="grid gap-3 mb-4 grid-dash-top" style="grid-template-columns:repeat(5,1fr)">
         <div class="stat-card">
-          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Streak</div>
+          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Chuỗi ngày</div>
           <div class="text-2xl font-display font-bold text-[var(--ember)]" id="streak-val">🔥 0</div>
         </div>
         <div class="stat-card">
-          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Study Time</div>
+          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Thời gian học</div>
           <div class="text-2xl font-display font-bold text-[var(--accent)]" id="time-val">0.0h</div>
         </div>
         <div class="stat-card">
-          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Tasks Done</div>
+          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Hoàn thành</div>
           <div class="text-2xl font-display font-bold" id="task-val">0/0</div>
         </div>
         <div class="stat-card">
-          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Days to Exam</div>
+          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Ngày đến thi</div>
           <div class="text-2xl font-display font-bold text-blue-400" id="countdown-val">—</div>
         </div>
         <div class="stat-card">
-          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Tasks/Day</div>
+          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Nhiệm vụ/ngày</div>
           <div class="text-2xl font-display font-bold text-purple-400" id="tasks-day-val">—</div>
         </div>
       </div>
 
-      <!-- main grid: 3-col desktop → 1-col tablet/mobile -->
       <div class="grid gap-4 grid-dash-main" style="grid-template-columns:2fr 1fr">
         <div class="stat-card" style="height:340px">
           <div class="flex justify-between items-center mb-3">
-            <h3 class="font-display font-bold text-sm">Knowledge Tree</h3>
-            <span class="text-[9px] text-[var(--muted)] uppercase font-bold">Live</span>
+            <h3 class="font-display font-bold text-sm">Cây kiến thức</h3>
+            <span class="text-[9px] text-[var(--muted)] uppercase font-bold">Trực tiếp</span>
           </div>
           <canvas id="tree-canvas"
             style="width:100%;height:270px;background:rgba(0,0,0,.12);border-radius:10px"></canvas>
         </div>
         <div class="space-y-4">
           <div class="stat-card" style="height:162px">
-            <h3 class="font-display font-bold text-xs mb-3">Categories</h3><canvas id="cat-chart"></canvas>
+            <h3 class="font-display font-bold text-xs mb-3">Danh mục</h3><canvas id="cat-chart"></canvas>
           </div>
           <div class="stat-card" style="height:162px">
-            <h3 class="font-display font-bold text-xs mb-3">Milestones</h3>
+            <h3 class="font-display font-bold text-xs mb-3">Cột mốc</h3>
             <div class="progress-bar mb-3">
               <div class="progress-fill bg-[var(--accent)]" id="milestone-fill" style="width:0%"></div>
             </div>
@@ -906,264 +879,263 @@
       </div>
     </div>
 
-    <!-- POMODORO -->
+    <!-- HẸN GIỜ TẬP TRUNG -->
     <div class="view" id="view-pomodoro">
       <div class="page-header">
         <div>
-          <div class="page-title">Focus Timer</div>
-          <div class="page-sub">25min focus · 5min break</div>
+          <div class="page-title">Hẹn giờ tập trung</div>
+          <div class="page-sub">25 phút tập trung · 5 phút nghỉ</div>
         </div>
       </div>
       <div class="flex flex-col items-center" style="padding-top:12px">
         <div class="stat-card w-full text-center pomo-card" style="max-width:380px;padding:32px 28px">
           <div class="text-[10px] font-bold uppercase tracking-widest mb-2" id="timer-mode-label"
-            style="color:var(--accent)">Focus Session</div>
+            style="color:var(--accent)">Phiên tập trung</div>
           <div class="timer-display mb-2" id="timer-val" style="color:var(--fg)">25:00</div>
           <div id="break-bar" class="mb-4 hidden">
             <div class="progress-bar">
               <div class="progress-fill" id="break-fill" style="width:0%;background:var(--ember)"></div>
             </div>
-            <div class="text-[10px] text-[var(--muted)] mt-1">Break progress</div>
+            <div class="text-[10px] text-[var(--muted)] mt-1">Tiến trình nghỉ</div>
           </div>
           <div id="break-bar-spacer" style="height:16px"></div>
           <div class="flex gap-3 justify-center mb-6">
-            <button class="btn btn-primary py-3" style="min-width:120px" id="timer-toggle" onclick="toggleTimer()">Start
-              Focus</button>
-            <button class="btn btn-secondary px-5 py-3" onclick="resetTimer()">Reset</button>
+            <button class="btn btn-primary py-3" style="min-width:120px" id="timer-toggle" onclick="toggleTimer()">Bắt
+              đầu</button>
+            <button class="btn btn-secondary px-5 py-3" onclick="resetTimer()">Đặt lại</button>
           </div>
           <div class="grid grid-cols-3 gap-2">
             <div class="pomo-stat">
-              <div class="text-[10px] text-[var(--muted)] mb-1">Sessions</div>
+              <div class="text-[10px] text-[var(--muted)] mb-1">Phiên</div>
               <div class="font-display font-bold" id="pomo-sessions">0</div>
             </div>
             <div class="pomo-stat">
-              <div class="text-[10px] text-[var(--muted)] mb-1">Focus</div>
-              <div class="font-display font-bold text-[var(--accent)]" id="pomo-time">0m</div>
+              <div class="text-[10px] text-[var(--muted)] mb-1">Tập trung</div>
+              <div class="font-display font-bold text-[var(--accent)]" id="pomo-time">0 phút</div>
             </div>
             <div class="pomo-stat">
-              <div class="text-[10px] text-[var(--muted)] mb-1">Breaks</div>
+              <div class="text-[10px] text-[var(--muted)] mb-1">Nghỉ</div>
               <div class="font-display font-bold text-[var(--ember)]" id="pomo-breaks">0</div>
             </div>
           </div>
         </div>
         <div class="mt-5 text-center">
-          <div class="text-[10px] font-bold uppercase text-[var(--muted)] tracking-widest mb-1">Next Task</div>
-          <div class="text-base font-display font-bold" id="next-task-name">No active tasks</div>
+          <div class="text-[10px] font-bold uppercase text-[var(--muted)] tracking-widest mb-1">Nhiệm vụ tiếp theo</div>
+          <div class="text-base font-display font-bold" id="next-task-name">Không có nhiệm vụ nào</div>
         </div>
       </div>
     </div>
 
-    <!-- SETUP & GOALS -->
+    <!-- CÀI ĐẶT & MỤC TIÊU -->
     <div class="view" id="view-setup">
       <div class="page-header">
         <div>
-          <div class="page-title">Setup & Goals</div>
-          <div class="page-sub">Exam targets & daily schedule.</div>
+          <div class="page-title">Cài đặt & Mục tiêu</div>
+          <div class="page-sub">Ngày thi & lịch học hàng ngày.</div>
         </div>
       </div>
       <div class="grid gap-4 grid-setup" style="grid-template-columns:1fr 1fr">
-        <!-- left -->
         <div class="space-y-4">
           <div class="stat-card">
             <h3 class="font-display font-bold text-sm mb-4 flex items-center gap-2"><i
-                class="fas fa-graduation-cap text-[var(--accent)]"></i>Exam Settings</h3>
+                class="fas fa-graduation-cap text-[var(--accent)]"></i>Thông tin kỳ thi</h3>
             <div class="space-y-3">
-              <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Exam Date</label><input
+              <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Ngày thi</label><input
                   type="date" id="exam-date-input" class="input-field" onchange="saveSetup()"></div>
-              <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Target Score /
-                  Level</label><input type="text" id="target-score-input" class="input-field"
+              <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Mục tiêu / Điểm
+                  số</label><input type="text" id="target-score-input" class="input-field"
                   placeholder="N2, IELTS 7.0, 800/990..." oninput="saveSetup()"></div>
             </div>
           </div>
           <div class="stat-card">
             <h3 class="font-display font-bold text-sm mb-4 flex items-center gap-2"><i
-                class="fas fa-clock text-[var(--ember)]"></i>Daily Hours</h3>
+                class="fas fa-clock text-[var(--ember)]"></i>Giờ hàng ngày</h3>
             <div class="space-y-4">
               <div>
                 <div class="flex justify-between mb-1"><label
-                    class="text-[9px] font-bold uppercase text-[var(--muted)]">Work / School</label><span
-                    class="text-sm font-bold text-[var(--ember)]" id="work-lbl">8h</span></div>
+                    class="text-[9px] font-bold uppercase text-[var(--muted)]">Làm việc / Học trường</label><span
+                    class="text-sm font-bold text-[var(--ember)]" id="work-lbl">8 giờ</span></div>
                 <input type="range" class="range-input" id="work-input" min="0" max="16" step="1" value="8"
                   oninput="updateHours()">
               </div>
               <div>
                 <div class="flex justify-between mb-1"><label
-                    class="text-[9px] font-bold uppercase text-[var(--muted)]">Sleep</label><span
-                    class="text-sm font-bold text-[var(--fg2)]" id="sleep-lbl">8h</span></div>
+                    class="text-[9px] font-bold uppercase text-[var(--muted)]">Ngủ</label><span
+                    class="text-sm font-bold text-[var(--fg2)]" id="sleep-lbl">8 giờ</span></div>
                 <input type="range" class="range-input" id="sleep-input" min="4" max="12" step="1" value="8"
                   oninput="updateHours()">
               </div>
               <div style="background:var(--bg2);border-radius:12px;padding:12px">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs text-[var(--fg2)]">Available/day</span>
-                  <span class="text-xl font-display font-bold text-[var(--accent)]" id="avail-lbl">8h</span>
+                  <span class="text-xs text-[var(--fg2)]">Rảnh/ngày</span>
+                  <span class="text-xl font-display font-bold text-[var(--accent)]" id="avail-lbl">8 giờ</span>
                 </div>
                 <div class="flex gap-[2px]" id="hour-blocks"></div>
                 <div class="flex justify-between text-[9px] text-[var(--muted)] mt-1">
-                  <span>Work <span id="work-pct"></span></span>
-                  <span>Study <span id="study-pct"></span></span>
-                  <span>Sleep <span id="sleep-pct"></span></span>
+                  <span>Làm việc <span id="work-pct"></span></span>
+                  <span>Học <span id="study-pct"></span></span>
+                  <span>Ngủ <span id="sleep-pct"></span></span>
                 </div>
               </div>
             </div>
           </div>
           <div class="stat-card">
             <h3 class="font-display font-bold text-sm mb-3 flex items-center gap-2"><i
-                class="fas fa-robot text-purple-400"></i>Auto-Distribute</h3>
-            <p class="text-xs text-[var(--fg2)] mb-3">Assign due dates to pending tasks automatically.</p>
+                class="fas fa-robot text-purple-400"></i>Phân phối tự động</h3>
+            <p class="text-xs text-[var(--fg2)] mb-3">Tự động gán ngày đến hạn cho các nhiệm vụ đang chờ.</p>
             <div class="flex items-center gap-2 mb-3">
-              <label class="text-[9px] font-bold uppercase text-[var(--muted)] whitespace-nowrap">Mins/task</label>
+              <label class="text-[9px] font-bold uppercase text-[var(--muted)] whitespace-nowrap">Phút/nhiệm vụ</label>
               <input type="number" id="mins-per-task" class="input-field" style="width:72px" value="30" min="10"
                 max="180">
             </div>
             <button class="btn btn-primary w-full justify-center" onclick="autoDistribute()"><i
-                class="fas fa-magic-wand-sparkles"></i>Distribute now</button>
+                class="fas fa-magic-wand-sparkles"></i>Phân phối ngay</button>
           </div>
         </div>
-        <!-- right -->
         <div class="space-y-4">
           <div class="stat-card text-center" style="padding:28px 20px">
-            <div class="text-[9px] font-bold uppercase tracking-widest text-[var(--muted)] mb-2">Days until exam</div>
+            <div class="text-[9px] font-bold uppercase tracking-widest text-[var(--muted)] mb-2">Ngày đến kỳ thi</div>
             <div class="font-display font-bold mb-2" id="big-countdown" style="font-size:3.5rem;color:var(--accent)">—
             </div>
-            <div class="text-sm text-[var(--fg2)] mb-3" id="exam-date-label">No exam date set</div>
+            <div class="text-sm text-[var(--fg2)] mb-3" id="exam-date-label">Chưa đặt ngày thi</div>
             <div
               style="background:var(--bg2);border-radius:10px;padding:7px 14px;display:inline-flex;align-items:center;gap:7px">
               <i class="fas fa-bullseye text-[var(--ember)] text-xs"></i>
-              <span class="text-sm font-bold" id="target-score-label">No target set</span>
+              <span class="text-sm font-bold" id="target-score-label">Chưa đặt mục tiêu</span>
             </div>
           </div>
           <div class="stat-card">
-            <h3 class="font-display font-bold text-sm mb-4">Study Plan Overview</h3>
+            <h3 class="font-display font-bold text-sm mb-4">Tổng quan kế hoạch</h3>
             <div id="plan-overview">
-              <div class="text-xs text-[var(--muted)] text-center py-4">Set exam date and add tasks to see plan</div>
+              <div class="text-xs text-[var(--muted)] text-center py-4">Đặt ngày thi và thêm nhiệm vụ để xem kế hoạch
+              </div>
             </div>
           </div>
           <div class="stat-card">
             <h3 class="font-display font-bold text-sm mb-3 flex items-center gap-2"><i
-                class="fas fa-flag text-[var(--accent)]"></i>Milestone Labels</h3>
-            <p class="text-[10px] text-[var(--fg2)] mb-3">Edit names — percentages are fixed.</p>
+                class="fas fa-flag text-[var(--accent)]"></i>Nhãn cột mốc</h3>
+            <p class="text-[10px] text-[var(--fg2)] mb-3">Chỉnh tên — phần trăm cố định.</p>
             <div id="milestone-settings" class="space-y-2"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ANALYSIS -->
+    <!-- PHÂN TÍCH TỰ ĐỘNG -->
     <div class="view" id="view-analysis">
       <div class="page-header">
         <div>
-          <div class="page-title">Auto-Analyze</div>
-          <div class="page-sub">Paste materials → generate tasks.</div>
+          <div class="page-title">Tự động phân tích</div>
+          <div class="page-sub">Dán tài liệu → tạo nhiệm vụ tự động.</div>
         </div>
       </div>
       <div class="grid gap-4 grid-analysis" style="grid-template-columns:1fr 1fr">
         <div class="space-y-3">
-          <label class="text-[9px] font-bold uppercase text-[var(--muted)]">Paste Material Contents</label>
+          <label class="text-[9px] font-bold uppercase text-[var(--muted)]">Dán nội dung tài liệu</label>
           <textarea id="ai-input" class="input-field" style="height:260px"
-            placeholder="Chapter 1: JLPT Basics&#10;1.1 Vocabulary&#10;1.2 Grammar..."></textarea>
+            placeholder="Chương 1: Cơ bản JLPT&#10;1.1 Từ vựng&#10;1.2 Ngữ pháp..."></textarea>
           <div class="flex gap-2">
-            <div class="flex-1"><label
-                class="text-[9px] font-bold uppercase text-[var(--muted)] mb-1 block">Category</label><select
-                id="default-cat" class="input-field"></select></div>
+            <div class="flex-1"><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-1 block">Danh
+                mục</label><select id="default-cat" class="input-field"></select></div>
             <div style="padding-top:20px"><button class="btn btn-primary" style="height:42px" onclick="runAnalysis()"><i
-                  class="fas fa-wand-magic-sparkles"></i>Analyze</button></div>
+                  class="fas fa-wand-magic-sparkles"></i>Phân tích</button></div>
           </div>
         </div>
         <div class="stat-card flex flex-col" style="min-height:360px">
           <div class="flex justify-between items-center mb-4">
-            <h3 class="font-display font-bold text-sm">Result</h3><span
-              class="text-[9px] text-[var(--accent)] font-bold uppercase" id="ana-count">0 items</span>
+            <h3 class="font-display font-bold text-sm">Kết quả</h3><span
+              class="text-[9px] text-[var(--accent)] font-bold uppercase" id="ana-count">0 mục</span>
           </div>
           <div id="ana-result"
             class="flex-1 overflow-y-auto flex flex-col items-center justify-center text-[var(--muted)]">
             <i class="fas fa-microchip text-3xl mb-3 opacity-20"></i>
-            <p class="text-[10px] font-bold uppercase tracking-widest">Awaiting input...</p>
+            <p class="text-[10px] font-bold uppercase tracking-widest">Đang chờ dữ liệu...</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- PLANS -->
+    <!-- LỘ TRÌNH HỌC -->
     <div class="view" id="view-plans">
       <div class="page-header">
         <div>
-          <div class="page-title">Study Routes</div>
-          <div class="page-sub">Tasks by category.</div>
+          <div class="page-title">Lộ trình học</div>
+          <div class="page-sub">Nhiệm vụ theo danh mục.</div>
         </div>
-        <button class="btn btn-secondary" onclick="openModal('add-task')"><i class="fas fa-plus"></i>Add</button>
+        <button class="btn btn-secondary" onclick="openModal('add-task')"><i class="fas fa-plus"></i>Thêm</button>
       </div>
       <div id="plans-container" class="space-y-4"></div>
     </div>
 
-    <!-- RECALL BOX -->
+    <!-- HỘP ÔN TẬP -->
     <div class="view" id="view-review">
       <div class="page-header">
         <div>
-          <div class="page-title">Recall Box</div>
-          <div class="page-sub">Spaced repetition — review at the right time.</div>
+          <div class="page-title">Hộp ôn tập</div>
+          <div class="page-sub">Lặp lại cách quãng — ôn đúng thời điểm.</div>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-3 mb-4">
         <div class="stat-card text-center">
-          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Due Now</div>
+          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Cần ôn ngay</div>
           <div class="text-2xl font-display font-bold text-[var(--danger)]" id="review-due">0</div>
         </div>
         <div class="stat-card text-center">
-          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Upcoming</div>
+          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Sắp tới</div>
           <div class="text-2xl font-display font-bold text-[var(--ember)]" id="review-upcoming">0</div>
         </div>
         <div class="stat-card text-center">
-          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Mastered</div>
+          <div class="text-[9px] uppercase font-bold text-[var(--muted)] mb-1">Đã thuộc</div>
           <div class="text-2xl font-display font-bold text-[var(--accent)]" id="review-mastered">0</div>
         </div>
       </div>
       <div id="review-container"></div>
     </div>
 
-    <!-- CATEGORIES -->
+    <!-- DANH MỤC -->
     <div class="view" id="view-categories">
       <div class="page-header">
         <div>
-          <div class="page-title">Categories</div>
-          <div class="page-sub">Manage learning domains.</div>
+          <div class="page-title">Danh mục</div>
+          <div class="page-sub">Quản lý lĩnh vực học tập.</div>
         </div>
-        <button class="btn btn-primary" onclick="openModal('add-category')"><i class="fas fa-plus"></i>New</button>
+        <button class="btn btn-primary" onclick="openModal('add-category')"><i class="fas fa-plus"></i>Mới</button>
       </div>
       <div id="categories-container" class="grid grid-cols-2 gap-4 grid-cats"></div>
     </div>
 
-  </div><!-- /main-wrap -->
+  </div>
 
-  <!-- ═══ MOBILE BOTTOM NAV ═══ -->
+  <!-- ĐIỀU HƯỚNG DƯỚI MOBILE -->
   <nav class="bottom-nav">
     <div class="bnav-items">
       <button class="bnav-item active" data-view="dashboard" onclick="navTo('dashboard')"><i
-          class="fas fa-grid-2"></i>Home</button>
-      <button class="bnav-item" data-view="pomodoro" onclick="navTo('pomodoro')"><i
-          class="fas fa-stopwatch"></i>Timer</button>
-      <button class="bnav-item" data-view="plans" onclick="navTo('plans')"><i
-          class="fas fa-list-check"></i>Tasks</button>
-      <button class="bnav-item" data-view="review" onclick="navTo('review')"><i
-          class="fas fa-brain-circuit"></i>Recall</button>
-      <button class="bnav-item" data-view="setup" onclick="navTo('setup')"><i class="fas fa-sliders"></i>Setup</button>
+          class="fas fa-grid-2"></i>Trang chủ</button>
+      <button class="bnav-item" data-view="pomodoro" onclick="navTo('pomodoro')"><i class="fas fa-stopwatch"></i>Hẹn
+        giờ</button>
+      <button class="bnav-item" data-view="plans" onclick="navTo('plans')"><i class="fas fa-list-check"></i>Nhiệm
+        vụ</button>
+      <button class="bnav-item" data-view="review" onclick="navTo('review')"><i class="fas fa-brain-circuit"></i>Ôn
+        tập</button>
+      <button class="bnav-item" data-view="setup" onclick="navTo('setup')"><i class="fas fa-sliders"></i>Cài
+        đặt</button>
     </div>
   </nav>
 
-  <!-- ═══ MODALS ═══ -->
+  <!-- CÁC HỘP THOẠI -->
   <div class="modal-overlay" id="modal-add-task" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
-      <h3 class="font-display font-bold text-lg mb-5">Add Task</h3>
+      <h3 class="font-display font-bold text-lg mb-5">Thêm nhiệm vụ</h3>
       <div class="space-y-4">
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Task Name</label><input
-            type="text" id="mt-name" class="input-field" placeholder="Review vocabulary set 3..."></div>
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Category</label><select
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Tên nhiệm vụ</label><input
+            type="text" id="mt-name" class="input-field" placeholder="Ôn tập bộ từ vựng số 3..."></div>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Danh mục</label><select
             id="mt-cat" class="input-field"></select></div>
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Due Date
-            (optional)</label><input type="date" id="mt-date" class="input-field"></div>
-        <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center" onclick="saveTask()">Add
-            Task</button><button class="btn btn-secondary flex-1 justify-center" onclick="closeModal()">Cancel</button>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Ngày đến hạn
+            (tuỳ chọn)</label><input type="date" id="mt-date" class="input-field"></div>
+        <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center" onclick="saveTask()">Thêm
+            nhiệm vụ</button><button class="btn btn-secondary flex-1 justify-center" onclick="closeModal()">Huỷ</button>
         </div>
       </div>
     </div>
@@ -1172,18 +1144,18 @@
   <div class="modal-overlay" id="modal-edit-task" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
-      <h3 class="font-display font-bold text-lg mb-5">Edit Task</h3>
+      <h3 class="font-display font-bold text-lg mb-5">Chỉnh sửa nhiệm vụ</h3>
       <input type="hidden" id="et-id">
       <div class="space-y-4">
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Task Name</label><input
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Tên nhiệm vụ</label><input
             type="text" id="et-name" class="input-field"></div>
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Category</label><select
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Danh mục</label><select
             id="et-cat" class="input-field"></select></div>
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Due Date</label><input
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Ngày đến hạn</label><input
             type="date" id="et-date" class="input-field"></div>
         <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center"
-            onclick="saveEditTask()">Save</button><button class="btn btn-secondary flex-1 justify-center"
-            onclick="closeModal()">Cancel</button></div>
+            onclick="saveEditTask()">Lưu</button><button class="btn btn-secondary flex-1 justify-center"
+            onclick="closeModal()">Huỷ</button></div>
       </div>
     </div>
   </div>
@@ -1191,17 +1163,17 @@
   <div class="modal-overlay" id="modal-add-category" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
-      <h3 class="font-display font-bold text-lg mb-5">New Category</h3>
+      <h3 class="font-display font-bold text-lg mb-5">Danh mục mới</h3>
       <div class="space-y-4">
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Name</label><input type="text"
-            id="nc-name" class="input-field" placeholder="Grammar, Kanji..."></div>
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Color</label><input
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Tên</label><input type="text"
+            id="nc-name" class="input-field" placeholder="Ngữ pháp, Kanji..."></div>
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Màu sắc</label><input
             type="color" id="nc-color" value="#22c55e"
             style="width:100%;height:44px;border-radius:11px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;padding:4px 6px">
         </div>
-        <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center"
-            onclick="addCategory()">Create</button><button class="btn btn-secondary flex-1 justify-center"
-            onclick="closeModal()">Cancel</button></div>
+        <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center" onclick="addCategory()">Tạo
+            mới</button><button class="btn btn-secondary flex-1 justify-center" onclick="closeModal()">Huỷ</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1209,23 +1181,23 @@
   <div class="modal-overlay" id="modal-edit-category" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
-      <h3 class="font-display font-bold text-lg mb-5">Edit Category</h3>
+      <h3 class="font-display font-bold text-lg mb-5">Chỉnh sửa danh mục</h3>
       <input type="hidden" id="ec-id">
       <div class="space-y-4">
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Name</label><input type="text"
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Tên</label><input type="text"
             id="ec-name" class="input-field"></div>
-        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Color</label><input
+        <div><label class="text-[9px] font-bold uppercase text-[var(--muted)] mb-2 block">Màu sắc</label><input
             type="color" id="ec-color"
             style="width:100%;height:44px;border-radius:11px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;padding:4px 6px">
         </div>
         <div class="flex gap-3 pt-1"><button class="btn btn-primary flex-1 justify-center"
-            onclick="saveEditCategory()">Save</button><button class="btn btn-secondary flex-1 justify-center"
-            onclick="closeModal()">Cancel</button></div>
+            onclick="saveEditCategory()">Lưu</button><button class="btn btn-secondary flex-1 justify-center"
+            onclick="closeModal()">Huỷ</button></div>
       </div>
     </div>
   </div>
 
-  <!-- ONBOARDING -->
+  <!-- GIỚI THIỆU -->
   <div class="ob-overlay" id="ob-overlay">
     <div class="ob-card">
       <div class="ob-steps" id="ob-dots"></div>
@@ -1234,25 +1206,25 @@
       <div class="ob-desc" id="ob-desc"></div>
       <div id="ob-extra"></div>
       <div style="display:flex;gap:10px;justify-content:center">
-        <button class="btn btn-secondary" id="ob-skip" onclick="closeOnboarding()" style="min-width:80px">Skip</button>
-        <button class="btn btn-primary" id="ob-next" onclick="nextOnboarding()" style="min-width:100px">Next →</button>
+        <button class="btn btn-secondary" id="ob-skip" onclick="closeOnboarding()" style="min-width:80px">Bỏ
+          qua</button>
+        <button class="btn btn-primary" id="ob-next" onclick="nextOnboarding()" style="min-width:100px">Tiếp →</button>
       </div>
     </div>
   </div>
 
   <script>
-    // ── STATE ──────────────────────────────────────────────────────────────
     const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
     const todayStr = () => new Date().toISOString().split('T')[0];
 
     let state = {
       tasks: [],
-      categories: [{ id: 1, name: 'Vocabulary', color: '#22c55e' }, { id: 2, name: 'Grammar', color: '#3b82f6' }, { id: 3, name: 'Listening', color: '#f59e0b' }, { id: 4, name: 'Reading', color: '#ef4444' }],
+      categories: [{ id: 1, name: 'Từ vựng', color: '#22c55e' }, { id: 2, name: 'Ngữ pháp', color: '#3b82f6' }, { id: 3, name: 'Nghe hiểu', color: '#f59e0b' }, { id: 4, name: 'Đọc hiểu', color: '#ef4444' }],
       streak: 0, studyTime: 0, lastStudyDate: '', currentView: 'dashboard',
       timer: { active: false, time: 1500, mode: 'focus', sessions: 0, breaks: 0, totalFocusMin: 0 },
       tempTasks: [], examDate: '', targetScore: '', workHours: 8, sleepHours: 8,
       reviewSchedule: {},
-      milestones: [{ pct: 25, label: 'Starter' }, { pct: 50, label: 'Midway' }, { pct: 75, label: 'Advanced' }, { pct: 100, label: 'Mastered' }],
+      milestones: [{ pct: 25, label: 'Khởi đầu' }, { pct: 50, label: 'Nửa đường' }, { pct: 75, label: 'Nâng cao' }, { pct: 100, label: 'Thành thạo' }],
       lastMilestonePct: -1, onboardingDone: false
     };
 
@@ -1262,13 +1234,12 @@
       if (s) { try { const p = JSON.parse(s); state = Object.assign({}, state, p); } catch (e) { } }
     };
 
-    // ── UTILS ──────────────────────────────────────────────────────────────
     const showToast = (msg, type = 'success') => {
       const t = $('#toast'), colors = { success: 'var(--accent)', warning: 'var(--ember)', danger: 'var(--danger)' };
       t.textContent = msg; t.style.border = `1px solid ${colors[type] || colors.success}`; t.style.color = colors[type] || colors.success;
       t.style.display = 'block'; clearTimeout(t._tid); t._tid = setTimeout(() => t.style.display = 'none', 3000);
     };
-    const getCat = id => state.categories.find(c => c.id == id) || { name: 'Other', color: '#888' };
+    const getCat = id => state.categories.find(c => c.id == id) || { name: 'Khác', color: '#888' };
     const daysUntil = d => { if (!d) return null; return Math.ceil((new Date(d) - new Date(todayStr())) / 86400000); };
     const totalPct = () => { const done = state.tasks.filter(t => t.done).length, tot = state.tasks.length; return tot === 0 ? 0 : Math.round(done / tot * 100); };
     const populateCatSelects = () => {
@@ -1276,7 +1247,6 @@
       ['#mt-cat', '#et-cat', '#default-cat'].forEach(s => { const e = $(s); if (e) e.innerHTML = opts; });
     };
 
-    // ── SIDEBAR MOBILE ─────────────────────────────────────────────────────
     const toggleSidebar = () => {
       const s = $('#sidebar'), o = $('#sidebar-overlay'), c = $('#sidebar-close');
       const open = s.classList.toggle('open');
@@ -1289,7 +1259,6 @@
       const c = $('#sidebar-close'); if (c) c.style.display = 'none';
     };
 
-    // ── NAVIGATION ─────────────────────────────────────────────────────────
     const navTo = v => {
       closeSidebar();
       $$('.nav-item').forEach(x => x.classList.toggle('active', x.dataset.view === v));
@@ -1305,10 +1274,8 @@
       if (v === 'categories') renderCategories();
       if (v === 'analysis') populateCatSelects();
     };
-    // legacy alias used inside onboarding
     const switchView = navTo;
 
-    // ── DASHBOARD ──────────────────────────────────────────────────────────
     let charts = {};
     const renderDashboard = () => {
       const done = state.tasks.filter(t => t.done).length, tot = state.tasks.length;
@@ -1317,10 +1284,10 @@
       $('#streak-val').textContent = `🔥 ${state.streak}`;
       $('#time-val').textContent = `${state.studyTime.toFixed(1)}h`;
       $('#task-val').textContent = `${done}/${tot}`;
-      $('#countdown-val').textContent = days !== null ? `${Math.max(0, days)}d` : '—';
+      $('#countdown-val').textContent = days !== null ? `${Math.max(0, days)} ngày` : '—';
       $('#tasks-day-val').textContent = (days > 0 && pend > 0) ? `${Math.ceil(pend / days)}` : '—';
       $('#milestone-fill').style.width = pct + '%';
-      if (state.examDate && days !== null) $('#dash-sub').textContent = `${Math.max(0, days)}d to exam · ${state.targetScore || '—'} · ${avail.toFixed(0)}h/day`;
+      if (state.examDate && days !== null) $('#dash-sub').textContent = `${Math.max(0, days)} ngày đến thi · ${state.targetScore || '—'} · ${avail.toFixed(0)}h/ngày`;
       $('#milestone-labels').innerHTML = state.milestones.map(m => `
     <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px">
       <div style="display:flex;align-items:center;gap:6px">
@@ -1365,24 +1332,23 @@
       draw(cx, cy, -Math.PI / 2, 55, 0, state.tasks.length ? state.tasks : [{ done: false }]);
     };
 
-    // ── POMODORO ───────────────────────────────────────────────────────────
     let timerInterval;
     const renderPomodoro = () => {
       const next = state.tasks.find(t => !t.done);
-      $('#next-task-name').textContent = next ? next.name : 'No active tasks';
+      $('#next-task-name').textContent = next ? next.name : 'Không có nhiệm vụ nào';
       $('#pomo-sessions').textContent = state.timer.sessions;
       $('#pomo-breaks').textContent = state.timer.breaks;
-      $('#pomo-time').textContent = state.timer.totalFocusMin + 'm';
+      $('#pomo-time').textContent = state.timer.totalFocusMin + ' phút';
     };
     const toggleTimer = () => {
-      if (state.timer.active) { clearInterval(timerInterval); state.timer.active = false; $('#timer-toggle').textContent = state.timer.mode === 'focus' ? 'Start Focus' : 'Start Break'; }
-      else { state.timer.active = true; $('#timer-toggle').textContent = 'Pause'; timerInterval = setInterval(tick, 1000); }
+      if (state.timer.active) { clearInterval(timerInterval); state.timer.active = false; $('#timer-toggle').textContent = state.timer.mode === 'focus' ? 'Bắt đầu tập trung' : 'Bắt đầu nghỉ'; }
+      else { state.timer.active = true; $('#timer-toggle').textContent = 'Tạm dừng'; timerInterval = setInterval(tick, 1000); }
     };
     const tick = () => {
       if (state.timer.time <= 0) {
         clearInterval(timerInterval); state.timer.active = false;
-        if (state.timer.mode === 'focus') { state.timer.sessions++; state.timer.totalFocusMin += 25; state.studyTime = parseFloat((state.studyTime + 25 / 60).toFixed(2)); updateStreak(); showToast('Focus done! 🌿 5min break'); if (state.currentView === 'dashboard') renderDashboard(); save(); setTimeout(startBreak, 600); }
-        else { state.timer.breaks++; showToast('Break over! 💪', 'warning'); save(); startFocus(); }
+        if (state.timer.mode === 'focus') { state.timer.sessions++; state.timer.totalFocusMin += 25; state.studyTime = parseFloat((state.studyTime + 25 / 60).toFixed(2)); updateStreak(); showToast('Hoàn thành phiên tập trung! 🌿 Nghỉ 5 phút'); if (state.currentView === 'dashboard') renderDashboard(); save(); setTimeout(startBreak, 600); }
+        else { state.timer.breaks++; showToast('Hết giờ nghỉ! 💪', 'warning'); save(); startFocus(); }
         renderPomodoro(); return;
       }
       state.timer.time--;
@@ -1390,12 +1356,11 @@
       $('#timer-val').textContent = `${m}:${s < 10 ? '0' + s : s}`;
       if (state.timer.mode === 'break') $('#break-fill').style.width = Math.round((1 - state.timer.time / 300) * 100) + '%';
     };
-    const startFocus = () => { state.timer.mode = 'focus'; state.timer.time = 1500; $('#timer-mode-label').textContent = 'Focus Session'; $('#timer-mode-label').style.color = 'var(--accent)'; $('#timer-val').style.color = 'var(--fg)'; $('#timer-val').textContent = '25:00'; $('#timer-toggle').textContent = 'Start Focus'; $('#break-bar').classList.add('hidden'); $('#break-bar-spacer').style.display = 'block'; };
-    const startBreak = () => { state.timer.mode = 'break'; state.timer.time = 300; $('#timer-mode-label').textContent = 'Break ☕'; $('#timer-mode-label').style.color = 'var(--ember)'; $('#timer-val').style.color = 'var(--ember)'; $('#timer-val').textContent = '5:00'; $('#timer-toggle').textContent = 'Start Break'; $('#break-bar').classList.remove('hidden'); $('#break-bar-spacer').style.display = 'none'; $('#break-fill').style.width = '0%'; };
+    const startFocus = () => { state.timer.mode = 'focus'; state.timer.time = 1500; $('#timer-mode-label').textContent = 'Phiên tập trung'; $('#timer-mode-label').style.color = 'var(--accent)'; $('#timer-val').style.color = 'var(--fg)'; $('#timer-val').textContent = '25:00'; $('#timer-toggle').textContent = 'Bắt đầu tập trung'; $('#break-bar').classList.add('hidden'); $('#break-bar-spacer').style.display = 'block'; };
+    const startBreak = () => { state.timer.mode = 'break'; state.timer.time = 300; $('#timer-mode-label').textContent = 'Giờ nghỉ ☕'; $('#timer-mode-label').style.color = 'var(--ember)'; $('#timer-val').style.color = 'var(--ember)'; $('#timer-val').textContent = '5:00'; $('#timer-toggle').textContent = 'Bắt đầu nghỉ'; $('#break-bar').classList.remove('hidden'); $('#break-bar-spacer').style.display = 'none'; $('#break-fill').style.width = '0%'; };
     const resetTimer = () => { clearInterval(timerInterval); state.timer.active = false; startFocus(); };
     const updateStreak = () => { const td = todayStr(); if (state.lastStudyDate === td) return; if (state.lastStudyDate) { const diff = Math.round((new Date(td) - new Date(state.lastStudyDate)) / 86400000); state.streak = diff === 1 ? state.streak + 1 : 1; } else state.streak = 1; state.lastStudyDate = td; };
 
-    // ── SETUP ──────────────────────────────────────────────────────────────
     const renderSetup = () => {
       if (state.examDate) $('#exam-date-input').value = state.examDate;
       if (state.targetScore) $('#target-score-input').value = state.targetScore;
@@ -1410,7 +1375,7 @@
     const updateHours = () => {
       state.workHours = parseInt($('#work-input').value) || 8; state.sleepHours = parseInt($('#sleep-input').value) || 8;
       const avail = Math.max(0, 24 - state.workHours - state.sleepHours);
-      $('#work-lbl').textContent = state.workHours + 'h'; $('#sleep-lbl').textContent = state.sleepHours + 'h'; $('#avail-lbl').textContent = avail.toFixed(0) + 'h';
+      $('#work-lbl').textContent = state.workHours + ' giờ'; $('#sleep-lbl').textContent = state.sleepHours + ' giờ'; $('#avail-lbl').textContent = avail.toFixed(0) + ' giờ';
       $('#work-pct').textContent = state.workHours + 'h'; $('#study-pct').textContent = avail + 'h'; $('#sleep-pct').textContent = state.sleepHours + 'h';
       $('#hour-blocks').innerHTML = Array.from({ length: 24 }, (_, i) => { const isW = i < state.workHours, isS = i >= (24 - state.sleepHours), color = isW ? '#3b82f6' : isS ? '#3d5a49' : 'var(--accent)'; return `<div class="hour-block" style="background:${color}"></div>`; }).join('');
       save();
@@ -1418,8 +1383,8 @@
     const updateCountdown = () => {
       const days = daysUntil(state.examDate);
       $('#big-countdown').textContent = days !== null ? Math.max(0, days) : '—';
-      $('#exam-date-label').textContent = state.examDate ? new Date(state.examDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'No exam date set';
-      $('#target-score-label').textContent = state.targetScore || 'No target set';
+      $('#exam-date-label').textContent = state.examDate ? new Date(state.examDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Chưa đặt ngày thi';
+      $('#target-score-label').textContent = state.targetScore || 'Chưa đặt mục tiêu';
     };
     const renderMilestoneSettings = () => {
       $('#milestone-settings').innerHTML = state.milestones.map((m, i) => `
@@ -1432,10 +1397,10 @@
     };
     const renderPlanOverview = () => {
       const el = $('#plan-overview'), pend = state.tasks.filter(t => !t.done).length, days = daysUntil(state.examDate);
-      if (!state.examDate || pend === 0) { el.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px 0">Set exam date and add tasks to see plan</div>'; return; }
+      if (!state.examDate || pend === 0) { el.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px 0">Đặt ngày thi và thêm nhiệm vụ để xem kế hoạch</div>'; return; }
       const avail = Math.max(1, 24 - state.workHours - state.sleepHours), tpd = days > 0 ? Math.ceil(pend / days) : pend, hrs = (pend * 30 / 60).toFixed(1), ok = (tpd * .5) <= avail;
       el.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    ${[['Pending', pend, 'var(--fg)'], ['Tasks/day', tpd, 'var(--accent)'], ['Hours needed', hrs + 'h', 'var(--ember)'], ['Feasibility', ok ? 'On Track ✓' : 'Tight ⚠', ok ? 'var(--accent)' : 'var(--danger)']].map(([l, v, c]) => `
+    ${[['Đang chờ', pend, 'var(--fg)'], ['Nhiệm vụ/ngày', tpd, 'var(--accent)'], ['Giờ cần thiết', hrs + 'h', 'var(--ember)'], ['Khả thi', ok ? 'Đúng tiến độ ✓' : 'Khá căng ⚠', ok ? 'var(--accent)' : 'var(--danger)']].map(([l, v, c]) => `
     <div style="background:var(--bg2);border-radius:10px;padding:10px;text-align:center">
       <div style="font-size:9px;color:var(--muted);margin-bottom:4px">${l}</div>
       <div style="font-size:18px;font-family:'Space Grotesk',sans-serif;font-weight:700;color:${c}">${v}</div>
@@ -1443,36 +1408,34 @@
   </div>`;
     };
     const autoDistribute = () => {
-      const pend = state.tasks.filter(t => !t.done); if (!pend.length) return showToast('No pending tasks', 'warning');
+      const pend = state.tasks.filter(t => !t.done); if (!pend.length) return showToast('Không có nhiệm vụ đang chờ', 'warning');
       const mpt = parseInt($('#mins-per-task').value) || 30, avail = Math.max(1, 24 - state.workHours - state.sleepHours), tpd = Math.max(1, Math.floor(avail * 60 / mpt));
       let day = 0, inDay = 0; pend.forEach(t => { if (inDay >= tpd) { day++; inDay = 0; } const d = new Date(); d.setDate(d.getDate() + day); t.dueDate = d.toISOString().split('T')[0]; inDay++; });
-      save(); showToast(`Distributed ${pend.length} tasks ✓`); renderPlanOverview(); renderPlans();
+      save(); showToast(`Đã phân phối ${pend.length} nhiệm vụ ✓`); renderPlanOverview(); renderPlans();
     };
 
-    // ── ANALYSIS ───────────────────────────────────────────────────────────
     const runAnalysis = () => {
-      const input = $('#ai-input').value.trim(); if (!input) return showToast('Paste content first', 'warning');
+      const input = $('#ai-input').value.trim(); if (!input) return showToast('Hãy dán nội dung trước', 'warning');
       const catId = parseInt($('#default-cat').value) || state.categories[0]?.id || 1;
-      $('#ana-result').innerHTML = '<div style="text-align:center;padding:32px"><i class="fas fa-spinner fa-spin" style="font-size:20px;color:var(--accent);display:block;margin-bottom:8px"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted)">Processing...</p></div>';
+      $('#ana-result').innerHTML = '<div style="text-align:center;padding:32px"><i class="fas fa-spinner fa-spin" style="font-size:20px;color:var(--accent);display:block;margin-bottom:8px"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted)">Đang xử lý...</p></div>';
       setTimeout(() => {
         const lines = input.split('\n').filter(l => l.trim().length > 2);
         const gen = lines.map((l, i) => ({ id: Date.now() + i, name: l.replace(/^[\d\.\-\s*#>]+/, '').trim(), catId, done: false, dueDate: '' })).filter(t => t.name.length > 1);
         state.tempTasks = gen;
-        $('#ana-count').textContent = `${gen.length} items`;
+        $('#ana-count').textContent = `${gen.length} mục`;
         $('#ana-result').innerHTML = `<div style="width:100%">
       ${gen.slice(0, 10).map(t => `<div class="task-item" style="margin-bottom:6px"><i class="fas fa-sparkles" style="color:var(--accent);font-size:10px"></i><span style="font-size:12px;font-weight:600;flex:1">${t.name}</span></div>`).join('')}
-      ${gen.length > 10 ? `<p style="font-size:10px;text-align:center;color:var(--muted);padding:6px 0">+ ${gen.length - 10} more</p>` : ''}
-      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px" onclick="confirmAnalysis()"><i class="fas fa-check"></i>Merge to Study Routes</button>
+      ${gen.length > 10 ? `<p style="font-size:10px;text-align:center;color:var(--muted);padding:6px 0">+ ${gen.length - 10} mục khác</p>` : ''}
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px" onclick="confirmAnalysis()"><i class="fas fa-check"></i>Thêm vào Lộ trình học</button>
     </div>`;
-        showToast(`${gen.length} tasks generated!`);
+        showToast(`Đã tạo ${gen.length} nhiệm vụ!`);
       }, 1000);
     };
-    const confirmAnalysis = () => { state.tasks = [...state.tasks, ...state.tempTasks]; state.tempTasks = []; save(); showToast('Merged ✓'); renderDashboard(); switchView('plans'); };
+    const confirmAnalysis = () => { state.tasks = [...state.tasks, ...state.tempTasks]; state.tempTasks = []; save(); showToast('Đã thêm thành công ✓'); renderDashboard(); switchView('plans'); };
 
-    // ── PLANS ──────────────────────────────────────────────────────────────
     const renderPlans = () => {
       const c = $('#plans-container');
-      if (!state.tasks.length) { c.innerHTML = `<div class="stat-card" style="text-align:center;padding:48px 20px;color:var(--muted)"><i class="fas fa-route" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase">No tasks yet. Use Analyzer or Add Task.</p></div>`; return; }
+      if (!state.tasks.length) { c.innerHTML = `<div class="stat-card" style="text-align:center;padding:48px 20px;color:var(--muted)"><i class="fas fa-route" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase">Chưa có nhiệm vụ. Dùng Phân tích tự động hoặc Thêm nhiệm vụ.</p></div>`; return; }
       const cats = [...new Set(state.tasks.map(t => t.catId))];
       c.innerHTML = cats.map(cid => {
         const cat = getCat(cid), ts = state.tasks.filter(t => t.catId == cid), done = ts.filter(t => t.done).length, pct = Math.round(done / ts.length * 100);
@@ -1496,48 +1459,46 @@
     </div>`;
       }).join('');
     };
-    const toggleTask = id => { const t = state.tasks.find(x => x.id == id); if (!t) return; t.done = !t.done; if (t.done) showToast('Task done! 🎉'); save(); renderDashboard(); renderPlans(); };
+    const toggleTask = id => { const t = state.tasks.find(x => x.id == id); if (!t) return; t.done = !t.done; if (t.done) showToast('Hoàn thành nhiệm vụ! 🎉'); save(); renderDashboard(); renderPlans(); };
     const openEditTask = id => { const t = state.tasks.find(x => x.id == id); if (!t) return; populateCatSelects(); $('#et-id').value = id; $('#et-name').value = t.name; $('#et-cat').value = t.catId; $('#et-date').value = t.dueDate || ''; openModal('edit-task'); };
-    const saveEditTask = () => { const id = parseInt($('#et-id').value), t = state.tasks.find(x => x.id == id); if (!t) return; t.name = $('#et-name').value.trim() || t.name; t.catId = parseInt($('#et-cat').value); t.dueDate = $('#et-date').value; closeModal(); save(); renderPlans(); showToast('Updated ✓'); };
-    const deleteTask = id => { if (!confirm('Delete this task?')) return; state.tasks = state.tasks.filter(x => x.id != id); delete state.reviewSchedule[id]; save(); renderPlans(); renderDashboard(); showToast('Deleted', 'danger'); };
+    const saveEditTask = () => { const id = parseInt($('#et-id').value), t = state.tasks.find(x => x.id == id); if (!t) return; t.name = $('#et-name').value.trim() || t.name; t.catId = parseInt($('#et-cat').value); t.dueDate = $('#et-date').value; closeModal(); save(); renderPlans(); showToast('Đã cập nhật ✓'); };
+    const deleteTask = id => { if (!confirm('Xoá nhiệm vụ này?')) return; state.tasks = state.tasks.filter(x => x.id != id); delete state.reviewSchedule[id]; save(); renderPlans(); renderDashboard(); showToast('Đã xoá', 'danger'); };
 
-    // ── REVIEW ─────────────────────────────────────────────────────────────
     const renderReview = () => {
       const td = todayStr(), sc = state.reviewSchedule, pend = state.tasks.filter(t => !t.done), mast = state.tasks.filter(t => t.done);
       const due = pend.filter(t => !sc[t.id] || sc[t.id].nextDate <= td), upcoming = pend.filter(t => sc[t.id] && sc[t.id].nextDate > td);
       $('#review-due').textContent = due.length; $('#review-upcoming').textContent = upcoming.length; $('#review-mastered').textContent = mast.length;
       const c = $('#review-container');
-      if (!state.tasks.length) { c.innerHTML = `<div class="stat-card" style="text-align:center;padding:48px;color:var(--muted)"><i class="fas fa-inbox" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase">No tasks yet</p></div>`; return; }
+      if (!state.tasks.length) { c.innerHTML = `<div class="stat-card" style="text-align:center;padding:48px;color:var(--muted)"><i class="fas fa-inbox" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase">Chưa có nhiệm vụ nào</p></div>`; return; }
       let html = '';
       if (due.length) {
-        html += `<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--danger);margin-bottom:8px">Due Now (${due.length})</div>`;
+        html += `<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--danger);margin-bottom:8px">Cần ôn ngay (${due.length})</div>`;
         html += due.map(t => {
           const cat = getCat(t.catId), iv = sc[t.id]?.interval || 1; return `<div class="review-card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <span class="cat-chip" style="background:${cat.color}20;color:${cat.color}">${cat.name}</span>
-        <span style="font-size:10px;color:var(--muted);font-weight:600">interval: ${iv}d</span>
+        <span style="font-size:10px;color:var(--muted);font-weight:600">khoảng cách: ${iv} ngày</span>
       </div>
       <p style="font-size:13px;font-weight:600;margin-bottom:12px">${t.name}</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary" style="font-size:11px;padding:7px 12px" onclick="reviewGotIt(${t.id})"><i class="fas fa-check"></i>Got it (+${iv * 2}d)</button>
-        <button class="btn btn-secondary" style="font-size:11px;padding:7px 12px" onclick="reviewAgain(${t.id})"><i class="fas fa-rotate-right"></i>Again (1d)</button>
-        <button class="btn btn-danger" style="font-size:11px;padding:7px 12px;margin-left:auto" onclick="markMastered(${t.id})"><i class="fas fa-trophy"></i>Mastered</button>
+        <button class="btn btn-primary" style="font-size:11px;padding:7px 12px" onclick="reviewGotIt(${t.id})"><i class="fas fa-check"></i>Nhớ rồi (+${iv * 2} ngày)</button>
+        <button class="btn btn-secondary" style="font-size:11px;padding:7px 12px" onclick="reviewAgain(${t.id})"><i class="fas fa-rotate-right"></i>Ôn lại (1 ngày)</button>
+        <button class="btn btn-danger" style="font-size:11px;padding:7px 12px;margin-left:auto" onclick="markMastered(${t.id})"><i class="fas fa-trophy"></i>Đã thuộc</button>
       </div>
     </div>`;
         }).join('');
       }
       if (upcoming.length) {
-        html += `<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--ember);margin:14px 0 8px">Upcoming (${upcoming.length})</div>`;
-        html += upcoming.map(t => { const cat = getCat(t.catId), dl = Math.ceil((new Date(sc[t.id].nextDate) - new Date(td)) / 86400000); return `<div class="task-item"><i class="fas fa-clock" style="color:var(--ember);font-size:13px"></i><span style="font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</span><span class="cat-chip flex-shrink-0" style="background:${cat.color}20;color:${cat.color}">${cat.name}</span><span class="day-badge flex-shrink-0">in ${dl}d</span></div>`; }).join('');
+        html += `<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--ember);margin:14px 0 8px">Sắp tới (${upcoming.length})</div>`;
+        html += upcoming.map(t => { const cat = getCat(t.catId), dl = Math.ceil((new Date(sc[t.id].nextDate) - new Date(td)) / 86400000); return `<div class="task-item"><i class="fas fa-clock" style="color:var(--ember);font-size:13px"></i><span style="font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</span><span class="cat-chip flex-shrink-0" style="background:${cat.color}20;color:${cat.color}">${cat.name}</span><span class="day-badge flex-shrink-0">sau ${dl} ngày</span></div>`; }).join('');
       }
-      if (!due.length && !upcoming.length) html = `<div class="stat-card" style="text-align:center;padding:48px;color:var(--muted)"><i class="fas fa-party-horn" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase">All caught up!</p></div>`;
+      if (!due.length && !upcoming.length) html = `<div class="stat-card" style="text-align:center;padding:48px;color:var(--muted)"><i class="fas fa-party-horn" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.2"></i><p style="font-size:10px;font-weight:700;text-transform:uppercase">Bạn đã ôn xong tất cả!</p></div>`;
       c.innerHTML = html;
     };
-    const reviewGotIt = id => { const prev = state.reviewSchedule[id] || { interval: 1 }, ni = Math.min(prev.interval * 2, 64), next = new Date(); next.setDate(next.getDate() + ni); state.reviewSchedule[id] = { nextDate: next.toISOString().split('T')[0], interval: ni }; save(); renderReview(); showToast(`In ${ni} days ✓`); };
-    const reviewAgain = id => { const next = new Date(); next.setDate(next.getDate() + 1); state.reviewSchedule[id] = { nextDate: next.toISOString().split('T')[0], interval: 1 }; save(); renderReview(); showToast('Tomorrow ⚠', 'warning'); };
-    const markMastered = id => { const t = state.tasks.find(x => x.id == id); if (t) { t.done = true; delete state.reviewSchedule[id]; } save(); renderReview(); renderDashboard(); showToast('Mastered! 🏆'); };
+    const reviewGotIt = id => { const prev = state.reviewSchedule[id] || { interval: 1 }, ni = Math.min(prev.interval * 2, 64), next = new Date(); next.setDate(next.getDate() + ni); state.reviewSchedule[id] = { nextDate: next.toISOString().split('T')[0], interval: ni }; save(); renderReview(); showToast(`Ôn lại sau ${ni} ngày ✓`); };
+    const reviewAgain = id => { const next = new Date(); next.setDate(next.getDate() + 1); state.reviewSchedule[id] = { nextDate: next.toISOString().split('T')[0], interval: 1 }; save(); renderReview(); showToast('Ôn lại ngày mai ⚠', 'warning'); };
+    const markMastered = id => { const t = state.tasks.find(x => x.id == id); if (t) { t.done = true; delete state.reviewSchedule[id]; } save(); renderReview(); renderDashboard(); showToast('Đã thuộc! 🏆'); };
 
-    // ── CATEGORIES ─────────────────────────────────────────────────────────
     const renderCategories = () => {
       const c = $('#categories-container');
       c.innerHTML = state.categories.map(cat => {
@@ -1549,28 +1510,26 @@
         </div>
         <div style="flex:1;min-width:0">
           <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${cat.name}</div>
-          <div style="font-size:11px;color:var(--muted)">${dn}/${cnt} done</div>
+          <div style="font-size:11px;color:var(--muted)">${dn}/${cnt} hoàn thành</div>
         </div>
       </div>
       <div class="progress-bar mb-3"><div class="progress-fill" style="width:${pct}%;background:${cat.color}"></div></div>
       <div style="display:flex;gap:6px">
-        <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:11px" onclick="openEditCat(${cat.id})"><i class="fas fa-pen" style="font-size:9px"></i>Edit</button>
-        <button class="btn btn-danger" style="flex:1;justify-content:center;font-size:11px" onclick="deleteCategory(${cat.id})"><i class="fas fa-trash" style="font-size:9px"></i>Delete</button>
+        <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:11px" onclick="openEditCat(${cat.id})"><i class="fas fa-pen" style="font-size:9px"></i>Sửa</button>
+        <button class="btn btn-danger" style="flex:1;justify-content:center;font-size:11px" onclick="deleteCategory(${cat.id})"><i class="fas fa-trash" style="font-size:9px"></i>Xoá</button>
       </div>
     </div>`;
       }).join('');
     };
-    const addCategory = () => { const name = $('#nc-name').value.trim(), color = $('#nc-color').value; if (!name) return showToast('Name required', 'warning'); state.categories.push({ id: Date.now(), name, color }); $('#nc-name').value = ''; closeModal(); save(); populateCatSelects(); renderCategories(); showToast('Created ✓'); };
+    const addCategory = () => { const name = $('#nc-name').value.trim(), color = $('#nc-color').value; if (!name) return showToast('Cần nhập tên danh mục', 'warning'); state.categories.push({ id: Date.now(), name, color }); $('#nc-name').value = ''; closeModal(); save(); populateCatSelects(); renderCategories(); showToast('Đã tạo ✓'); };
     const openEditCat = id => { const cat = state.categories.find(c => c.id == id); if (!cat) return; $('#ec-id').value = id; $('#ec-name').value = cat.name; $('#ec-color').value = cat.color; openModal('edit-category'); };
-    const saveEditCategory = () => { const id = parseInt($('#ec-id').value), cat = state.categories.find(c => c.id == id); if (!cat) return; cat.name = $('#ec-name').value.trim() || cat.name; cat.color = $('#ec-color').value; closeModal(); save(); populateCatSelects(); renderCategories(); renderDashboard(); showToast('Updated ✓'); };
-    const deleteCategory = id => { if (state.tasks.some(t => t.catId == id)) return showToast('Move tasks first', 'danger'); if (!confirm('Delete?')) return; state.categories = state.categories.filter(c => c.id != id); save(); populateCatSelects(); renderCategories(); showToast('Deleted', 'danger'); };
+    const saveEditCategory = () => { const id = parseInt($('#ec-id').value), cat = state.categories.find(c => c.id == id); if (!cat) return; cat.name = $('#ec-name').value.trim() || cat.name; cat.color = $('#ec-color').value; closeModal(); save(); populateCatSelects(); renderCategories(); renderDashboard(); showToast('Đã cập nhật ✓'); };
+    const deleteCategory = id => { if (state.tasks.some(t => t.catId == id)) return showToast('Di chuyển nhiệm vụ trước', 'danger'); if (!confirm('Xoá danh mục này?')) return; state.categories = state.categories.filter(c => c.id != id); save(); populateCatSelects(); renderCategories(); showToast('Đã xoá', 'danger'); };
 
-    // ── MODALS ─────────────────────────────────────────────────────────────
     const openModal = id => { populateCatSelects(); $(`#modal-${id}`).classList.add('active'); };
     const closeModal = () => $$('.modal-overlay').forEach(m => m.classList.remove('active'));
-    const saveTask = () => { const name = $('#mt-name').value.trim(), catId = parseInt($('#mt-cat').value), date = $('#mt-date').value; if (!name) return showToast('Name required', 'warning'); state.tasks.push({ id: Date.now(), name, catId, done: false, dueDate: date }); $('#mt-name').value = ''; $('#mt-date').value = ''; closeModal(); save(); renderDashboard(); renderPlans(); showToast('Added ✓'); };
+    const saveTask = () => { const name = $('#mt-name').value.trim(), catId = parseInt($('#mt-cat').value), date = $('#mt-date').value; if (!name) return showToast('Cần nhập tên nhiệm vụ', 'warning'); state.tasks.push({ id: Date.now(), name, catId, done: false, dueDate: date }); $('#mt-name').value = ''; $('#mt-date').value = ''; closeModal(); save(); renderDashboard(); renderPlans(); showToast('Đã thêm ✓'); };
 
-    // ── SAMPLE DATA ────────────────────────────────────────────────────────
     const SAMPLE_DATA = () => {
       const today = new Date(), fmt = n => { const d = new Date(today); d.setDate(d.getDate() + n); return d.toISOString().split('T')[0]; };
       return {
@@ -1581,12 +1540,12 @@
           { id: 1004, name: 'JLPT N2 - Từ vựng chủ đề y tế & sức khỏe', catId: 1, done: false, dueDate: fmt(1) },
           { id: 1005, name: 'JLPT N2 - Từ vựng chủ đề công nghệ & khoa học', catId: 1, done: false, dueDate: fmt(3) },
           { id: 1006, name: 'JLPT N2 - Từ vựng chủ đề văn hóa & nghệ thuật', catId: 1, done: false, dueDate: fmt(5) },
-          { id: 2001, name: 'Mẫu ngữ pháp ～にもかかわらず (despite)', catId: 2, done: true, dueDate: fmt(-4) },
-          { id: 2002, name: 'Mẫu ngữ pháp ～ものの (although)', catId: 2, done: true, dueDate: fmt(-2) },
-          { id: 2003, name: 'Mẫu ngữ pháp ～に対して (toward / in contrast)', catId: 2, done: false, dueDate: fmt(2) },
-          { id: 2004, name: 'Mẫu ngữ pháp ～に関して (regarding)', catId: 2, done: false, dueDate: fmt(4) },
-          { id: 2005, name: 'Mẫu ngữ pháp ～をめぐって (surrounding the issue)', catId: 2, done: false, dueDate: fmt(6) },
-          { id: 2006, name: 'Mẫu ngữ pháp ～に基づいて (based on)', catId: 2, done: false, dueDate: fmt(8) },
+          { id: 2001, name: 'Mẫu ngữ pháp ～にもかかわらず (mặc dù)', catId: 2, done: true, dueDate: fmt(-4) },
+          { id: 2002, name: 'Mẫu ngữ pháp ～ものの (tuy nhiên)', catId: 2, done: true, dueDate: fmt(-2) },
+          { id: 2003, name: 'Mẫu ngữ pháp ～に対して (đối với / trái lại)', catId: 2, done: false, dueDate: fmt(2) },
+          { id: 2004, name: 'Mẫu ngữ pháp ～に関して (liên quan đến)', catId: 2, done: false, dueDate: fmt(4) },
+          { id: 2005, name: 'Mẫu ngữ pháp ～をめぐって (xoay quanh vấn đề)', catId: 2, done: false, dueDate: fmt(6) },
+          { id: 2006, name: 'Mẫu ngữ pháp ～に基づいて (dựa trên)', catId: 2, done: false, dueDate: fmt(8) },
           { id: 3001, name: 'Luyện nghe: Hội thoại ngắn trong siêu thị', catId: 3, done: true, dueDate: fmt(-3) },
           { id: 3002, name: 'Luyện nghe: Thông báo tại nhà ga / sân bay', catId: 3, done: false, dueDate: fmt(3) },
           { id: 3003, name: 'Luyện nghe: Bản tin thời sự NHK Easy', catId: 3, done: false, dueDate: fmt(7) },
@@ -1594,25 +1553,24 @@
           { id: 4002, name: 'Đọc hiểu: Bài báo về văn hóa Nhật Bản', catId: 4, done: false, dueDate: fmt(4) },
           { id: 4003, name: 'Đọc hiểu: Đoạn văn mô tả số liệu / biểu đồ', catId: 4, done: false, dueDate: fmt(8) },
         ],
-        categories: [{ id: 1, name: 'Vocabulary', color: '#22c55e' }, { id: 2, name: 'Grammar', color: '#3b82f6' }, { id: 3, name: 'Listening', color: '#f59e0b' }, { id: 4, name: 'Reading', color: '#ef4444' }],
+        categories: [{ id: 1, name: 'Từ vựng', color: '#22c55e' }, { id: 2, name: 'Ngữ pháp', color: '#3b82f6' }, { id: 3, name: 'Nghe hiểu', color: '#f59e0b' }, { id: 4, name: 'Đọc hiểu', color: '#ef4444' }],
         streak: 5, studyTime: 4.2, lastStudyDate: fmt(-1), examDate: fmt(60), targetScore: 'JLPT N2', workHours: 8, sleepHours: 7,
         currentView: 'dashboard', timer: { active: false, time: 1500, mode: 'focus', sessions: 3, breaks: 2, totalFocusMin: 75 },
         tempTasks: [],
         reviewSchedule: { 1001: { nextDate: fmt(0), interval: 4 }, 1002: { nextDate: fmt(1), interval: 2 }, 2001: { nextDate: fmt(0), interval: 4 }, 3001: { nextDate: fmt(2), interval: 2 }, 4001: { nextDate: fmt(0), interval: 2 } },
-        milestones: [{ pct: 25, label: 'Starter' }, { pct: 50, label: 'Midway' }, { pct: 75, label: 'Advanced' }, { pct: 100, label: 'Mastered' }],
+        milestones: [{ pct: 25, label: 'Khởi đầu' }, { pct: 50, label: 'Nửa đường' }, { pct: 75, label: 'Nâng cao' }, { pct: 100, label: 'Thành thạo' }],
         lastMilestonePct: -1, onboardingDone: false
       };
     };
-    const resetDemo = () => { if (!confirm('Reset về demo mặc định?')) return; const f = SAMPLE_DATA(); f.onboardingDone = true; Object.assign(state, f); save(); populateCatSelects(); navTo('dashboard'); showToast('Reset ✓'); };
+    const resetDemo = () => { if (!confirm('Đặt lại về dữ liệu mẫu?')) return; const f = SAMPLE_DATA(); f.onboardingDone = true; Object.assign(state, f); save(); populateCatSelects(); navTo('dashboard'); showToast('Đã đặt lại ✓'); };
 
-    // ── ONBOARDING ─────────────────────────────────────────────────────────
     const OB_STEPS = [
-      { icon: '🎯', iconBg: 'rgba(34,197,94,.15)', title: 'Chào mừng đến StudyFlow!', desc: 'Lên kế hoạch học tập thông minh — phân tích tài liệu, theo dõi tiến độ theo thời gian thực.', extra: `<div class="ob-flow" style="margin-bottom:18px"><span class="ob-step-chip" style="color:var(--accent)"><i class="fas fa-bullseye"></i>Setup</span><span class="ob-arrow">→</span><span class="ob-step-chip"><i class="fas fa-wand-magic-sparkles"></i>Analyze</span><span class="ob-arrow">→</span><span class="ob-step-chip"><i class="fas fa-stopwatch"></i>Focus</span><span class="ob-arrow">→</span><span class="ob-step-chip"><i class="fas fa-brain-circuit"></i>Review</span></div>` },
-      { icon: '📅', iconBg: 'rgba(59,130,246,.15)', title: 'Setup & Goals', desc: 'Nhập ngày thi, mục tiêu và giờ rảnh. StudyFlow tự tính số task/ngày cần làm.', extra: '', nav: 'setup' },
-      { icon: '🪄', iconBg: 'rgba(168,85,247,.15)', title: 'Auto-Analyze', desc: 'Dán nội dung sách / syllabus vào ô Analyze. Hệ thống tự chia thành task nhỏ.', extra: '', nav: 'analysis' },
-      { icon: '⏱️', iconBg: 'rgba(245,158,11,.15)', title: 'Focus Timer', desc: '25 phút tập trung, 5 phút nghỉ. Thời gian học được ghi tự động.', extra: '', nav: 'pomodoro' },
-      { icon: '🧠', iconBg: 'rgba(239,68,68,.15)', title: 'Recall Box', desc: 'Ôn tập theo khoảng cách tăng dần (1→2→4→8 ngày). Got it tăng, Again reset.', extra: '', nav: 'review' },
-      { icon: '✅', iconBg: 'rgba(34,197,94,.15)', title: 'Sẵn sàng!', desc: 'Demo với dữ liệu JLPT N2. Khám phá các tab, hoặc Reset để bắt đầu từ đầu.', extra: `<div style="background:var(--bg2);border-radius:10px;padding:12px;font-size:12px;color:var(--fg2);text-align:left;margin-bottom:4px"><div style="font-weight:700;color:var(--fg);margin-bottom:6px">Sample data:</div><div style="display:flex;flex-direction:column;gap:4px"><div>📗 18 tasks JLPT N2 (7 done)</div><div>🔥 Streak 5 ngày · 4.2h học</div><div>📅 Ngày thi: 60 ngày nữa</div><div>🧠 5 items trong Recall Box</div></div></div>` }
+      { icon: '🎯', iconBg: 'rgba(34,197,94,.15)', title: 'Chào mừng đến StudyFlow!', desc: 'Lên kế hoạch học tập thông minh — phân tích tài liệu, theo dõi tiến độ theo thời gian thực.', extra: `<div class="ob-flow" style="margin-bottom:18px"><span class="ob-step-chip" style="color:var(--accent)"><i class="fas fa-bullseye"></i>Cài đặt</span><span class="ob-arrow">→</span><span class="ob-step-chip"><i class="fas fa-wand-magic-sparkles"></i>Phân tích</span><span class="ob-arrow">→</span><span class="ob-step-chip"><i class="fas fa-stopwatch"></i>Tập trung</span><span class="ob-arrow">→</span><span class="ob-step-chip"><i class="fas fa-brain-circuit"></i>Ôn tập</span></div>` },
+      { icon: '📅', iconBg: 'rgba(59,130,246,.15)', title: 'Cài đặt & Mục tiêu', desc: 'Nhập ngày thi, mục tiêu và giờ rảnh. StudyFlow tự tính số nhiệm vụ cần làm mỗi ngày.', extra: '', nav: 'setup' },
+      { icon: '🪄', iconBg: 'rgba(168,85,247,.15)', title: 'Tự động phân tích', desc: 'Dán nội dung sách hoặc đề cương vào ô Phân tích. Hệ thống tự chia thành các nhiệm vụ nhỏ.', extra: '', nav: 'analysis' },
+      { icon: '⏱️', iconBg: 'rgba(245,158,11,.15)', title: 'Hẹn giờ tập trung', desc: '25 phút tập trung, 5 phút nghỉ. Thời gian học được ghi lại tự động.', extra: '', nav: 'pomodoro' },
+      { icon: '🧠', iconBg: 'rgba(239,68,68,.15)', title: 'Hộp ôn tập', desc: 'Ôn tập theo khoảng cách tăng dần (1→2→4→8 ngày). Nhớ rồi tăng khoảng cách, Ôn lại đặt về 1 ngày.', extra: '', nav: 'review' },
+      { icon: '✅', iconBg: 'rgba(34,197,94,.15)', title: 'Sẵn sàng rồi!', desc: 'Dữ liệu mẫu JLPT N2 đang chờ bạn. Khám phá các tab hoặc Đặt lại để bắt đầu từ đầu.', extra: `<div style="background:var(--bg2);border-radius:10px;padding:12px;font-size:12px;color:var(--fg2);text-align:left;margin-bottom:4px"><div style="font-weight:700;color:var(--fg);margin-bottom:6px">Dữ liệu mẫu:</div><div style="display:flex;flex-direction:column;gap:4px"><div>📗 18 nhiệm vụ JLPT N2 (7 hoàn thành)</div><div>🔥 Chuỗi 5 ngày · Học 4.2 giờ</div><div>📅 Ngày thi: còn 60 ngày</div><div>🧠 5 mục trong Hộp ôn tập</div></div></div>` }
     ];
     let obStep = 0;
     const showOnboarding = () => { obStep = 0; renderObStep(); $('#ob-overlay').classList.add('active'); };
@@ -1628,7 +1586,6 @@
       $('#ob-skip').style.display = obStep === tot - 1 ? 'none' : '';
     };
 
-    // ── INIT ───────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
       const saved = localStorage.getItem('sf_v3');
       if (!saved) { Object.assign(state, SAMPLE_DATA()); save(); }
@@ -1638,12 +1595,10 @@
       setInterval(() => { if (state.currentView === 'dashboard') renderDashboard(); }, 60000);
       if (!state.onboardingDone) setTimeout(showOnboarding, 500);
 
-      // show sidebar close btn on mobile when drawer opens
       const sc = $('#sidebar-close');
       if (sc) sc.style.display = 'none';
     });
 
-    // swipe to close sidebar on mobile
     let touchStartX = 0;
     document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
     document.addEventListener('touchend', e => {
