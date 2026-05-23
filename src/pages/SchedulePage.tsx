@@ -15,7 +15,7 @@ interface Props {
   onTasksChange: (t: StudyTask[]) => void; onPlanChange: (p: StudyPlan | null) => void
 }
 
-export default function SchedulePage({ exams, syllabuses, freeSlots, tasks, plan, onTasksChange, onPlanChange }: Props) {
+export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tasks, plan, onTasksChange, onPlanChange }: Props) {
   const [warnings, setWarnings] = useState<ScheduleWarning[]>([])
   const [generating, setGenerating] = useState(false)
   const canGenerate = exams.length > 0 && syllabuses.length > 0 && freeSlots.length > 0

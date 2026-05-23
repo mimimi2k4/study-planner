@@ -9,8 +9,8 @@ import SchedulePage from './pages/SchedulePage'
 import TasksPage from './pages/TasksPage'
 import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan } from './types'
 import {
-  getExams, saveExams, addExam, deleteExam,
-  getSyllabuses, saveSyllabuses, addSyllabus, deleteSyllabus,
+  getExams, saveExams,
+  getSyllabuses, saveSyllabuses,
   getFreeSlots, saveFreeSlots,
   getTasks, saveTasks,
   getPlan, savePlan,

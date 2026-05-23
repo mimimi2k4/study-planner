@@ -152,7 +152,7 @@ export default function ScheduleView({ slots, exams, warnings, onRegenerate, onS
               style={{ gridTemplateColumns: '56px repeat(7, 1fr)', display: 'grid' }}
             >
               <div />
-              {weekDates.map((date, colIdx) => {
+              {weekDates.map((date, _colIdx) => {
                 const daySlots = slots.filter((s) => s.date === date)
                 return (
                   <div key={date} className="relative border-l border-transparent">
