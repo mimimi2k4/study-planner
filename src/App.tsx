@@ -1,106 +1,127 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
-import "./App.css";
+import { Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import Layout from './components/Layout/Layout'
+import DashboardPage from './pages/DashboardPage'
+import ExamsPage from './pages/ExamsPage'
+import SyllabusPage from './pages/SyllabusPage'
+import TimeSlotPage from './pages/TimeSlotPage'
+import SchedulePage from './pages/SchedulePage'
+import TasksPage from './pages/TasksPage'
+import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan } from './types'
+import {
+  getExams, saveExams, addExam, deleteExam,
+  getSyllabuses, saveSyllabuses, addSyllabus, deleteSyllabus,
+  getFreeSlots, saveFreeSlots,
+  getTasks, saveTasks,
+  getPlan, savePlan,
+} from './utils/storage'
 
-function App() {
-    const [count, setCount] = useState(0);
-
-    return (
-        <>
-            <section id="center">
-                <div className="hero">
-                    <img src={heroImg} className="base" width="170" height="179" alt="" />
-                    <img src={reactLogo} className="framework" alt="React logo" />
-                    <img src={viteLogo} className="vite" alt="Vite logo" />
-                </div>
-                <div>
-                    <h1>Get started</h1>
-                    <p>
-                        Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-                    </p>
-                </div>
-                <button
-                    type="button"
-                    className="counter"
-                    onClick={() => setCount((count) => count + 1)}
-                >
-                    Count is {count}
-                </button>
-            </section>
-
-            <div className="ticks"></div>
-
-            <section id="next-steps">
-                <div id="docs">
-                    <svg className="icon" role="presentation" aria-hidden="true">
-                        <use href="/icons.svg#documentation-icon"></use>
-                    </svg>
-                    <h2>Documentation</h2>
-                    <p>Your questions, answered</p>
-                    <ul>
-                        <li>
-                            <a href="https://vite.dev/" target="_blank">
-                                <img className="logo" src={viteLogo} alt="" />
-                                Explore Vite
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://react.dev/" target="_blank">
-                                <img className="button-icon" src={reactLogo} alt="" />
-                                Learn more
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div id="social">
-                    <svg className="icon" role="presentation" aria-hidden="true">
-                        <use href="/icons.svg#social-icon"></use>
-                    </svg>
-                    <h2>Connect with us</h2>
-                    <p>Join the Vite community</p>
-                    <ul>
-                        <li>
-                            <a href="https://github.com/vitejs/vite" target="_blank">
-                                <svg className="button-icon" role="presentation" aria-hidden="true">
-                                    <use href="/icons.svg#github-icon"></use>
-                                </svg>
-                                GitHub
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://chat.vite.dev/" target="_blank">
-                                <svg className="button-icon" role="presentation" aria-hidden="true">
-                                    <use href="/icons.svg#discord-icon"></use>
-                                </svg>
-                                Discord
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://x.com/vite_js" target="_blank">
-                                <svg className="button-icon" role="presentation" aria-hidden="true">
-                                    <use href="/icons.svg#x-icon"></use>
-                                </svg>
-                                X.com
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                                <svg className="button-icon" role="presentation" aria-hidden="true">
-                                    <use href="/icons.svg#bluesky-icon"></use>
-                                </svg>
-                                Bluesky
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </section>
-
-            <div className="ticks"></div>
-            <section id="spacer"></section>
-        </>
-    );
+function calcFreeHours(slots: FreeSlot[]): number {
+  return slots.reduce((sum, s) => {
+    const [sh, sm] = s.startTime.split(':').map(Number)
+    const [eh, em] = s.endTime.split(':').map(Number)
+    return sum + (eh * 60 + em - sh * 60 - sm) / 60
+  }, 0)
 }
 
-export default App;
+export default function App() {
+  const [exams, setExams] = useState<ExamInfo[]>(() => getExams())
+  const [syllabuses, setSyllabuses] = useState<Syllabus[]>(() => getSyllabuses())
+  const [freeSlots, setFreeSlots] = useState<FreeSlot[]>(() => getFreeSlots())
+  const [tasks, setTasks] = useState<StudyTask[]>(() => getTasks())
+  const [plan, setPlan] = useState<StudyPlan | null>(() => getPlan())
+
+  // Sync state changes to storage
+  useEffect(() => { saveExams(exams) }, [exams])
+  useEffect(() => { saveSyllabuses(syllabuses) }, [syllabuses])
+  useEffect(() => { saveFreeSlots(freeSlots) }, [freeSlots])
+  useEffect(() => { saveTasks(tasks) }, [tasks])
+  useEffect(() => { if (plan) savePlan(plan) }, [plan])
+
+  function handleAddExam(exam: ExamInfo) {
+    setExams((prev) => [...prev, exam])
+  }
+  function handleUpdateExam(exam: ExamInfo) {
+    setExams((prev) => prev.map((e) => (e.id === exam.id ? exam : e)))
+  }
+  function handleDeleteExam(id: string) {
+    setExams((prev) => prev.filter((e) => e.id !== id))
+    setSyllabuses((prev) => prev.filter((s) => s.subjectId !== id))
+    setTasks((prev) => prev.filter((t) => t.subjectId !== id))
+  }
+
+  function handleAddSyllabus(s: Syllabus) {
+    setSyllabuses((prev) => [...prev, s])
+  }
+  function handleUpdateSyllabus(s: Syllabus) {
+    setSyllabuses((prev) => prev.map((x) => (x.id === s.id ? s : x)))
+  }
+  function handleDeleteSyllabus(id: string) {
+    setSyllabuses((prev) => prev.filter((s) => s.id !== id))
+  }
+
+  const freeHoursPerWeek = calcFreeHours(freeSlots)
+
+  return (
+    <Layout>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <DashboardPage
+              exams={exams}
+              syllabuses={syllabuses}
+              tasks={tasks}
+              plan={plan}
+              freeHoursPerWeek={freeHoursPerWeek}
+            />
+          }
+        />
+        <Route
+          path="/exams"
+          element={
+            <ExamsPage exams={exams} tasks={tasks} onAdd={handleAddExam} onUpdate={handleUpdateExam} onDelete={handleDeleteExam} />
+          }
+        />
+        <Route
+          path="/syllabus"
+          element={
+            <SyllabusPage
+              syllabuses={syllabuses}
+              exams={exams}
+              onAdd={handleAddSyllabus}
+              onUpdate={handleUpdateSyllabus}
+              onDelete={handleDeleteSyllabus}
+            />
+          }
+        />
+        <Route
+          path="/timeslots"
+          element={
+            <TimeSlotPage freeSlots={freeSlots} onSave={setFreeSlots} />
+          }
+        />
+        <Route
+          path="/schedule"
+          element={
+            <SchedulePage
+              exams={exams}
+              syllabuses={syllabuses}
+              freeSlots={freeSlots}
+              tasks={tasks}
+              plan={plan}
+              onTasksChange={setTasks}
+              onPlanChange={setPlan}
+            />
+          }
+        />
+        <Route
+          path="/tasks"
+          element={
+            <TasksPage tasks={tasks} exams={exams} onTasksChange={setTasks} />
+          }
+        />
+      </Routes>
+    </Layout>
+  )
+}
