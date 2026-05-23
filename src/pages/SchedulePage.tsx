@@ -1,8 +1,8 @@
 
 import { useState } from 'react'
-import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot } from '../types'
-import { Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react'
-import ScheduleView from '../components/ScheduleView/ScheduleView'
+import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan } from '../types'
+import { Sparkles, AlertCircle, CheckCircle2, AlertTriangle } from 'lucide-react'
+import Timetable from '../components/Timetable/Timetable'
 import { analyzeAndGenerateTasks } from '../utils/aiAnalyzer'
 import { generateSchedule } from '../utils/scheduler'
 import { saveTasks, savePlan } from '../utils/storage'
@@ -80,13 +80,23 @@ export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tas
         </div>
       )}
 
-      <ScheduleView slots={plan?.slots ?? []} exams={exams} warnings={warnings}
-        onRegenerate={doGenerate}
-        onSlotsChange={(slots: ScheduleSlot[]) => {
-          if (!plan) return
-          const u = { ...plan, slots, manualEdited: true }
-          savePlan(u); onPlanChange(u)
-        }} />
+      <Timetable slots={plan?.slots ?? []} loading={generating} onRegenerate={doGenerate} />
+
+      {warnings.length > 0 && (
+        <div className="space-y-2">
+          {warnings.map((w, i) => (
+            <div key={i} className={`flex items-start gap-3 p-4 rounded-xl text-sm ${
+              w.type === 'insufficient_time' ? 'bg-amber-50 text-amber-800' : 'bg-red-50 text-red-700'
+            }`}>
+              <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+              <div>
+                <p className="font-medium">{w.message}</p>
+                {w.suggestion && <p className="mt-0.5 text-xs opacity-80">{w.suggestion}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -73,6 +73,15 @@ export interface ExamCountdownResult {
   isOverdue: boolean
 }
 
+export interface TimetableSlot {
+  date: string        // "YYYY-MM-DD"
+  startTime: string   // "HH:mm"
+  endTime: string     // "HH:mm"
+  taskName: string
+  subjectName: string
+  color: string
+}
+
 export interface ScheduleWarning {
   type: 'insufficient_time' | 'no_slots' | 'past_exam'
   message: string
