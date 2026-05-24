@@ -5,17 +5,16 @@ import { Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react'
 import ScheduleView from '../components/ScheduleView/ScheduleView'
 import { analyzeAndGenerateTasks } from '../utils/aiAnalyzer'
 import { generateSchedule } from '../utils/scheduler'
-import { saveTasks, savePlan } from '../utils/storage'
 import type { ScheduleWarning } from '../types'
 import PageHeader from '../components/PageHeader'
 
-interface Props {
+export interface SchedulePageProps {
   exams: ExamInfo[]; syllabuses: Syllabus[]; freeSlots: FreeSlot[]
   tasks: StudyTask[]; plan: StudyPlan | null
   onTasksChange: (t: StudyTask[]) => void; onPlanChange: (p: StudyPlan | null) => void
 }
 
-export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tasks, plan, onTasksChange, onPlanChange }: Props) {
+export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tasks, plan, onTasksChange, onPlanChange }: SchedulePageProps) {
   const [warnings, setWarnings] = useState<ScheduleWarning[]>([])
   const [generating, setGenerating] = useState(false)
   const canGenerate = exams.length > 0 && syllabuses.length > 0 && freeSlots.length > 0
@@ -26,9 +25,9 @@ export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tas
       const colorMap: Record<string, string> = {}
       exams.forEach((e) => { colorMap[e.id] = e.color })
       const t = analyzeAndGenerateTasks(syllabuses, colorMap)
-      saveTasks(t); onTasksChange(t)
+      onTasksChange(t)
       const { plan: p, warnings: w } = generateSchedule(t, freeSlots, exams)
-      savePlan(p); onPlanChange(p); setWarnings(w); setGenerating(false)
+      onPlanChange(p); setWarnings(w); setGenerating(false)
     }, 900)
   }
 
@@ -84,8 +83,7 @@ export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tas
         onRegenerate={doGenerate}
         onSlotsChange={(slots: ScheduleSlot[]) => {
           if (!plan) return
-          const u = { ...plan, slots, manualEdited: true }
-          savePlan(u); onPlanChange(u)
+          onPlanChange({ ...plan, slots, manualEdited: true })
         }} />
     </div>
   )

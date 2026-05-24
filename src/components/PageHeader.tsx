@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react'
 
-interface Props {
+export interface PageHeaderProps {
   emoji: string
   title: string
   subtitle: string
   action?: ReactNode
 }
 
-export default function PageHeader({ emoji, title, subtitle, action }: Props) {
+export default function PageHeader({ emoji, title, subtitle, action }: PageHeaderProps) {
   return (
     <div className="flex items-start justify-between gap-4 flex-wrap">
       <div className="flex items-center gap-4">

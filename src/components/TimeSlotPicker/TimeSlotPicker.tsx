@@ -1,69 +1,11 @@
 import { useState, useCallback } from 'react'
-import type { FreeSlot } from '../../types'
 import { AlertCircle, Clock, RefreshCw, Save } from 'lucide-react'
+import type { TimeSlotPickerProps } from './types'
+import { ZONE, DAYS, DAYS_SHORT } from './constants'
+import { SLOTS, buildGrid, gridToSlots, rowZone, slotToTime, timeToSlot, totalHours } from '../../utils/timeSlot'
 
-const DAYS       = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
-const DAYS_SHORT = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
-const START_HOUR = 6
-const END_HOUR   = 23
-const SLOTS      = (END_HOUR - START_HOUR) * 2
-
-function rowZone(row: number): 'morning' | 'afternoon' | 'evening' {
-  const hour = START_HOUR + Math.floor(row / 2)
-  if (hour < 12) return 'morning'
-  if (hour < 18) return 'afternoon'
-  return 'evening'
-}
-
-const ZONE: Record<string, { bg: string; selBg: string; labelColor: string; name: string; legendBorder: string }> = {
-  morning:   { bg: '#fffbeb', selBg: '#f59e0b', labelColor: '#92400e', name: 'Sáng',  legendBorder: '#fbbf24' },
-  afternoon: { bg: '#eff6ff', selBg: '#2563eb', labelColor: '#1e3a8a', name: 'Chiều', legendBorder: '#60a5fa' },
-  evening:   { bg: '#fff1f2', selBg: '#e11d48', labelColor: '#881337', name: 'Tối',   legendBorder: '#fda4af' },
-}
-
-function slotToTime(slot: number): string {
-  const m = START_HOUR * 60 + slot * 30
-  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
-}
-function timeToSlot(t: string): number {
-  const [h, m] = t.split(':').map(Number)
-  return (h - START_HOUR) * 2 + Math.floor(m / 30)
-}
-function buildGrid(freeSlots: FreeSlot[]): boolean[][] {
-  const g: boolean[][] = Array.from({ length: SLOTS }, () => new Array(7).fill(false))
-  for (const s of freeSlots) {
-    const from = timeToSlot(s.startTime), to = timeToSlot(s.endTime)
-    for (let r = from; r < to; r++) if (r >= 0 && r < SLOTS) g[r][s.day] = true
-  }
-  return g
-}
-function gridToSlots(grid: boolean[][]): FreeSlot[] {
-  const slots: FreeSlot[] = []
-  for (let day = 0; day < 7; day++) {
-    let start: number | null = null
-    for (let row = 0; row <= SLOTS; row++) {
-      const sel = row < SLOTS && grid[row][day]
-      if (sel && start === null) start = row
-      else if (!sel && start !== null) {
-        slots.push({ day, startTime: slotToTime(start), endTime: slotToTime(row) })
-        start = null
-      }
-    }
-  }
-  return slots
-}
-function totalHours(slots: FreeSlot[]): number {
-  return slots.reduce((s, x) => {
-    const [sh, sm] = x.startTime.split(':').map(Number)
-    const [eh, em] = x.endTime.split(':').map(Number)
-    return s + (eh * 60 + em - sh * 60 - sm) / 60
-  }, 0)
-}
-
-interface Props { freeSlots: FreeSlot[]; onSave: (s: FreeSlot[]) => void }
-
-export default function TimeSlotPicker({ freeSlots, onSave }: Props) {
-  const [grid, setGrid]       = useState<boolean[][]>(() => buildGrid(freeSlots))
+export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProps) {
+  const [grid, setGrid]         = useState<boolean[][]>(() => buildGrid(freeSlots))
   const [dragging, setDragging] = useState(false)
   const [dragVal, setDragVal]   = useState(false)
   const [error, setError]       = useState('')
@@ -81,7 +23,10 @@ export default function TimeSlotPicker({ freeSlots, onSave }: Props) {
   function handleSave() {
     const slots = gridToSlots(grid)
     if (slots.length === 0) { setError('Vui lòng chọn ít nhất một khung giờ rảnh'); return }
-    setError(''); onSave(slots); setSaved(true); setTimeout(() => setSaved(false), 3000)
+    setError('')
+    onSave(slots)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 3000)
   }
 
   const current    = gridToSlots(grid)
@@ -157,7 +102,6 @@ export default function TimeSlotPicker({ freeSlots, onSave }: Props) {
                 const isHourBorder = row % 2 === 0
                 return (
                   <div key={row} className="grid" style={{ gridTemplateColumns: '64px repeat(7, 1fr)', height: 24 }}>
-                    {/* Time label */}
                     <div className="flex items-center justify-end pr-3 border-r border-slate-100"
                       style={{ background: z.bg }}>
                       {showLabel && (
@@ -166,7 +110,6 @@ export default function TimeSlotPicker({ freeSlots, onSave }: Props) {
                         </span>
                       )}
                     </div>
-                    {/* Day cells */}
                     {Array.from({ length: 7 }, (_, col) => {
                       const sel = grid[row][col]
                       return (

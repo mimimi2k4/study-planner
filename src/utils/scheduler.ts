@@ -1,5 +1,6 @@
 import type { StudyTask, FreeSlot, ExamInfo, ScheduleSlot, ScheduleWarning, StudyPlan } from '../types'
 import { nanoid } from './nanoid'
+import { formatDate } from './schedule'
 
 function addMinutes(time: string, minutes: number): string {
   const [h, m] = time.split(':').map(Number)
@@ -12,10 +13,6 @@ function addMinutes(time: string, minutes: number): string {
 function timeToMinutes(time: string): number {
   const [h, m] = time.split(':').map(Number)
   return h * 60 + m
-}
-
-function formatDate(date: Date): string {
-  return date.toISOString().slice(0, 10)
 }
 
 // Returns all dates in [start, end) that fall on a given weekday (0=Mon, 6=Sun)

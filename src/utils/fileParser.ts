@@ -1,21 +1,14 @@
-import type { DifficultyLevel } from '../types'
+import type { Chapter } from '../types'
 import { nanoid } from './nanoid'
 
-export interface ParsedChapter {
-  id: string
-  name: string
-  difficulty: DifficultyLevel
-  importance: DifficultyLevel
-}
-
-function linesToChapters(lines: string[]): ParsedChapter[] {
+function linesToChapters(lines: string[]): Chapter[] {
   return lines
     .map((l) => l.replace(/^[\d\.\-\*・･•]+\s*/u, '').trim())
     .filter((l) => l.length > 1)
     .map((l) => ({ id: nanoid(), name: l, difficulty: 'medium', importance: 'medium' }))
 }
 
-async function parsePDF(buffer: ArrayBuffer): Promise<ParsedChapter[]> {
+async function parsePDF(buffer: ArrayBuffer): Promise<Chapter[]> {
   const pdfjsLib = await import('pdfjs-dist')
   pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -35,27 +28,27 @@ async function parsePDF(buffer: ArrayBuffer): Promise<ParsedChapter[]> {
   return linesToChapters(fullText.split(/\n|\r/))
 }
 
-async function parseDOCX(buffer: ArrayBuffer): Promise<ParsedChapter[]> {
+async function parseDOCX(buffer: ArrayBuffer): Promise<Chapter[]> {
   const mammoth = await import('mammoth')
   const result = await mammoth.extractRawText({ arrayBuffer: buffer })
   return linesToChapters(result.value.split(/\n|\r/))
 }
 
-function parseTXT(text: string): ParsedChapter[] {
+function parseTXT(text: string): Chapter[] {
   return linesToChapters(text.split(/\n|\r/))
 }
 
-function parseJSON(text: string): ParsedChapter[] {
+function parseJSON(text: string): Chapter[] {
   try {
     const data = JSON.parse(text)
     if (!Array.isArray(data)) return []
     return data.map((item) => {
-      if (typeof item === 'string') return { id: nanoid(), name: item, difficulty: 'medium' as DifficultyLevel, importance: 'medium' as DifficultyLevel }
+      if (typeof item === 'string') return { id: nanoid(), name: item, difficulty: 'medium', importance: 'medium' }
       return {
         id: nanoid(),
         name: item.name ?? item.title ?? String(item),
-        difficulty: (item.difficulty ?? 'medium') as DifficultyLevel,
-        importance: (item.importance ?? item.priority ?? 'medium') as DifficultyLevel,
+        difficulty: item.difficulty ?? 'medium',
+        importance: item.importance ?? item.priority ?? 'medium',
       }
     })
   } catch {
@@ -63,7 +56,7 @@ function parseJSON(text: string): ParsedChapter[] {
   }
 }
 
-export async function parseFileToChapters(file: File): Promise<ParsedChapter[]> {
+export async function parseFileToChapters(file: File): Promise<Chapter[]> {
   const name = file.name.toLowerCase()
   const buffer = await file.arrayBuffer()
 

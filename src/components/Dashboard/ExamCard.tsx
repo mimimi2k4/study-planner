@@ -5,9 +5,9 @@ const FORMAT_LABELS: Record<string, string> = {
   multiple_choice: 'Trắc nghiệm', essay: 'Tự luận', combined: 'Kết hợp',
 }
 
-interface Props { exam: ExamInfo; countdown: ExamCountdownResult | null }
+export interface ExamCardProps { exam: ExamInfo; countdown: ExamCountdownResult | null }
 
-export default function ExamCard({ exam, countdown }: Props) {
+export default function ExamCard({ exam, countdown }: ExamCardProps) {
   const urgent  = countdown && !countdown.isOverdue && countdown.daysLeft <= 7
   const overdue = countdown?.isOverdue
 

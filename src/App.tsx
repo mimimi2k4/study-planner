@@ -15,14 +15,7 @@ import {
   getTasks, saveTasks,
   getPlan, savePlan,
 } from './utils/storage'
-
-function calcFreeHours(slots: FreeSlot[]): number {
-  return slots.reduce((sum, s) => {
-    const [sh, sm] = s.startTime.split(':').map(Number)
-    const [eh, em] = s.endTime.split(':').map(Number)
-    return sum + (eh * 60 + em - sh * 60 - sm) / 60
-  }, 0)
-}
+import { totalHours } from './utils/timeSlot'
 
 export default function App() {
   const [exams, setExams] = useState<ExamInfo[]>(() => getExams())
@@ -60,7 +53,7 @@ export default function App() {
     setSyllabuses((prev) => prev.filter((s) => s.id !== id))
   }
 
-  const freeHoursPerWeek = calcFreeHours(freeSlots)
+  const freeHoursPerWeek = totalHours(freeSlots)
 
   return (
     <Layout>

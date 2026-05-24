@@ -1,43 +1,27 @@
 import { useState } from 'react'
 import { Plus, Trash2, AlertCircle, Clock, Target, Pencil, X } from 'lucide-react'
-import type { ExamInfo, ExamFormat, StudyTask } from '../../types'
-import { nanoid } from '../../utils/nanoid'
-import { getSubjectColor } from '../../utils/colors'
+import type { ExamInfo } from '../../types'
+import type { ExamFormProps, ExamFormState, ExamFormErrors } from './types'
+import { DEFAULT_EXAM_FORM_STATE, validateExamForm } from './types'
 import { useAllExamsCountdown } from '../../hooks/useExamCountdown'
 
-const FORMAT_OPTIONS: { value: ExamFormat; label: string; emoji: string }[] = [
-  { value: 'multiple_choice', label: 'Trắc nghiệm', emoji: '☑️' },
-  { value: 'essay',           label: 'Tự luận',     emoji: '✍️' },
-  { value: 'combined',        label: 'Kết hợp',     emoji: '📋' },
+const FORMAT_OPTIONS = [
+  { value: 'multiple_choice' as const, label: 'Trắc nghiệm', emoji: '☑️' },
+  { value: 'essay'           as const, label: 'Tự luận',     emoji: '✍️' },
+  { value: 'combined'        as const, label: 'Kết hợp',     emoji: '📋' },
 ]
 
-interface FormState { subjectName: string; examDateTime: string; examFormat: ExamFormat; targetScore: string }
-const EMPTY: FormState = { subjectName: '', examDateTime: '', examFormat: 'multiple_choice', targetScore: '8' }
-interface Errors { subjectName?: string; examDateTime?: string; targetScore?: string }
-interface Props { exams: ExamInfo[]; tasks: StudyTask[]; onAdd: (e: ExamInfo) => void; onUpdate: (e: ExamInfo) => void; onDelete: (id: string) => void }
-
-function validate(f: FormState): Errors {
-  const e: Errors = {}
-  if (!f.subjectName.trim()) e.subjectName = 'Vui lòng nhập tên môn thi'
-  if (!f.examDateTime) e.examDateTime = 'Vui lòng chọn ngày giờ thi'
-  else if (new Date(f.examDateTime) <= new Date()) e.examDateTime = 'Ngày thi phải là ngày trong tương lai'
-  const s = Number(f.targetScore)
-  if (isNaN(s) || s < 0 || s > 10) e.targetScore = 'Điểm mục tiêu phải từ 0 đến 10'
-  return e
-}
-
-export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Props) {
-  const [form, setForm] = useState<FormState>(EMPTY)
-  const [errors, setErrors] = useState<Errors>({})
+export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: ExamFormProps) {
+  const [form, setForm]         = useState<ExamFormState>(DEFAULT_EXAM_FORM_STATE)
+  const [errors, setErrors]     = useState<ExamFormErrors>({})
   const [submitted, setSubmitted] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editingColor, setEditingColor] = useState<string>('')
   const countdowns = useAllExamsCountdown(exams, tasks)
 
-  function set(field: keyof FormState, value: string) {
+  function set(field: keyof ExamFormState, value: string) {
     const next = { ...form, [field]: value }
     setForm(next)
-    if (submitted) setErrors(validate(next))
+    if (submitted) setErrors(validateExamForm(next))
   }
 
   function handleEdit(exam: ExamInfo) {
@@ -48,36 +32,27 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Pr
       targetScore: String(exam.targetScore),
     })
     setEditingId(exam.id)
-    setEditingColor(exam.color)
     setErrors({}); setSubmitted(false)
   }
 
   function handleCancel() {
-    setForm(EMPTY); setErrors({}); setSubmitted(false)
-    setEditingId(null); setEditingColor('')
+    setForm(DEFAULT_EXAM_FORM_STATE); setErrors({}); setSubmitted(false)
+    setEditingId(null)
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSubmitted(true)
-    const errs = validate(form)
+    const errs = validateExamForm(form)
     setErrors(errs)
     if (Object.keys(errs).length > 0) return
     if (editingId) {
-      onUpdate({
-        id: editingId, subjectName: form.subjectName.trim(),
-        examDateTime: form.examDateTime, examFormat: form.examFormat,
-        targetScore: Number(form.targetScore), color: editingColor,
-      })
-      setEditingId(null); setEditingColor('')
+      onUpdate(editingId, form)
+      setEditingId(null)
     } else {
-      onAdd({
-        id: nanoid(), subjectName: form.subjectName.trim(),
-        examDateTime: form.examDateTime, examFormat: form.examFormat,
-        targetScore: Number(form.targetScore), color: getSubjectColor(exams.length),
-      })
+      onAdd(form)
     }
-    setForm(EMPTY); setErrors({}); setSubmitted(false)
+    setForm(DEFAULT_EXAM_FORM_STATE); setErrors({}); setSubmitted(false)
   }
 
   const score = Number(form.targetScore)
@@ -266,15 +241,11 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Pr
                           : '0 2px 8px rgba(109,40,217,0.05)',
                         background: '#fff',
                       }}>
-                      {/* Left color strip */}
                       <div className="w-1.5 shrink-0" style={{ background: exam.color }} />
 
-                      {/* Content */}
                       <div className="flex-1 p-5">
-                        {/* Name + actions */}
                         <div className="flex items-start justify-between gap-3">
-                          <p className="font-black text-slate-800 leading-snug"
-                            style={{ fontSize: 16 }}>
+                          <p className="font-black text-slate-800 leading-snug" style={{ fontSize: 16 }}>
                             {exam.subjectName}
                           </p>
                           <div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -297,7 +268,6 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Pr
                           </div>
                         </div>
 
-                        {/* Info chips */}
                         <div className="mt-3 flex flex-wrap gap-2">
                           <span className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1"
                             style={{ fontSize: 13, fontWeight: 500, background: '#f8fafc', color: '#475569' }}>
@@ -314,7 +284,6 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Pr
                           </span>
                         </div>
 
-                        {/* Countdown block */}
                         {cd && (
                           <div className="mt-3 rounded-xl px-4 py-3"
                             style={{ background: cd.isOverdue ? '#fff1f2' : exam.color + '0e' }}>

@@ -1,52 +1,13 @@
 import { useState } from 'react'
-import type { ScheduleSlot, ExamInfo } from '../../types'
 import { ChevronLeft, ChevronRight, RefreshCw, Calendar, AlertTriangle } from 'lucide-react'
 import { hexToRgba } from '../../utils/colors'
-import { executePlanAction } from '../../utils/storage'
-import type { ScheduleWarning } from '../../types'
+import { getWeekStart, formatDate, addDays, timeToFraction, slotHeightPercent } from '../../utils/schedule'
+import type { ScheduleViewProps } from './types'
 
 const DAYS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
 const HOURS = Array.from({ length: 18 }, (_, i) => i + 6) // 6:00–23:00
 
-function getWeekStart(date: Date): Date {
-  const d = new Date(date)
-  const day = d.getDay()
-  const diff = day === 0 ? -6 : 1 - day
-  d.setDate(d.getDate() + diff)
-  d.setHours(0, 0, 0, 0)
-  return d
-}
-
-function formatDate(date: Date): string {
-  return date.toISOString().slice(0, 10)
-}
-
-function addDays(date: Date, n: number): Date {
-  const d = new Date(date)
-  d.setDate(d.getDate() + n)
-  return d
-}
-
-function timeToFraction(time: string): number {
-  const [h, m] = time.split(':').map(Number)
-  return (h - 6 + m / 60) / 17 // 17 hours total (6–23)
-}
-
-function slotHeightPercent(start: string, end: string): number {
-  const [sh, sm] = start.split(':').map(Number)
-  const [eh, em] = end.split(':').map(Number)
-  return ((eh * 60 + em - sh * 60 - sm) / 60 / 17) * 100
-}
-
-interface Props {
-  slots: ScheduleSlot[]
-  exams: ExamInfo[]
-  warnings: ScheduleWarning[]
-  onRegenerate: () => void
-  onSlotsChange: (slots: ScheduleSlot[]) => void
-}
-
-export default function ScheduleView({ slots, exams, warnings, onRegenerate, onSlotsChange }: Props) {
+export default function ScheduleView({ slots, exams, warnings, onRegenerate, onSlotsChange }: ScheduleViewProps) {
   const [weekStart, setWeekStart] = useState<Date>(() => getWeekStart(new Date()))
 
   const weekDates = Array.from({ length: 7 }, (_, i) => formatDate(addDays(weekStart, i)))
@@ -58,7 +19,6 @@ export default function ScheduleView({ slots, exams, warnings, onRegenerate, onS
   const todayStr = formatDate(new Date())
 
   function handleDeleteSlot(slotId: string) {
-    executePlanAction('delete_task', { slotId })
     onSlotsChange(slots.filter((s) => s.id !== slotId))
   }
 
