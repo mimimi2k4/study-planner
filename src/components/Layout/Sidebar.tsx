@@ -10,9 +10,9 @@ const NAV = [
   { to: '/tasks',     icon: CheckSquare,     label: 'Nhiệm vụ',   emoji: '✅' },
 ]
 
-interface Props { width: number }
+export interface SidebarProps { width: number }
 
-export default function Sidebar({ width }: Props) {
+export default function Sidebar({ width }: SidebarProps) {
   return (
     <aside
       className="fixed left-0 top-0 h-screen flex flex-col z-50"

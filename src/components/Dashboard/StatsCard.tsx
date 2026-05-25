@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-interface Props {
+export interface StatsCardProps {
   icon: ReactNode
   iconLarge: ReactNode
   label: string
@@ -12,7 +12,7 @@ interface Props {
   accentColor?: string
 }
 
-export default function StatsCard({ icon, iconLarge, label, value, sub, gradient, shadow, dark, accentColor }: Props) {
+export default function StatsCard({ icon, iconLarge, label, value, sub, gradient, shadow, dark, accentColor }: StatsCardProps) {
   const txt      = dark ? (accentColor ?? '#1e1b4b')         : '#fff'
   const txtLabel = dark ? (accentColor ?? '#1e1b4b') + 'b3'  : 'rgba(255,255,255,0.80)'
   const txtSub   = dark ? '#64748b'                           : 'rgba(255,255,255,0.52)'

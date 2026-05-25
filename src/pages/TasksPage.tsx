@@ -1,6 +1,5 @@
 import type { StudyTask, ExamInfo } from '../types'
 import { CheckSquare, Circle, Clock, Sparkles } from 'lucide-react'
-import { saveTasks } from '../utils/storage'
 import PageHeader from '../components/PageHeader'
 
 const P_LABEL: Record<string, string> = { high: 'Cao', medium: 'TB', low: 'Thấp' }
@@ -10,14 +9,14 @@ const P_STYLE: Record<string, { bg: string; text: string; border: string }> = {
   low:    { bg: '#f0fdf4', text: '#15803d', border: '#bbf7d0' },
 }
 
-interface Props { tasks: StudyTask[]; exams: ExamInfo[]; onTasksChange: (t: StudyTask[]) => void }
+export interface TasksPageProps { tasks: StudyTask[]; exams: ExamInfo[]; onTasksChange: (t: StudyTask[]) => void }
 
-export default function TasksPage({ tasks, exams, onTasksChange }: Props) {
+export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProps) {
   function toggle(taskId: string) {
     const updated = tasks.map((t) =>
       t.id === taskId ? { ...t, status: t.status === 'completed' ? ('pending' as const) : ('completed' as const) } : t
     )
-    saveTasks(updated); onTasksChange(updated)
+    onTasksChange(updated)
   }
 
   const grouped = exams.reduce<Record<string, { exam: ExamInfo; tasks: StudyTask[] }>>((acc, exam) => {

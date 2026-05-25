@@ -5,7 +5,7 @@ import StatsCard from '../components/Dashboard/StatsCard'
 import ExamCard from '../components/Dashboard/ExamCard'
 import { useAllExamsCountdown } from '../hooks/useExamCountdown'
 
-interface Props { exams: ExamInfo[]; syllabuses: Syllabus[]; tasks: StudyTask[]; plan: StudyPlan | null; freeHoursPerWeek: number }
+export interface DashboardPageProps { exams: ExamInfo[]; syllabuses: Syllabus[]; tasks: StudyTask[]; plan: StudyPlan | null; freeHoursPerWeek: number }
 
 const STEPS = [
   { label: 'Thêm môn thi',  desc: 'Ngày thi & điểm mục tiêu', to: '/exams',     emoji: '📚', key: 'exams' },
@@ -21,7 +21,7 @@ const GREETINGS = [
   'Học chăm hôm nay, thi tốt ngày mai.',
 ]
 
-export default function DashboardPage({ exams, syllabuses, tasks, plan, freeHoursPerWeek }: Props) {
+export default function DashboardPage({ exams, syllabuses, tasks, plan, freeHoursPerWeek }: DashboardPageProps) {
   const countdowns = useAllExamsCountdown(exams, tasks)
   const sortedExams = [...exams].sort((a, b) => new Date(a.examDateTime).getTime() - new Date(b.examDateTime).getTime())
   const nextExam = sortedExams.find((e) => new Date(e.examDateTime) > new Date())

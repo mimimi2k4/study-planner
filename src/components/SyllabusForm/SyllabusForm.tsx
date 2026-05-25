@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Plus, Trash2, ChevronDown, ChevronUp, AlertCircle, BookOpen, Upload, Pencil, Check, X, Loader2 } from 'lucide-react'
-import type { Syllabus, Chapter, DifficultyLevel, ExamInfo } from '../../types'
+import type { Syllabus, Chapter, DifficultyLevel } from '../../types'
+import type { SyllabusFormProps, FormErrors } from './types'
+import { validateSyllabusForm } from './types'
 import { nanoid } from '../../utils/nanoid'
-import { parseFileToChapters } from '../../utils/fileParser'
 
 const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = { low: 'Thấp', medium: 'Trung bình', high: 'Cao' }
 const BADGE: Record<DifficultyLevel, string> = {
@@ -11,27 +12,27 @@ const BADGE: Record<DifficultyLevel, string> = {
   high: 'text-red-700 bg-red-50 border-red-200',
 }
 
-interface ChapterInput { id: string; name: string; difficulty: DifficultyLevel; importance: DifficultyLevel }
-interface FormErrors { subjectName?: string; chapters?: string; chapterNames?: Record<string, string> }
-interface Props {
-  syllabuses: Syllabus[]; exams: ExamInfo[]
-  onAdd: (s: Syllabus) => void; onUpdate: (s: Syllabus) => void; onDelete: (id: string) => void
-}
-
-function newChapter(name = ''): ChapterInput {
+function newChapter(name = ''): Chapter {
   return { id: nanoid(), name, difficulty: 'medium', importance: 'medium' }
 }
 
-export default function SyllabusForm({ syllabuses, exams, onAdd, onUpdate, onDelete }: Props) {
+export default function SyllabusForm({
+  syllabuses, exams, onAdd, onUpdate, onDelete,
+  uploading, uploadMsg, importedChapters, onFileUpload,
+}: SyllabusFormProps) {
   const [subjectId, setSubjectId] = useState('')
-  const [chapters, setChapters] = useState<ChapterInput[]>([newChapter()])
+  const [chapters, setChapters] = useState<Chapter[]>([newChapter()])
   const [errors, setErrors] = useState<FormErrors>({})
   const [submitted, setSubmitted] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [uploading, setUploading] = useState(false)
-  const [uploadMsg, setUploadMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (importedChapters && importedChapters.length > 0) {
+      setChapters(importedChapters)
+    }
+  }, [importedChapters])
 
   const isEditing = editingId !== null
   const selectedExam = exams.find((e) => e.id === subjectId)
@@ -40,66 +41,41 @@ export default function SyllabusForm({ syllabuses, exams, onAdd, onUpdate, onDel
     (isEditing && syllabuses.find((s) => s.id === editingId)?.subjectId === e.id)
   )
 
-  function validate(chs = chapters): FormErrors {
-    const errs: FormErrors = {}
-    if (!subjectId) errs.subjectName = 'Vui lòng chọn môn học'
-    if (chs.length === 0) errs.chapters = 'Cần ít nhất một chương'
-    const chapterNames: Record<string, string> = {}
-    chs.forEach((c) => { if (!c.name.trim()) chapterNames[c.id] = 'Tên chương không được để trống' })
-    if (Object.keys(chapterNames).length > 0) errs.chapterNames = chapterNames
-    return errs
-  }
-
   function resetForm() {
     setSubjectId(''); setChapters([newChapter()]); setErrors({})
-    setSubmitted(false); setEditingId(null); setUploadMsg(null)
+    setSubmitted(false); setEditingId(null)
   }
 
   function handleStartEdit(s: Syllabus) {
     setEditingId(s.id); setSubjectId(s.subjectId)
     setChapters(s.chapters.map((c) => ({ ...c })))
-    setErrors({}); setSubmitted(false); setUploadMsg(null)
+    setErrors({}); setSubmitted(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setSubmitted(true)
-    const errs = validate(); setErrors(errs)
-    if (Object.keys(errs).length > 0) return
-    const built: Syllabus = {
-      id: editingId ?? nanoid(), subjectId,
-      subjectName: selectedExam!.subjectName,
-      chapters: chapters.map((c): Chapter => ({ id: c.id, name: c.name.trim(), difficulty: c.difficulty, importance: c.importance })),
+    const state = {
+      subjectId,
+      chapters: chapters.map((c) => ({ ...c, name: c.name.trim() })),
     }
-    if (isEditing) onUpdate(built)
-    else onAdd(built)
+    const errs = validateSyllabusForm(state); setErrors(errs)
+    if (Object.keys(errs).length > 0) return
+    if (isEditing) onUpdate(editingId!, state)
+    else onAdd(state)
     resetForm()
   }
 
-  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (!file) return
-    setUploading(true); setUploadMsg(null)
-    try {
-      const parsed = await parseFileToChapters(file)
-      if (parsed.length === 0) {
-        setUploadMsg({ type: 'error', text: `Không đọc được chương nào từ file "${file.name}". Hãy kiểm tra định dạng.` })
-      } else {
-        setChapters(parsed)
-        setUploadMsg({ type: 'success', text: `Đã import ${parsed.length} chương từ "${file.name}"` })
-      }
-    } catch (err) {
-      setUploadMsg({ type: 'error', text: `Lỗi đọc file: ${(err as Error).message}` })
-    } finally {
-      setUploading(false)
-    }
+    if (file) onFileUpload(file)
     e.target.value = ''
   }
 
-  function changeChapter(id: string, field: keyof ChapterInput, value: string) {
+  function changeChapter(id: string, field: keyof Chapter, value: string) {
     setChapters((cs) => {
       const updated = cs.map((c) => (c.id === id ? { ...c, [field]: value } : c))
-      if (submitted) setErrors(validate(updated))
+      if (submitted) setErrors(validateSyllabusForm({ subjectId, chapters: updated }))
       return updated
     })
   }
@@ -147,7 +123,7 @@ export default function SyllabusForm({ syllabuses, exams, onAdd, onUpdate, onDel
                     Chọn môn học <span className="text-red-500">*</span>
                   </label>
                   <select value={subjectId} disabled={isEditing}
-                    onChange={(e) => { setSubjectId(e.target.value); if (submitted) setErrors(validate()) }}
+                    onChange={(e) => { setSubjectId(e.target.value); if (submitted) setErrors(validateSyllabusForm({ subjectId: e.target.value, chapters })) }}
                     className={`w-full px-5 py-3.5 rounded-2xl border-2 text-base font-medium transition-all ${
                       errors.subjectName ? 'border-red-400 bg-red-50'
                       : 'border-slate-100 bg-slate-50 hover:border-indigo-200 focus:border-indigo-400 focus:bg-white'
@@ -180,7 +156,7 @@ export default function SyllabusForm({ syllabuses, exams, onAdd, onUpdate, onDel
                         </p>
                       )}
                     </div>
-                    <input ref={fileRef} type="file" accept=".pdf,.docx,.doc,.txt,.json" className="hidden" onChange={handleFileUpload} />
+                    <input ref={fileRef} type="file" accept=".pdf,.docx,.doc,.txt,.json" className="hidden" onChange={handleFileSelected} />
                     <button type="button" disabled={uploading} onClick={() => fileRef.current?.click()}
                       className="shrink-0 px-4 py-2 font-bold text-sm rounded-xl text-white transition-all disabled:opacity-60"
                       style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}>
