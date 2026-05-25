@@ -284,11 +284,11 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Ex
                           </span>
                         </div>
 
-                        {cd && (
+                        {cd ? (
                           <div className="mt-3 rounded-xl px-4 py-3"
                             style={{ background: cd.isOverdue ? '#fff1f2' : exam.color + '0e' }}>
                             {cd.isOverdue ? (
-                              <p className="text-sm font-semibold" style={{ color: '#be123c' }}>⚠️ Đã qua ngày thi</p>
+                              <p className="text-sm font-semibold" style={{ color: '#be123c' }}>⚠️ Cảnh báo: Ngày thi đã qua!</p>
                             ) : (
                               <>
                                 <div className="flex items-center justify-between mb-2">
@@ -309,6 +309,10 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Ex
                                 )}
                               </>
                             )}
+                          </div>
+                        ) : (
+                          <div className="mt-3 rounded-xl px-4 py-3" style={{ background: '#fffbeb' }}>
+                            <p className="text-sm font-semibold text-amber-700">🔔 Nhắc nhở: Chưa có ngày thi hợp lệ</p>
                           </div>
                         )}
                       </div>

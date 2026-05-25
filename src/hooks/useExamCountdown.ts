@@ -25,8 +25,20 @@ export function useExamCountdown(
 ): ExamCountdownResult | null {
   const [result, setResult] = useState<ExamCountdownResult | null>(null)
 
+  // Cảnh báo nếu chưa nhập ngày thi hoặc ngày thi đã qua
   useEffect(() => {
-    if (!exam) { setResult(null); return }
+    if (!exam || !exam.examDateTime) {
+      console.warn("🔔 Nhắc nhở: Bạn chưa nhập thông tin ngày thi (examDate). Vui lòng cập nhật để AI có thể lên lịch.");
+      return;
+    }
+    const diffMs = new Date(exam.examDateTime).getTime() - Date.now();
+    if (diffMs < 0) {
+      console.warn(`⚠️ Cảnh báo: Ngày thi của môn "${exam.subjectName}" đã qua!`);
+    }
+  }, [exam]);
+
+  useEffect(() => {
+    if (!exam || !exam.examDateTime) { setResult(null); return }
     const run = () => setResult(computeCountdown(exam, tasks))
     run()
     const interval = setInterval(run, 60000)
@@ -42,10 +54,28 @@ export function useAllExamsCountdown(
 ): Record<string, ExamCountdownResult> {
   const [results, setResults] = useState<Record<string, ExamCountdownResult>>({})
 
+  // Cảnh báo chung cho tất cả các môn thi
+  useEffect(() => {
+    exams.forEach(exam => {
+      if (!exam.examDateTime) {
+        console.warn(`🔔 Nhắc nhở: Môn "${exam.subjectName}" chưa có ngày thi hợp lệ.`);
+        return;
+      }
+      const diffMs = new Date(exam.examDateTime).getTime() - Date.now();
+      if (diffMs < 0) {
+        console.warn(`⚠️ Cảnh báo: Ngày thi của môn "${exam.subjectName}" đã qua!`);
+      }
+    });
+  }, [exams]);
+
   useEffect(() => {
     const run = () => {
       const map: Record<string, ExamCountdownResult> = {}
-      for (const exam of exams) map[exam.id] = computeCountdown(exam, tasks)
+      for (const exam of exams) {
+        if (exam.examDateTime) {
+          map[exam.id] = computeCountdown(exam, tasks)
+        }
+      }
       setResults(map)
     }
     run()

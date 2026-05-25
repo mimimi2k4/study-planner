@@ -48,11 +48,11 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
         </div>
 
         {/* Countdown block */}
-        {countdown && (
+        {countdown ? (
           <div className="mt-4 rounded-xl px-4 py-3"
             style={{ background: overdue ? '#fff1f2' : urgent ? '#fff7ed' : exam.color + '0e' }}>
             {overdue ? (
-              <p className="text-sm font-semibold" style={{ color: '#be123c' }}>⚠️ Đã qua ngày thi</p>
+              <p className="text-sm font-semibold" style={{ color: '#be123c' }}>⚠️ Cảnh báo: Ngày thi đã qua!</p>
             ) : urgent ? (
               <div className="flex items-center gap-2">
                 <Flame size={14} className="text-orange-500 shrink-0" />
@@ -81,6 +81,10 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                 )}
               </>
             )}
+          </div>
+        ) : (
+          <div className="mt-4 rounded-xl px-4 py-3" style={{ background: '#fffbeb' }}>
+            <p className="text-sm font-semibold text-amber-700">🔔 Nhắc nhở: Chưa có ngày thi hợp lệ</p>
           </div>
         )}
       </div>
