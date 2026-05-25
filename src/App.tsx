@@ -1,106 +1,106 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
+import { generateStudyTasks } from "./services/studyPlannerAI";
 import "./App.css";
 
 function App() {
-    const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
 
-    return (
-        <>
-            <section id="center">
-                <div className="hero">
-                    <img src={heroImg} className="base" width="170" height="179" alt="" />
-                    <img src={reactLogo} className="framework" alt="React logo" />
-                    <img src={viteLogo} className="vite" alt="Vite logo" />
-                </div>
-                <div>
-                    <h1>Get started</h1>
-                    <p>
-                        Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-                    </p>
-                </div>
-                <button
-                    type="button"
-                    className="counter"
-                    onClick={() => setCount((count) => count + 1)}
-                >
-                    Count is {count}
-                </button>
-            </section>
+  const handleTestAI = async () => {
+    setLoading(true);
+    setResult(null);
 
-            <div className="ticks"></div>
+    // Tạo dữ liệu giả lập (Mock Data) đúng với Input Schema
+    const mockInput = {
+      daysUntilExam: 5,
+      dailyFreeTimeMinutes: 120, // Tổng quỹ thời gian: 600 phút
+      chapters: [
+        { chapterName: "Giải tích 1 - Đạo hàm", difficulty: 3, importance: 3 },
+        { chapterName: "Giải tích 1 - Tích phân", difficulty: 3, importance: 3 },
+        { chapterName: "Lịch sử Toán học", difficulty: 1, importance: 1 },
+      ],
+    };
 
-            <section id="next-steps">
-                <div id="docs">
-                    <svg className="icon" role="presentation" aria-hidden="true">
-                        <use href="/icons.svg#documentation-icon"></use>
-                    </svg>
-                    <h2>Documentation</h2>
-                    <p>Your questions, answered</p>
-                    <ul>
-                        <li>
-                            <a href="https://vite.dev/" target="_blank">
-                                <img className="logo" src={viteLogo} alt="" />
-                                Explore Vite
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://react.dev/" target="_blank">
-                                <img className="button-icon" src={reactLogo} alt="" />
-                                Learn more
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div id="social">
-                    <svg className="icon" role="presentation" aria-hidden="true">
-                        <use href="/icons.svg#social-icon"></use>
-                    </svg>
-                    <h2>Connect with us</h2>
-                    <p>Join the Vite community</p>
-                    <ul>
-                        <li>
-                            <a href="https://github.com/vitejs/vite" target="_blank">
-                                <svg className="button-icon" role="presentation" aria-hidden="true">
-                                    <use href="/icons.svg#github-icon"></use>
-                                </svg>
-                                GitHub
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://chat.vite.dev/" target="_blank">
-                                <svg className="button-icon" role="presentation" aria-hidden="true">
-                                    <use href="/icons.svg#discord-icon"></use>
-                                </svg>
-                                Discord
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://x.com/vite_js" target="_blank">
-                                <svg className="button-icon" role="presentation" aria-hidden="true">
-                                    <use href="/icons.svg#x-icon"></use>
-                                </svg>
-                                X.com
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                                <svg className="button-icon" role="presentation" aria-hidden="true">
-                                    <use href="/icons.svg#bluesky-icon"></use>
-                                </svg>
-                                Bluesky
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </section>
+    // Gọi hàm xử lý AI
+    const response = await generateStudyTasks(mockInput);
+    
+    setResult(response);
+    setLoading(false);
+  };
 
-            <div className="ticks"></div>
-            <section id="spacer"></section>
-        </>
-    );
+  // Đưa hàm này LÊN TRÊN lệnh return
+  const checkAvailableModels = async () => {
+    try {
+      const apiKey = import.meta.env.VITE_AI_API_KEY;
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+      const data = await response.json();
+      
+      console.log("CÁC MODEL BẠN ĐƯỢC PHÉP DÙNG:");
+      data.models.forEach((m: any) => console.log(m.name));
+      alert("Hãy mở Console (F12) để xem danh sách Model nhé!");
+    } catch (error) {
+      console.error("Lỗi:", error);
+    }
+  };
+
+  return (
+    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto", textAlign: "left" }}>
+      <h1>Test AI Study Planner</h1>
+      
+      {/* Cụm nút bấm */}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <button 
+          onClick={handleTestAI} 
+          disabled={loading}
+          style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}
+        >
+          {loading ? "AI Đang tính toán..." : "Tạo Kế Hoạch Học Tập"}
+        </button>
+
+        <button 
+          onClick={checkAvailableModels} 
+          style={{ 
+            padding: "10px 20px", 
+            fontSize: "16px", 
+            cursor: "pointer", 
+            backgroundColor: "#4CAF50", 
+            color: "white", 
+            border: "none", 
+            borderRadius: "4px" 
+          }}
+        >
+          Xem Model Khả Dụng
+        </button>
+      </div>
+
+      {/* Hiển thị kết quả trả về */}
+      {result && (
+        <div style={{ marginTop: "20px", padding: "15px", border: "1px solid #ccc", borderRadius: "8px" }}>
+          {result.status === "error" ? (
+            <div style={{ color: "red" }}>
+              <h3>❌ Lỗi: {result.message}</h3>
+              <pre>{JSON.stringify(result.details, null, 2)}</pre>
+            </div>
+          ) : (
+            <div>
+              <h3 style={{ color: "green" }}>✅ Thành công!</h3>
+              <p>Tổng thời gian cho phép: <strong>{result.totalAllowedTime} phút</strong></p>
+              <p>Thời gian AI đã xếp: <strong>{result.totalPlannedTime} phút</strong></p>
+              
+              <ul style={{ listStyleType: "none", padding: 0 }}>
+                {result.tasks.map((task: any, index: number) => (
+                  <li key={index} style={{ background: "#f4f3ec", margin: "10px 0", padding: "10px", borderRadius: "5px", color: "#000" }}>
+                    <strong>{task.taskName}</strong> (Từ chương: {task.chapterName}) <br/>
+                    ⏱ {task.estimatedTimeMinutes} phút | 🔥 Mức độ: {task.priority}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default App;
