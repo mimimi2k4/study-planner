@@ -1,106 +1,126 @@
-import { useState } from "react";
-import { generateStudyTasks } from "./services/studyPlannerAI";
+import { Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import Layout from './components/Layout/Layout'
+import DashboardPage from './pages/DashboardPage'
+import ExamsPage from './pages/ExamsPage'
+import SyllabusPage from './pages/SyllabusPage'
+import TimeSlotPage from './pages/TimeSlotPage'
+import SchedulePage from './pages/SchedulePage'
+import TasksPage from './pages/TasksPage'
+import TestAIPage from './pages/TestAIPage'
+import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan } from './types'
+import {
+  getExams, saveExams,
+  getSyllabuses, saveSyllabuses,
+  getFreeSlots, saveFreeSlots,
+  getTasks, saveTasks,
+  getPlan, savePlan,
+} from './utils/storage'
+import { totalHours } from './utils/timeSlot'
 import "./App.css";
 
-function App() {
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+export default function App() {
+  const [exams, setExams] = useState<ExamInfo[]>(() => getExams())
+  const [syllabuses, setSyllabuses] = useState<Syllabus[]>(() => getSyllabuses())
+  const [freeSlots, setFreeSlots] = useState<FreeSlot[]>(() => getFreeSlots())
+  const [tasks, setTasks] = useState<StudyTask[]>(() => getTasks())
+  const [plan, setPlan] = useState<StudyPlan | null>(() => getPlan())
 
-  const handleTestAI = async () => {
-    setLoading(true);
-    setResult(null);
+  // Sync state changes to storage
+  useEffect(() => { saveExams(exams) }, [exams])
+  useEffect(() => { saveSyllabuses(syllabuses) }, [syllabuses])
+  useEffect(() => { saveFreeSlots(freeSlots) }, [freeSlots])
+  useEffect(() => { saveTasks(tasks) }, [tasks])
+  useEffect(() => { if (plan) savePlan(plan) }, [plan])
 
-    // Tạo dữ liệu giả lập (Mock Data) đúng với Input Schema
-    const mockInput = {
-      daysUntilExam: 5,
-      dailyFreeTimeMinutes: 120, // Tổng quỹ thời gian: 600 phút
-      chapters: [
-        { chapterName: "Giải tích 1 - Đạo hàm", difficulty: 3, importance: 3 },
-        { chapterName: "Giải tích 1 - Tích phân", difficulty: 3, importance: 3 },
-        { chapterName: "Lịch sử Toán học", difficulty: 1, importance: 1 },
-      ],
-    };
+  function handleAddExam(exam: ExamInfo) {
+    setExams((prev) => [...prev, exam])
+  }
+  function handleUpdateExam(exam: ExamInfo) {
+    setExams((prev) => prev.map((e) => (e.id === exam.id ? exam : e)))
+  }
+  function handleDeleteExam(id: string) {
+    setExams((prev) => prev.filter((e) => e.id !== id))
+    setSyllabuses((prev) => prev.filter((s) => s.subjectId !== id))
+    setTasks((prev) => prev.filter((t) => t.subjectId !== id))
+  }
 
-    // Gọi hàm xử lý AI
-    const response = await generateStudyTasks(mockInput);
-    
-    setResult(response);
-    setLoading(false);
-  };
+  function handleAddSyllabus(s: Syllabus) {
+    setSyllabuses((prev) => [...prev, s])
+  }
+  function handleUpdateSyllabus(s: Syllabus) {
+    setSyllabuses((prev) => prev.map((x) => (x.id === s.id ? s : x)))
+  }
+  function handleDeleteSyllabus(id: string) {
+    setSyllabuses((prev) => prev.filter((s) => s.id !== id))
+  }
 
-  // Đưa hàm này LÊN TRÊN lệnh return
-  const checkAvailableModels = async () => {
-    try {
-      const apiKey = import.meta.env.VITE_AI_API_KEY;
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-      const data = await response.json();
-      
-      console.log("CÁC MODEL BẠN ĐƯỢC PHÉP DÙNG:");
-      data.models.forEach((m: any) => console.log(m.name));
-      alert("Hãy mở Console (F12) để xem danh sách Model nhé!");
-    } catch (error) {
-      console.error("Lỗi:", error);
-    }
-  };
+  const freeHoursPerWeek = totalHours(freeSlots)
 
   return (
-    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto", textAlign: "left" }}>
-      <h1>Test AI Study Planner</h1>
-      
-      {/* Cụm nút bấm */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <button 
-          onClick={handleTestAI} 
-          disabled={loading}
-          style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}
-        >
-          {loading ? "AI Đang tính toán..." : "Tạo Kế Hoạch Học Tập"}
-        </button>
-
-        <button 
-          onClick={checkAvailableModels} 
-          style={{ 
-            padding: "10px 20px", 
-            fontSize: "16px", 
-            cursor: "pointer", 
-            backgroundColor: "#4CAF50", 
-            color: "white", 
-            border: "none", 
-            borderRadius: "4px" 
-          }}
-        >
-          Xem Model Khả Dụng
-        </button>
-      </div>
-
-      {/* Hiển thị kết quả trả về */}
-      {result && (
-        <div style={{ marginTop: "20px", padding: "15px", border: "1px solid #ccc", borderRadius: "8px" }}>
-          {result.status === "error" ? (
-            <div style={{ color: "red" }}>
-              <h3>❌ Lỗi: {result.message}</h3>
-              <pre>{JSON.stringify(result.details, null, 2)}</pre>
-            </div>
-          ) : (
-            <div>
-              <h3 style={{ color: "green" }}>✅ Thành công!</h3>
-              <p>Tổng thời gian cho phép: <strong>{result.totalAllowedTime} phút</strong></p>
-              <p>Thời gian AI đã xếp: <strong>{result.totalPlannedTime} phút</strong></p>
-              
-              <ul style={{ listStyleType: "none", padding: 0 }}>
-                {result.tasks.map((task: any, index: number) => (
-                  <li key={index} style={{ background: "#f4f3ec", margin: "10px 0", padding: "10px", borderRadius: "5px", color: "#000" }}>
-                    <strong>{task.taskName}</strong> (Từ chương: {task.chapterName}) <br/>
-                    ⏱ {task.estimatedTimeMinutes} phút | 🔥 Mức độ: {task.priority}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+    <Layout>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <DashboardPage
+              exams={exams}
+              syllabuses={syllabuses}
+              tasks={tasks}
+              plan={plan}
+              freeHoursPerWeek={freeHoursPerWeek}
+            />
+          }
+        />
+        <Route
+          path="/exams"
+          element={
+            <ExamsPage exams={exams} tasks={tasks} onAdd={handleAddExam} onUpdate={handleUpdateExam} onDelete={handleDeleteExam} />
+          }
+        />
+        <Route
+          path="/syllabus"
+          element={
+            <SyllabusPage
+              syllabuses={syllabuses}
+              exams={exams}
+              onAdd={handleAddSyllabus}
+              onUpdate={handleUpdateSyllabus}
+              onDelete={handleDeleteSyllabus}
+            />
+          }
+        />
+        <Route
+          path="/timeslots"
+          element={
+            <TimeSlotPage freeSlots={freeSlots} onSave={setFreeSlots} />
+          }
+        />
+        <Route
+          path="/schedule"
+          element={
+            <SchedulePage
+              exams={exams}
+              syllabuses={syllabuses}
+              freeSlots={freeSlots}
+              tasks={tasks}
+              plan={plan}
+              onTasksChange={setTasks}
+              onPlanChange={setPlan}
+            />
+          }
+        />
+        <Route
+          path="/tasks"
+          element={
+            <TasksPage tasks={tasks} exams={exams} onTasksChange={setTasks} />
+          }
+        />
+        <Route
+          path="/test-ai"
+          element={<TestAIPage />}
+        />
+      </Routes>
+    </Layout>
+  )
 }
-
-export default App;
