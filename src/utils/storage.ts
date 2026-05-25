@@ -32,8 +32,29 @@ export const updateExam = (exam: ExamInfo): void =>
 export const deleteExam = (id: string): void =>
   saveExams(getExams().filter((e) => e.id !== id))
 
+const DIFFICULTY_MAP: Record<string, string> = {
+  low: 'low', medium: 'medium', high: 'high',
+  easy: 'low', normal: 'medium', hard: 'high',
+  thấp: 'low', 'trung bình': 'medium', cao: 'high',
+}
+
+function normalizeDifficulty(val: unknown): 'low' | 'medium' | 'high' {
+  const s = String(val ?? '').toLowerCase().trim()
+  return (DIFFICULTY_MAP[s] ?? 'medium') as 'low' | 'medium' | 'high'
+}
+
 // Syllabuses
-export const getSyllabuses = (): Syllabus[] => load(KEYS.SYLLABUSES, [])
+export const getSyllabuses = (): Syllabus[] => {
+  const list = load<Syllabus[]>(KEYS.SYLLABUSES, [])
+  return list.map((s) => ({
+    ...s,
+    chapters: s.chapters.map((c) => ({
+      ...c,
+      difficulty: normalizeDifficulty(c.difficulty),
+      importance: normalizeDifficulty(c.importance),
+    })),
+  }))
+}
 export const saveSyllabuses = (list: Syllabus[]): void => save(KEYS.SYLLABUSES, list)
 export const addSyllabus = (s: Syllabus): void => saveSyllabuses([...getSyllabuses(), s])
 export const updateSyllabus = (s: Syllabus): void =>

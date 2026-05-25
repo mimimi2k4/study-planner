@@ -28,7 +28,10 @@ export default function ScheduleView({ slots, exams, warnings, onRegenerate, onS
     return (
       <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-12 text-center">
         <Calendar size={40} className="mx-auto text-slate-300 mb-3" />
-        <p className="text-slate-500">Chưa có lịch học. Vui lòng nhập thông tin cần thiết và nhấn <strong>Tạo lịch</strong>.</p>
+        <p className="text-slate-500 mb-4">Chưa có lịch học. Vui lòng nhập thông tin cần thiết và nhấn <strong>Tạo lịch</strong>.</p>
+        <button onClick={onRegenerate} className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl flex items-center gap-1.5 transition-colors mx-auto">
+          <RefreshCw size={14} /> Tạo lịch học
+        </button>
       </div>
     )
   }

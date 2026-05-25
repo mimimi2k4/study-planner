@@ -1,12 +1,13 @@
 
 import { useState } from 'react'
-import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan } from '../types'
-import { Sparkles, AlertCircle, CheckCircle2, AlertTriangle } from 'lucide-react'
-import Timetable from '../components/Timetable/Timetable'
+import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot } from '../types'
+import { Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { analyzeAndGenerateTasks } from '../utils/aiAnalyzer'
 import { generateSchedule } from '../utils/scheduler'
+import { savePlan } from '../utils/storage'
 import type { ScheduleWarning } from '../types'
 import PageHeader from '../components/PageHeader'
+import ScheduleView from '../components/ScheduleView/ScheduleView'
 
 export interface SchedulePageProps {
   exams: ExamInfo[]; syllabuses: Syllabus[]; freeSlots: FreeSlot[]
@@ -43,7 +44,7 @@ export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tas
         emoji="📅"
         title="Lịch học"
         subtitle="Xem và quản lý thời khóa biểu học tập của bạn"
-        action={canGenerate && !plan ? (
+        action={canGenerate && (!plan || plan.slots.length === 0) ? (
           <button onClick={doGenerate} disabled={generating}
             className="btn btn-primary" style={{ borderRadius: 12 }}>
             <Sparkles size={15} className={generating ? 'animate-spin-s' : ''} />
