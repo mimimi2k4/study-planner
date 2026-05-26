@@ -1,7 +1,7 @@
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot } from '../types'
-import { Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { analyzeAndGenerateTasks } from '../utils/aiAnalyzer'
 import { generateSchedule } from '../utils/scheduler'
 import { savePlan } from '../utils/storage'
@@ -29,16 +29,14 @@ export default function SchedulePage({
     onPlanChange,
 }: SchedulePageProps) {
     const [warnings, setWarnings] = useState<ScheduleWarning[]>([]);
-    const [overflow, setOverflow] = useState<StudyTask[]>([]);
     const [generating, setGenerating] = useState(false);
     const canGenerate = exams.length > 0 && syllabuses.length > 0 && freeSlots.length > 0;
 
     // Recalculate warnings and overflow when the plan or criteria change (if not manually edited)
     useEffect(() => {
         if (plan && !plan.manualEdited && _tasks.length > 0 && freeSlots.length > 0 && exams.length > 0) {
-            const { warnings: w, overflow: ov } = generateSchedule(_tasks, freeSlots, exams);
+            const { warnings: w } = generateSchedule(_tasks, freeSlots, exams);
             setWarnings(w);
-            setOverflow(ov);
         }
     }, [plan, _tasks, freeSlots, exams]);
 
@@ -51,10 +49,9 @@ export default function SchedulePage({
             });
             const t = analyzeAndGenerateTasks(syllabuses, colorMap);
             onTasksChange(t);
-            const { plan: p, warnings: w, overflow: ov } = generateSchedule(t, freeSlots, exams);
+            const { plan: p, warnings: w } = generateSchedule(t, freeSlots, exams);
             onPlanChange(p);
             setWarnings(w);
-            setOverflow(ov);
             setGenerating(false);
         }, 900);
     }
@@ -65,35 +62,20 @@ export default function SchedulePage({
         emoji="📅"
         title="Lịch học"
         subtitle="Xem và quản lý thời khóa biểu học tập của bạn"
-        action={canGenerate && (!plan || plan.slots.length === 0) ? (
-          <button onClick={doGenerate} disabled={generating}
-            className="btn btn-primary" style={{ borderRadius: 12 }}>
-            <Sparkles size={15} className={generating ? 'animate-spin-s' : ''} />
-            {generating ? 'Đang tạo...' : '✨ Tạo lịch học'}
-          </button>
-        ) : undefined}
+        action={
+          canGenerate && !plan ? (
+            <button
+              onClick={doGenerate}
+              disabled={generating}
+              className="btn btn-primary"
+              style={{ borderRadius: 12 }}
+            >
+              <Sparkles size={15} className={generating ? "animate-spin-s" : ""} />
+              {generating ? "Đang tạo..." : "✨ Tạo lịch học"}
+            </button>
+          ) : undefined
+        }
       />
-
-    return (
-        <div className="space-y-8">
-            <PageHeader
-                emoji="📅"
-                title="Lịch học"
-                subtitle="Xem và quản lý thời khóa biểu học tập của bạn"
-                action={
-                    canGenerate && !plan ? (
-                        <button
-                            onClick={doGenerate}
-                            disabled={generating}
-                            className="btn btn-primary"
-                            style={{ borderRadius: 12 }}
-                        >
-                            <Sparkles size={15} className={generating ? "animate-spin-s" : ""} />
-                            {generating ? "Đang tạo..." : "✨ Tạo lịch học"}
-                        </button>
-                    ) : undefined
-                }
-            />
 
       <ScheduleView slots={plan?.slots ?? []} exams={exams} warnings={warnings}
         onRegenerate={doGenerate}
