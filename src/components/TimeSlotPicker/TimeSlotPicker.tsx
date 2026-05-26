@@ -58,15 +58,15 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
 
     return (
         <div
-            style={{ display: "flex", flexDirection: "column", gap: 28 }}
+            style={{ display: "flex", flexDirection: "column", gap: 32 }}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
         >
             {/* ── Stats bar ── */}
-            <div className="card rounded-2xl px-6 py-5 flex flex-wrap items-center gap-6">
+            <div className="card rounded-xl px-6 py-5 flex flex-wrap items-center gap-6">
                 <div className="flex items-center gap-3">
                     <div
-                        className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+                        className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
                         style={{
                             background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
                             boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
@@ -122,7 +122,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
             </div>
 
             {/* ── Grid ── */}
-            <div className="card rounded-2xl overflow-hidden">
+                <div className="card rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                     <div style={{ minWidth: 580 }}>
                         {/* Day headers */}
@@ -202,7 +202,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
 
             {/* ── Error ── */}
             {error && (
-                <div className="flex items-center gap-2.5 px-5 py-3 bg-red-50 border border-red-200 rounded-2xl text-red-600 font-semibold">
+                <div className="flex items-center gap-2.5 px-5 py-3 bg-red-50 border border-red-200 rounded-xl text-red-600 font-semibold">
                     <AlertCircle size={18} /> {error}
                 </div>
             )}
@@ -214,7 +214,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
                     className="btn btn-primary flex items-center gap-2.5 text-base"
                     style={{
                         padding: "14px 32px",
-                        borderRadius: 16,
+                        borderRadius: 12,
                         background: saved ? "linear-gradient(135deg, #059669, #0d9488)" : undefined,
                         boxShadow: saved ? "0 4px 14px rgba(5,150,105,0.45)" : undefined,
                     }}
@@ -228,7 +228,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
                         setSaved(false);
                         setError("");
                     }}
-                    className="flex items-center gap-2 font-bold rounded-2xl transition-all text-base"
+                    className="flex items-center gap-2 font-bold rounded-xl transition-all text-base"
                     style={{
                         padding: "14px 24px",
                         background: "#fff",
@@ -243,7 +243,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
 
             {/* ── Summary ── */}
             {current.length > 0 && (
-                <div className="card rounded-2xl overflow-hidden">
+            <div className="card rounded-xl overflow-hidden">
                     <div
                         className="px-6 py-5 flex items-center gap-3"
                         style={{
@@ -270,7 +270,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
                                 return (
                                     <div
                                         key={i}
-                                        className="rounded-xl px-4 py-3"
+                                        className="rounded-lg px-4 py-3"
                                         style={{
                                             background: z.bg,
                                             border: `1.5px solid ${z.legendBorder}`,

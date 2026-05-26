@@ -138,7 +138,9 @@ export function generateSchedule(
     const blocks = expandFreeSlots(freeSlots, weeksNeeded, startDate);
     const slots: ScheduleSlot[] = [];
 
-    // Track remaining capacity per block
+    const MIN_SESSION = 20;
+    const BREAK = 5;
+
     const blockCapacity = blocks.map((b) => ({
         date: b.date,
         cursor: b.startTime,
@@ -153,10 +155,12 @@ export function generateSchedule(
             if (remaining <= 0) break;
             if (examDate && block.date >= examDate.slice(0, 10)) continue;
 
-            const availableMinutes = timeToMinutes(block.end) - timeToMinutes(block.cursor);
-            if (availableMinutes <= 0) continue;
+            const available = timeToMinutes(block.end) - timeToMinutes(block.cursor);
+            if (available < MIN_SESSION) continue;
 
-            const chunk = Math.min(remaining, availableMinutes);
+            const chunk = Math.min(remaining, available);
+            if (chunk < MIN_SESSION && remaining > chunk) continue;
+
             const slotEnd = addMinutes(block.cursor, chunk);
 
             slots.push({
@@ -171,7 +175,7 @@ export function generateSchedule(
                 color: task.color,
             });
 
-            block.cursor = slotEnd;
+            block.cursor = addMinutes(slotEnd, BREAK);
             remaining -= chunk;
         }
 
