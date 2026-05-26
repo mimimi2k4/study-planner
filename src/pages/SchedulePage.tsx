@@ -1,12 +1,11 @@
-
 import { useState } from 'react'
 import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot } from '../types'
 import { Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react'
 import ScheduleView from '../components/ScheduleView/ScheduleView'
-import { analyzeAndGenerateTasks } from '../utils/aiAnalyzer'
 import { generateSchedule } from '../utils/scheduler'
 import type { ScheduleWarning } from '../types'
 import PageHeader from '../components/PageHeader'
+import { analyzeAndGenerateTasksWithAI } from '../utils/aiAnalyzer' // Sử dụng hàm AI mới
 
 export interface SchedulePageProps {
   exams: ExamInfo[]; syllabuses: Syllabus[]; freeSlots: FreeSlot[]
@@ -14,21 +13,47 @@ export interface SchedulePageProps {
   onTasksChange: (t: StudyTask[]) => void; onPlanChange: (p: StudyPlan | null) => void
 }
 
-export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tasks, plan, onTasksChange, onPlanChange }: SchedulePageProps) {
+export default function SchedulePage({ exams, syllabuses, freeSlots, plan, onTasksChange, onPlanChange }: SchedulePageProps) {
   const [warnings, setWarnings] = useState<ScheduleWarning[]>([])
   const [generating, setGenerating] = useState(false)
+  const [aiError, setAiError] = useState<string | null>(null)
+  
   const canGenerate = exams.length > 0 && syllabuses.length > 0 && freeSlots.length > 0
 
-  function doGenerate() {
+  // Chuyển đổi hàm lập lịch sang bất đồng bộ (async) để kết nối API Gemini
+  async function doGenerate() {
     setGenerating(true)
-    setTimeout(() => {
+    setAiError(null)
+
+    try {
+      // 1. Tạo bản đồ mã màu theo mã môn học
       const colorMap: Record<string, string> = {}
       exams.forEach((e) => { colorMap[e.id] = e.color })
-      const t = analyzeAndGenerateTasks(syllabuses, colorMap)
-      onTasksChange(t)
-      const { plan: p, warnings: w } = generateSchedule(t, freeSlots, exams)
-      onPlanChange(p); setWarnings(w); setGenerating(false)
-    }, 900)
+
+      // 2. Gọi AI bẻ nhỏ đề cương (Dựa thuần túy vào tên chương, độ khó & độ quan trọng)
+      const intelligentTasks = await analyzeAndGenerateTasksWithAI(syllabuses, colorMap)
+      
+      if (intelligentTasks.length === 0) {
+        setAiError("AI không thể phân rã chương học hoặc danh sách phản hồi trống.")
+        setGenerating(false)
+        return
+      }
+
+      // Lưu lại danh sách các việc cần học đã bẻ nhỏ vào State tổng
+      onTasksChange(intelligentTasks)
+
+      // 3. Đưa danh sách việc nhỏ của AI vào bộ thuật toán xếp slot thời gian rảnh cố định
+      const { plan: p, warnings: w } = generateSchedule(intelligentTasks, freeSlots, exams)
+      
+      onPlanChange(p)
+      setWarnings(w)
+
+    } catch (error: any) {
+      console.error("Lỗi trong quá trình lập lịch biểu thông minh:", error)
+      setAiError("Có lỗi hệ thống xảy ra khi xử lý phân tách lịch trình bằng AI.")
+    } finally {
+      setGenerating(false)
+    }
   }
 
   const readyItems = [
@@ -47,10 +72,18 @@ export default function SchedulePage({ exams, syllabuses, freeSlots, tasks: _tas
           <button onClick={doGenerate} disabled={generating}
             className="btn btn-primary" style={{ borderRadius: 12 }}>
             <Sparkles size={15} className={generating ? 'animate-spin-s' : ''} />
-            {generating ? 'Đang tạo...' : '✨ Tạo lịch học'}
+            {generating ? 'AI đang phân rã đề cương...' : '✨ Tạo lịch học bằng AI'}
           </button>
         ) : undefined}
       />
+
+      {/* Hiển thị lỗi từ API nếu xảy ra sự cố */}
+      {aiError && (
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm flex items-start gap-2">
+          <span>❌</span>
+          <p className="font-medium">{aiError}</p>
+        </div>
+      )}
 
       {!canGenerate && (
         <div className="card p-5 flex items-start gap-4 rounded-2xl"
