@@ -39,23 +39,33 @@ function parseTXT(text: string): Chapter[] {
     return linesToChapters(text.split(/\n|\r/));
 }
 
+const DIFFICULTY_MAP: Record<string, string> = {
+  low: 'low', medium: 'medium', high: 'high',
+  easy: 'low', normal: 'medium', hard: 'high',
+  thấp: 'low', 'trung bình': 'medium', cao: 'high',
+}
+
+function normalizeDifficulty(val: unknown): 'low' | 'medium' | 'high' {
+  const s = String(val ?? '').toLowerCase().trim()
+  return (DIFFICULTY_MAP[s] ?? 'medium') as 'low' | 'medium' | 'high'
+}
+
 function parseJSON(text: string): Chapter[] {
-    try {
-        const data = JSON.parse(text);
-        if (!Array.isArray(data)) return [];
-        return data.map((item) => {
-            if (typeof item === "string")
-                return { id: nanoid(), name: item, difficulty: "medium", importance: "medium" };
-            return {
-                id: nanoid(),
-                name: item.name ?? item.title ?? String(item),
-                difficulty: item.difficulty ?? "medium",
-                importance: item.importance ?? item.priority ?? "medium",
-            };
-        });
-    } catch {
-        return [];
-    }
+  try {
+    const data = JSON.parse(text)
+    if (!Array.isArray(data)) return []
+    return data.map((item) => {
+      if (typeof item === 'string') return { id: nanoid(), name: item, difficulty: 'medium', importance: 'medium' }
+      return {
+        id: nanoid(),
+        name: item.name ?? item.title ?? String(item),
+        difficulty: normalizeDifficulty(item.difficulty),
+        importance: normalizeDifficulty(item.importance ?? item.priority),
+      }
+    })
+  } catch {
+    return []
+  }
 }
 
 export async function parseFileToChapters(file: File): Promise<Chapter[]> {
