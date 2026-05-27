@@ -124,17 +124,18 @@ export function analyzeAndGenerateTasks(syllabuses: Syllabus[], examSubjectMap: 
       const estimatedMinutes = MINUTES_BY_DIFFICULTY[chapter.difficulty]
       const color = examSubjectMap[syllabus.subjectId] ?? '#4f46e5'
 
-      tasks.push({
-        id: nanoid(),
-        name: `Ôn tập: ${chapter.name}`,
-        chapter: chapter.name,
-        subjectId: syllabus.subjectId,
-        subjectName: syllabus.subjectName,
-        estimatedMinutes,
-        priority,
-        status: 'pending',
-        color,
-      })
+            tasks.push({
+                id: nanoid(),
+                name: `Ôn tập: ${chapter.name}`,
+                chapter: chapter.name,
+                subjectId: syllabus.subjectId,
+                subjectName: syllabus.subjectName,
+                estimatedMinutes,
+                priority,
+                status: "pending",
+                color,
+            });
+        }
     }
   }
   const order: Record<DifficultyLevel, number> = { high: 0, medium: 1, low: 2 }
