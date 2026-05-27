@@ -128,14 +128,14 @@ function runTests() {
     // Phân bổ thời gian:
     // - task-A2 cần 150 phút.
     // - Lịch Thứ 2 (25/05) có 120 phút rảnh (19:00 - 21:00).
-    // - Do đó, task-A2 phải bị chia làm 2 chunks:
-    //   + Chunk 0: 120 phút vào Thứ 2 (25/05) từ 19:00 - 21:00.
-    //   + Chunk 1: 30 phút vào Thứ 3 (26/05) từ 19:00 - 19:30.
-    // - Lịch Thứ 3 (26/05) còn trống 90 phút (19:30 - 21:00).
-    //   + task-A3 (30m) xếp vào Thứ 3 từ 19:30 - 20:00.
-    //   + task-A1 (60m) xếp vào Thứ 3 từ 20:00 - 21:00.
-    // - Lịch Thứ 4 (27/05) còn trống 120 phút (19:00 - 21:00).
-    //   + task-B1 (60m) xếp vào Thứ 4 từ 19:00 - 20:00.
+    // - Do đó, task-A2 (150m) phải bị chia làm 2 chunks:
+    //   + Chunk 0: 120 phút vào Thứ 2 (25/05) từ 19:00 - 21:00. Cursor Thứ 2 = 21:05 (đã cộng 5m nghỉ).
+    //   + Chunk 1: 30 phút vào Thứ 3 (26/05) từ 19:00 - 19:30. Cursor Thứ 3 = 19:35 (đã cộng 5m nghỉ).
+    // - task-A3 (30m) xếp tiếp vào Thứ 3 (26/05) từ 19:35 - 20:05. Cursor Thứ 3 = 20:10.
+    // - task-A1 (60m) xếp tiếp vào Thứ 3:
+    //   + Thứ 3 còn 50 phút rảnh (20:10 - 21:00) -> xếp chunk 0 50m vào Thứ 3 (20:10 - 21:00). Cursor Thứ 3 = 21:05.
+    //   + Thứ 4 (27/05) còn 120 phút rảnh (19:00 - 21:00) -> xếp nốt chunk 1 10m của task-A1 từ 19:00 - 19:10. Cursor Thứ 4 = 19:15.
+    // - task-B1 (60m) xếp vào Thứ 4 từ 19:15 - 20:15. Cursor Thứ 4 = 20:20.
 
     const slotsA2 = result.plan.slots.filter(s => s.taskId === "task-A2");
     
@@ -148,18 +148,21 @@ function runTests() {
     assert(slotsA2[1].date === "2026-05-26" && slotsA2[1].startTime === "19:00" && slotsA2[1].endTime === "19:30", 
         "Chunk 1 của task-A2 phải xếp vào Thứ 3 từ 19:00 đến 19:30");
 
-    // Kiểm tra các task còn lại có được xếp đúng vị trí nối tiếp không
+    // Kiểm tra các task còn lại có được xếp đúng vị trí nối tiếp (có tính break 5 phút)
     const slotA3 = result.plan.slots.find(s => s.taskId === "task-A3");
-    assert(slotA3 !== undefined && slotA3.date === "2026-05-26" && slotA3.startTime === "19:30" && slotA3.endTime === "20:00",
-        "task-A3 phải được xếp vào Thứ 3 từ 19:30 đến 20:00");
+    assert(slotA3 !== undefined && slotA3.date === "2026-05-26" && slotA3.startTime === "19:35" && slotA3.endTime === "20:05",
+        "task-A3 phải được xếp vào Thứ 3 từ 19:35 đến 20:05 (đã tính 5 phút nghỉ)");
 
-    const slotA1 = result.plan.slots.find(s => s.taskId === "task-A1");
-    assert(slotA1 !== undefined && slotA1.date === "2026-05-26" && slotA1.startTime === "20:00" && slotA1.endTime === "21:00",
-        "task-A1 phải được xếp vào Thứ 3 từ 20:00 đến 21:00");
+    const slotsA1 = result.plan.slots.filter(s => s.taskId === "task-A1");
+    assert(slotsA1.length === 2, `task-A1 phải bị chia làm 2 slots, thực tế: ${slotsA1.length}`);
+    assert(slotsA1[0].date === "2026-05-26" && slotsA1[0].startTime === "20:10" && slotsA1[0].endTime === "21:00",
+        "Chunk 0 của task-A1 phải xếp vào Thứ 3 từ 20:10 đến 21:00");
+    assert(slotsA1[1].date === "2026-05-27" && slotsA1[1].startTime === "19:00" && slotsA1[1].endTime === "19:10",
+        "Chunk 1 của task-A1 phải xếp vào Thứ 4 từ 19:00 đến 19:10");
 
     const slotB1 = result.plan.slots.find(s => s.taskId === "task-B1");
-    assert(slotB1 !== undefined && slotB1.date === "2026-05-27" && slotB1.startTime === "19:00" && slotB1.endTime === "20:00",
-        "task-B1 phải được xếp vào Thứ 4 từ 19:00 đến 20:00");
+    assert(slotB1 !== undefined && slotB1.date === "2026-05-27" && slotB1.startTime === "19:15" && slotB1.endTime === "20:15",
+        "task-B1 phải được xếp vào Thứ 4 từ 19:15 đến 20:15 (đã tính 5 phút nghỉ)");
 
     // ==========================================
     // TEST CASE 4: Quá tải (Overflow) & Cảnh báo (Warnings)
@@ -172,18 +175,17 @@ function runTests() {
     // 4. task-A1 (Môn A, medium, 60m)
     // 5. task-B1 (Môn B, high, 60m)
     //
-    // Phân bổ thực tế của EDF Greedy:
+    // Phân bổ thực tế của EDF Greedy (có BREAK 5m và MIN_SESSION 20m):
     // - Tổng thời gian rảnh trước ngày thi Môn A (Thứ 2, 3, 4) là 360 phút.
-    // - task-A4 (200m): Xếp Thứ 2 (120m) và Thứ 3 (80m). Hết 200m. (Còn dư: Thứ 3: 40m, Thứ 4: 120m)
-    // - task-A2 (150m): Xếp Thứ 3 (40m) và Thứ 4 (110m). Hết 150m. (Còn dư: Thứ 4: 10m)
-    // - task-A3 (30m): Cần 30m nhưng Thứ 4 chỉ còn 10m -> Xếp 10m vào Thứ 4. Còn thiếu 20m -> Đẩy vào overflow!
-    // - task-A1 (60m): Môn A hết lịch rảnh khả dụng -> Đẩy vào overflow 60m!
-    // - task-B1 (60m): Môn B thi ngày 30/05. Mặc dù lịch trước ngày 30/05 còn trống Thứ 5, Thứ 6, v.v., 
-    //   nhưng freeSlots của ta chỉ định nghĩa Thứ 2, 3, 4. Các ngày này đã bị môn A chiếm hết -> Đẩy vào overflow 60m!
+    // - task-A4 (200m): Xếp Thứ 2 (120m) và Thứ 3 (80m). Hết 200m. Cursor Thứ 3 = 20:25 (đã cộng 5m nghỉ).
+    // - task-A2 (150m): Xếp Thứ 3 (còn 35m khả dụng, từ 20:25 - 21:00) và Thứ 4 (115m, từ 19:00 - 20:55). Hết 150m. Cursor Thứ 4 = 21:00 (đã cộng 5m nghỉ).
+    // - task-A3 (30m): Thứ 4 chỉ còn 0 phút khả dụng trước 21:00 -> Đẩy vào overflow 30m!
+    // - task-A1 (60m): Không còn lịch rảnh trước ngày thi Môn A -> Đẩy vào overflow 60m!
+    // - task-B1 (60m): Môn B thi ngày 30/05, nhưng freeSlots chỉ định nghĩa Thứ 2, 3, 4 đã bị Môn A chiếm hết -> Đẩy vào overflow 60m!
     //
-    // Do đó:
+    // Do thế:
     // - Số lượng task bị overflow = 3 (task-A3, task-A1, task-B1)
-    // - task-A3 thiếu 20m
+    // - task-A3 thiếu 30m
     // - task-A1 thiếu 60m
     // - task-B1 thiếu 60m
     
@@ -210,11 +212,11 @@ function runTests() {
     }
     assert(resultOverflow.overflow.length === 3, `Số lượng task bị overflow thực tế: ${resultOverflow.overflow.length}`);
     
-    const hasA3 = resultOverflow.overflow.some(t => t.id === "task-A3" && t.estimatedMinutes === 20);
+    const hasA3 = resultOverflow.overflow.some(t => t.id === "task-A3" && t.estimatedMinutes === 30);
     const hasA1 = resultOverflow.overflow.some(t => t.id === "task-A1" && t.estimatedMinutes === 60);
     const hasB1 = resultOverflow.overflow.some(t => t.id === "task-B1" && t.estimatedMinutes === 60);
     
-    assert(hasA3, "task-A3 phải bị overflow 20 phút");
+    assert(hasA3, "task-A3 phải bị overflow 30 phút");
     assert(hasA1, "task-A1 phải bị overflow 60 phút");
     assert(hasB1, "task-B1 phải bị overflow 60 phút");
 

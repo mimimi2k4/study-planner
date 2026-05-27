@@ -143,6 +143,7 @@ export function generateSchedule(
 
     const blockCapacity = blocks.map((b) => ({
         date: b.date,
+        startTime: b.startTime,
         cursor: b.startTime,
         end: b.endTime,
     }));
@@ -155,7 +156,13 @@ export function generateSchedule(
             if (remaining <= 0) break;
             if (examDate && block.date >= examDate.slice(0, 10)) continue;
 
-            const available = timeToMinutes(block.end) - timeToMinutes(block.cursor);
+            const cursorMins = timeToMinutes(block.cursor);
+            const startMins = timeToMinutes(block.startTime);
+            const endMins = timeToMinutes(block.end);
+
+            if (cursorMins < startMins || cursorMins >= endMins) continue;
+
+            const available = endMins - cursorMins;
             if (available < MIN_SESSION) continue;
 
             const chunk = Math.min(remaining, available);
