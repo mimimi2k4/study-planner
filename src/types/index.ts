@@ -17,6 +17,7 @@ export interface Chapter {
   name: string
   difficulty: DifficultyLevel
   importance: DifficultyLevel
+  level?: number // 0 = chương lớn, 1 = chương con, 2 = mục nhỏ
 }
 
 export interface Syllabus {
