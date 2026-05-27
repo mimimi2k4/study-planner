@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot } from '../types'
 import { Sparkles } from 'lucide-react'
