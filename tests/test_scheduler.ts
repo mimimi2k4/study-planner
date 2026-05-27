@@ -157,12 +157,12 @@ function runTests() {
     assert(slotsA1.length === 2, `task-A1 phải bị chia làm 2 slots, thực tế: ${slotsA1.length}`);
     assert(slotsA1[0].date === "2026-05-26" && slotsA1[0].startTime === "20:10" && slotsA1[0].endTime === "21:00",
         "Chunk 0 của task-A1 phải xếp vào Thứ 3 từ 20:10 đến 21:00");
-    assert(slotsA1[1].date === "2026-05-27" && slotsA1[1].startTime === "19:00" && slotsA1[1].endTime === "19:10",
-        "Chunk 1 của task-A1 phải xếp vào Thứ 4 từ 19:00 đến 19:10");
+    assert(slotsA1[1].date === "2026-05-27" && slotsA1[1].startTime === "19:00" && slotsA1[1].endTime === "19:20",
+        "Chunk 1 của task-A1 phải xếp vào Thứ 4 từ 19:00 đến 19:20 (được snap từ 10m lên 20m)");
 
     const slotB1 = result.plan.slots.find(s => s.taskId === "task-B1");
-    assert(slotB1 !== undefined && slotB1.date === "2026-05-27" && slotB1.startTime === "19:15" && slotB1.endTime === "20:15",
-        "task-B1 phải được xếp vào Thứ 4 từ 19:15 đến 20:15 (đã tính 5 phút nghỉ)");
+    assert(slotB1 !== undefined && slotB1.date === "2026-05-27" && slotB1.startTime === "19:25" && slotB1.endTime === "20:25",
+        "task-B1 phải được xếp vào Thứ 4 từ 19:25 đến 20:25 (đã tính 5 phút nghỉ sau slot A1 đã snap)");
 
     // ==========================================
     // TEST CASE 4: Quá tải (Overflow) & Cảnh báo (Warnings)
@@ -224,6 +224,97 @@ function runTests() {
     const hasInsufficientTimeWarning = resultOverflow.warnings.some(w => w.type === "insufficient_time");
     assert(hasInsufficientTimeWarning, "Phải tồn tại cảnh báo insufficient_time");
     console.log(`Cảnh báo thực tế: ${resultOverflow.warnings.find(w => w.type === "insufficient_time")?.message}`);
+
+    // ==========================================
+    // TEST CASE 5: Snap-to-Min for small remaining chunks
+    // ==========================================
+    const test5Exams: ExamInfo[] = [
+        {
+            id: "sub-A",
+            subjectName: "Môn A",
+            examDateTime: "2026-05-28T09:00:00",
+            examFormat: "multiple_choice",
+            targetScore: 8,
+            color: "#ff0000",
+        },
+    ];
+
+    const test5Tasks: StudyTask[] = [
+        {
+            id: "task-liskov",
+            name: "Lập trình Liskov",
+            chapter: "Chương 2",
+            subjectId: "sub-A",
+            subjectName: "Môn A",
+            estimatedMinutes: 25,
+            priority: "high",
+            status: "pending",
+            color: "#ff0000",
+        },
+    ];
+
+    const test5FreeSlots: FreeSlot[] = [
+        { day: 0, startTime: "19:00", endTime: "19:20" }, // Thứ 2: 20 phút
+        { day: 1, startTime: "19:00", endTime: "20:00" }, // Thứ 3: 60 phút
+    ];
+
+    const test5Result = generateSchedule(test5Tasks, test5FreeSlots, test5Exams, new Date("2026-05-25"));
+
+    const slotsLiskov = test5Result.plan.slots.filter(s => s.taskId === "task-liskov");
+    
+    assert(slotsLiskov.length === 2, `task-liskov phải bị chia làm 2 slots, thực tế: ${slotsLiskov.length}`);
+    assert(slotsLiskov[0].date === "2026-05-25" && slotsLiskov[0].startTime === "19:00" && slotsLiskov[0].endTime === "19:20",
+        `Slot 1 của task-liskov phải dài 20 phút (19:00 - 19:20), thực tế: ${slotsLiskov[0]?.startTime} - ${slotsLiskov[0]?.endTime}`);
+    
+    // Với logic Snap-to-Min, slot thứ hai phải được làm tròn lên thành 20 phút (19:00 - 19:20) thay vì chỉ có 5 phút (19:00 - 19:05)
+    assert(slotsLiskov[1].date === "2026-05-26" && slotsLiskov[1].startTime === "19:00" && slotsLiskov[1].endTime === "19:20",
+        `Slot 2 của task-liskov phải dài 20 phút nhờ Snap-to-Min, thực tế: ${slotsLiskov[1]?.startTime} - ${slotsLiskov[1]?.endTime}`);
+
+    // ==========================================
+    // TEST CASE 6: Bỏ qua slot quá khứ và tôn trọng thời gian chuẩn bị (Preparation Buffer)
+    // ==========================================
+    // Giả sử hôm nay là Thứ 4 (2026-05-27) lúc 19:30.
+    // Lịch rảnh Thứ 4 từ 19:00 đến 21:00.
+    // Với buffer chuẩn bị 15 phút, thời gian bắt đầu học sớm nhất phải là 19:45.
+    const test6Exams: ExamInfo[] = [
+        {
+            id: "sub-A",
+            subjectName: "Môn A",
+            examDateTime: "2026-05-30T09:00:00",
+            examFormat: "multiple_choice",
+            targetScore: 8,
+            color: "#ff0000",
+        },
+    ];
+
+    const test6Tasks: StudyTask[] = [
+        {
+            id: "task-prep",
+            name: "Học bài chuẩn bị",
+            chapter: "Chương 1",
+            subjectId: "sub-A",
+            subjectName: "Môn A",
+            estimatedMinutes: 30,
+            priority: "high",
+            status: "pending",
+            color: "#ff0000",
+        },
+    ];
+
+    // Slot Thứ 4 (day: 2)
+    const test6FreeSlots: FreeSlot[] = [
+        { day: 2, startTime: "19:00", endTime: "21:00" },
+    ];
+
+    // Khởi tạo thời gian hiện tại là 19:30 Thứ 4 (2026-05-27)
+    const currentDateTime = new Date("2026-05-27T19:30:00");
+    const test6Result = generateSchedule(test6Tasks, test6FreeSlots, test6Exams, currentDateTime);
+
+    const slotsPrep = test6Result.plan.slots.filter(s => s.taskId === "task-prep");
+    assert(slotsPrep.length === 1, `task-prep phải được xếp lịch vào hôm nay, thực tế: ${slotsPrep.length}`);
+    assert(slotsPrep[0].date === "2026-05-27", "Nhiệm vụ phải được xếp vào ngày hôm nay");
+    assert(slotsPrep[0].startTime === "19:45" && slotsPrep[0].endTime === "20:15",
+        `Slot học phải bắt đầu từ 19:45 (sau 15m chuẩn bị từ 19:30), thực tế: ${slotsPrep[0]?.startTime} - ${slotsPrep[0]?.endTime}`);
 
     console.log("=== TẤT CẢ CÁC BÀI KIỂM THỬ ĐÃ THÀNH CÔNG! ===");
 }

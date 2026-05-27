@@ -141,12 +141,28 @@ export function generateSchedule(
     const MIN_SESSION = 20;
     const BREAK = 5;
 
-    const blockCapacity = blocks.map((b) => ({
-        date: b.date,
-        startTime: b.startTime,
-        cursor: b.startTime,
-        end: b.endTime,
-    }));
+    const todayStr = formatDate(startDate);
+    const currentMins = startDate.getHours() * 60 + startDate.getMinutes();
+    const PREPARATION_BUFFER = 15; // 15 minutes buffer for preparation
+    const earliestStartMins = currentMins + PREPARATION_BUFFER;
+
+    const blockCapacity = blocks.map((b) => {
+        let cursor = b.startTime;
+        if (b.date === todayStr) {
+            const startMins = timeToMinutes(b.startTime);
+            if (earliestStartMins > startMins) {
+                const h = Math.floor(earliestStartMins / 60) % 24;
+                const m = earliestStartMins % 60;
+                cursor = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+            }
+        }
+        return {
+            date: b.date,
+            startTime: b.startTime,
+            cursor: cursor,
+            end: b.endTime,
+        };
+    });
 
     for (const task of sortedTasks) {
         const examDate = examDates[task.subjectId];
@@ -165,8 +181,10 @@ export function generateSchedule(
             const available = endMins - cursorMins;
             if (available < MIN_SESSION) continue;
 
-            const chunk = Math.min(remaining, available);
-            if (chunk < MIN_SESSION && remaining > chunk) continue;
+            let chunk = Math.min(remaining, available);
+            if (chunk < MIN_SESSION) {
+                chunk = MIN_SESSION;
+            }
 
             const slotEnd = addMinutes(block.cursor, chunk);
 
