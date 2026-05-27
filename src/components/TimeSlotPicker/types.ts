@@ -1,6 +1,6 @@
-import type { FreeSlot } from '../../types'
+import type { FreeSlot } from "../../types";
 
 export interface TimeSlotPickerProps {
-  freeSlots: FreeSlot[]
-  onSave: (slots: FreeSlot[]) => void
+    freeSlots: FreeSlot[];
+    onSave: (slots: FreeSlot[]) => void;
 }
