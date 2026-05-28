@@ -9,6 +9,8 @@ import {
     slotHeightPercent,
 } from "../../utils/schedule";
 import type { ScheduleViewProps } from "./types";
+import type { ScheduleSlot } from "../../types";
+import AddTaskModal from "./AddTaskModal";
 
 const DAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 const HOURS = Array.from({ length: 18 }, (_, i) => i + 6); // 6:00–23:00
@@ -18,8 +20,10 @@ export default function ScheduleView({
     exams,
     warnings,
     overflow = [],
+    tasks,
     onRegenerate,
     onSlotsChange,
+    onDispatch,
 }: ScheduleViewProps) {
     const [weekStart, setWeekStart] = useState<Date>(() => getWeekStart(new Date()));
 
@@ -32,7 +36,52 @@ export default function ScheduleView({
     const todayStr = formatDate(new Date());
 
     function handleDeleteSlot(slotId: string) {
-        onSlotsChange(slots.filter((s) => s.id !== slotId));
+        // Ưu tiên dùng dispatch để đi qua executePlanAction (pure, có validate)
+        if (onDispatch) {
+            onDispatch({ action: "delete_task", payload: { slotId } });
+        } else {
+            onSlotsChange(slots.filter((s) => s.id !== slotId));
+        }
+    }
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedCell, setSelectedCell] = useState<{date: string, time: string}>({date: "", time: "00:00"});
+
+    function parseTime(t: string): number {
+        const [h, m] = t.split(":").map(Number);
+        return h * 60 + m;
+    }
+
+    function handleCellClick(date: string, hour: number) {
+        setSelectedCell({ date, time: `${String(hour).padStart(2, "0")}:00` });
+        setModalOpen(true);
+    }
+
+    function handleDragStart(e: React.DragEvent, slot: ScheduleSlot) {
+        e.dataTransfer.setData("text/plain", slot.id);
+        const durationMinutes = parseTime(slot.endTime) - parseTime(slot.startTime);
+        e.dataTransfer.setData("application/json", JSON.stringify({ durationMinutes }));
+    }
+
+    function handleDrop(e: React.DragEvent, targetDate: string, targetHour: number) {
+        e.preventDefault();
+        const slotId = e.dataTransfer.getData("text/plain");
+        if (!slotId) return;
+
+        const dataStr = e.dataTransfer.getData("application/json");
+        const data = dataStr ? JSON.parse(dataStr) : null;
+        const durationMinutes = data?.durationMinutes ?? 60;
+
+        const newStartTime = `${String(targetHour).padStart(2, "0")}:00`;
+        const endMin = targetHour * 60 + durationMinutes;
+        const newEndTime = `${String(Math.floor(endMin / 60)).padStart(2, "0")}:${String(endMin % 60).padStart(2, "0")}`;
+
+        if (onDispatch) {
+            onDispatch({
+                action: "move_task",
+                payload: { slotId, newDate: targetDate, newStartTime, newEndTime }
+            });
+        }
     }
 
     const weekLabel = `${weekDates[0].slice(8)}.${weekDates[0].slice(5, 7)} – ${weekDates[6].slice(8)}.${weekDates[6].slice(5, 7)}.${weekDates[6].slice(0, 4)}`;
@@ -212,12 +261,15 @@ export default function ScheduleView({
                                     {weekDates.map((date) => (
                                         <div
                                             key={date}
-                                            className="border-l"
+                                            className="border-l hover:bg-indigo-50/30 cursor-pointer transition-colors"
                                             style={{
                                               borderBottom: "1px solid rgba(226,232,240,0.8)",
                                               height: 40,
                                               background: isEven ? "rgba(248,250,252,0.5)" : undefined,
                                             }}
+                                            onClick={() => handleCellClick(date, h)}
+                                            onDragOver={(e) => e.preventDefault()}
+                                            onDrop={(e) => handleDrop(e, date, h)}
                                         />
                                     ))}
                                 </div>
@@ -247,6 +299,8 @@ export default function ScheduleView({
                                             return (
                                                 <div
                                                     key={slot.id}
+                                                    draggable
+                                                    onDragStart={(e) => handleDragStart(e, slot)}
                                                     className="absolute left-0.5 right-0.5 rounded-lg px-1.5 py-1 overflow-hidden pointer-events-auto cursor-pointer group transition-all duration-150 hover:shadow-md hover:-translate-y-0.5"
                                                     style={{
                                                         top: `${top}%`,
@@ -305,6 +359,19 @@ export default function ScheduleView({
                     ))}
                 </div>
             )}
+            {/* Modal */}
+            <AddTaskModal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                tasks={tasks}
+                selectedDate={selectedCell.date}
+                selectedStartTime={selectedCell.time}
+                onSave={(taskId, date, startTime, endTime) => {
+                    if (onDispatch) {
+                        onDispatch({ action: "add_task", payload: { taskId, date, startTime, endTime } });
+                    }
+                }}
+            />
         </div>
     );
 }

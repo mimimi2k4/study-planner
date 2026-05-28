@@ -72,27 +72,71 @@ export const getPlan = (): StudyPlan | null => load<StudyPlan | null>(KEYS.PLAN,
 export const savePlan = (plan: StudyPlan): void => save(KEYS.PLAN, plan);
 export const deletePlan = (): void => localStorage.removeItem(KEYS.PLAN);
 
-// Plan actions (Task 11)
+// ─── Plan actions — pure function (không ghi localStorage trực tiếp) ──────────
+// Nhận vào state hiện tại, trả về bản sao đã cập nhật.
+// React Hook (usePlanManager) sẽ gọi setState() + localStorage từ bên ngoài.
+
+export type PlanActionResult =
+    | { success: true; newPlan: StudyPlan | null; newTasks: StudyTask[]; error?: undefined }
+    | { success: false; error: string; newPlan?: undefined; newTasks?: undefined };
+
+function parseTime(t: string): number {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+}
+
 export function executePlanAction(
     action: "add_task" | "delete_task" | "move_task" | "reset_auto" | "update_task_status",
-    payload?: Record<string, unknown>
-): { success: boolean; error?: string } {
-    const plan = getPlan();
+    payload: Record<string, unknown>,
+    currentPlan: StudyPlan | null,
+    currentTasks: StudyTask[],
+    freeSlots: FreeSlot[] = []
+): PlanActionResult {
+    const parseTime = (t: string): number => {
+        const [h, m] = t.split(":").map(Number);
+        return h * 60 + m;
+    };
 
+    const isWithinFreeSlot = (date: string, startTime: string, endTime: string): boolean => {
+        if (freeSlots.length === 0) return true; // Nếu chưa setup freeSlots thì thôi, nhưng thường là có
+        const dayOfWeek = (new Date(date).getDay() + 6) % 7;
+        const start = parseTime(startTime);
+        const end = parseTime(endTime);
+        
+        return freeSlots.some(
+            (slot) =>
+                slot.day === dayOfWeek &&
+                parseTime(slot.startTime) <= start &&
+                parseTime(slot.endTime) >= end
+        );
+    };
+    // reset_auto: xoá plan để hook gọi lại generateSchedule
     if (action === "reset_auto") {
-        deletePlan();
-        return { success: true };
+        return { success: true, newPlan: null, newTasks: currentTasks };
     }
 
-    if (!plan) return { success: false, error: "Chưa có kế hoạch học. Hãy tạo lịch trước." };
+    if (action === "update_task_status") {
+        const { taskId, status } = payload as { taskId: string; status: StudyTask["status"] };
+        if (!taskId) return { success: false, error: "Thiếu taskId" };
+        const newTasks = currentTasks.map((t) =>
+            t.id === taskId ? { ...t, status } : t
+        );
+        return { success: true, newPlan: currentPlan, newTasks };
+    }
+
+    if (!currentPlan) {
+        return { success: false, error: "Chưa có kế hoạch học. Hãy tạo lịch trước." };
+    }
 
     if (action === "delete_task") {
         const { slotId } = payload as { slotId: string };
         if (!slotId) return { success: false, error: "Thiếu slotId" };
-        plan.slots = plan.slots.filter((s) => s.id !== slotId);
-        plan.manualEdited = true;
-        savePlan(plan);
-        return { success: true };
+        const newPlan: StudyPlan = {
+            ...currentPlan,
+            slots: currentPlan.slots.filter((s) => s.id !== slotId),
+            manualEdited: true,
+        };
+        return { success: true, newPlan, newTasks: currentTasks };
     }
 
     if (action === "move_task") {
@@ -102,34 +146,62 @@ export function executePlanAction(
             newStartTime: string;
             newEndTime: string;
         };
-        if (!slotId || !newDate) return { success: false, error: "Thiếu thông tin dịch chuyển" };
-        plan.slots = plan.slots.map(
-            (s): ScheduleSlot =>
-                s.id === slotId
-                    ? {
-                          ...s,
-                          date: newDate,
-                          startTime: newStartTime,
-                          endTime: newEndTime,
-                          manualEdited: true,
-                      }
-                    : s
-        );
-        plan.manualEdited = true;
-        savePlan(plan);
-        return { success: true };
+        if (!slotId || !newDate || !newStartTime || !newEndTime)
+            return { success: false, error: "Thiếu thông tin dịch chuyển (slotId, newDate, newStartTime, newEndTime)" };
+        // Validate thời gian
+        if (parseTime(newEndTime) <= parseTime(newStartTime))
+            return { success: false, error: "Thời gian kết thúc phải sau thời gian bắt đầu" };
+        if (!isWithinFreeSlot(newDate, newStartTime, newEndTime))
+            return { success: false, error: "Ngoài khung giờ rảnh đã thiết lập" };
+        const newPlan: StudyPlan = {
+            ...currentPlan,
+            manualEdited: true,
+            slots: currentPlan.slots.map(
+                (s): ScheduleSlot =>
+                    s.id === slotId
+                        ? { ...s, date: newDate, startTime: newStartTime, endTime: newEndTime, manualEdited: true }
+                        : s
+            ),
+        };
+        return { success: true, newPlan, newTasks: currentTasks };
     }
 
-    if (action === "update_task_status") {
-        const { taskId, status } = payload as { taskId: string; status: string };
-        const tasks = getTasks();
-        saveTasks(
-            tasks.map((t) =>
-                t.id === taskId ? { ...t, status: status as StudyTask["status"] } : t
-            )
-        );
-        return { success: true };
+    if (action === "add_task") {
+        const { taskId, date, startTime, endTime } = payload as {
+            taskId: string;
+            date: string;
+            startTime: string;
+            endTime: string;
+        };
+        if (!taskId || !date || !startTime || !endTime)
+            return { success: false, error: "Thiếu thông tin thêm slot (taskId, date, startTime, endTime)" };
+        if (parseTime(endTime) <= parseTime(startTime))
+            return { success: false, error: "Thời gian kết thúc phải sau thời gian bắt đầu" };
+        if (!isWithinFreeSlot(date, startTime, endTime))
+            return { success: false, error: "Ngoài khung giờ rảnh đã thiết lập" };
+        const task = currentTasks.find((t) => t.id === taskId);
+        if (!task) return { success: false, error: `Không tìm thấy task với id "${taskId}"` };
+        const newSlot: ScheduleSlot = {
+            id: `manual-${Date.now().toString(36)}`,
+            date,
+            startTime,
+            endTime,
+            taskName: task.name,
+            taskId: task.id,
+            subjectName: task.subjectName,
+            subjectId: task.subjectId,
+            color: task.color,
+            manualEdited: true,
+        };
+        const newPlan: StudyPlan = {
+            ...currentPlan,
+            manualEdited: true,
+            slots: [...currentPlan.slots, newSlot].sort((a, b) =>
+                a.date !== b.date ? a.date.localeCompare(b.date) : a.startTime.localeCompare(b.startTime)
+            ),
+        };
+        return { success: true, newPlan, newTasks: currentTasks };
     }
 
-    return { success: false, error: "Action không hợp lệ" };
+    return { success: false, error: `Action không hợp lệ: "${action}"` };
 }
