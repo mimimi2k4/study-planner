@@ -86,10 +86,7 @@ export type PlanActionResult =
     | { success: true; newPlan: StudyPlan | null; newTasks: StudyTask[]; error?: undefined }
     | { success: false; error: string; newPlan?: undefined; newTasks?: undefined };
 
-function parseTime(t: string): number {
-    const [h, m] = t.split(":").map(Number);
-    return h * 60 + m;
-}
+
 
 export function executePlanAction(
     action: "add_task" | "delete_task" | "move_task" | "reset_auto" | "update_task_status",

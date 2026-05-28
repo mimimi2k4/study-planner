@@ -25,7 +25,7 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Ex
   function handleGenerateMilestones(exam: ExamInfo) {
     const totalTasks = tasks.filter((t) => t.subjectId === exam.id).length
     const res = generateMilestones(exam.id, exam.examDateTime, totalTasks)
-    if (!res.success) {
+    if (res.success === false) {
       alert("Lỗi: " + res.error)
     } else {
       const others = milestones.filter((m) => m.subjectId !== exam.id)
