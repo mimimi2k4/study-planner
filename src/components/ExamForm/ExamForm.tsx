@@ -4,6 +4,9 @@ import type { ExamInfo } from '../../types'
 import type { ExamFormProps, ExamFormState, ExamFormErrors } from './types'
 import { DEFAULT_EXAM_FORM_STATE, validateExamForm } from './types'
 import { useAllExamsCountdown } from '../../hooks/useExamCountdown'
+import { generateMilestones } from '../../logic/milestoneGenerator'
+import { getMilestones, saveMilestones } from '../../utils/storage'
+import { Flag } from 'lucide-react'
 
 const FORMAT_OPTIONS = [
   { value: 'multiple_choice' as const, label: 'Trắc nghiệm', emoji: '☑️' },
@@ -16,7 +19,22 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Ex
   const [errors, setErrors]     = useState<ExamFormErrors>({})
   const [submitted, setSubmitted] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [milestones, setMilestones] = useState(() => getMilestones())
   const countdowns = useAllExamsCountdown(exams, tasks)
+
+  function handleGenerateMilestones(exam: ExamInfo) {
+    const totalTasks = tasks.filter((t) => t.subjectId === exam.id).length
+    const res = generateMilestones(exam.id, exam.examDateTime, totalTasks)
+    if (!res.success) {
+      alert("Lỗi: " + res.error)
+    } else {
+      const others = milestones.filter((m) => m.subjectId !== exam.id)
+      const next = [...others, ...res.milestones]
+      saveMilestones(next)
+      setMilestones(next)
+      alert("Tạo mốc ôn tập thành công!")
+    }
+  }
 
   function set(field: keyof ExamFormState, value: string) {
     const next = { ...form, [field]: value }
@@ -311,6 +329,36 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Ex
                             )}
                           </div>
                         )}
+
+                        {/* Milestones section */}
+                        <div className="mt-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Cột mốc ôn tập</p>
+                            <button
+                              type="button"
+                              onClick={() => handleGenerateMilestones(exam)}
+                              className="text-xs font-bold px-2 py-1 rounded-md transition-colors flex items-center gap-1"
+                              style={{ color: exam.color, background: exam.color + '1a' }}
+                            >
+                              <Flag size={12} /> Tạo mốc
+                            </button>
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            {milestones.filter(m => m.subjectId === exam.id).length === 0 ? (
+                              <p className="text-xs text-slate-400 italic">Chưa có cột mốc nào.</p>
+                            ) : (
+                              milestones.filter(m => m.subjectId === exam.id).map(m => (
+                                <div key={m.milestoneId} className="flex items-center gap-2 text-sm p-1.5 rounded-md" style={{ background: '#f8fafc' }}>
+                                  <span className="shrink-0 text-xs font-semibold px-1.5 py-0.5 rounded text-white" style={{ background: exam.color }}>
+                                    {new Date(m.deadlineDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
+                                  </span>
+                                  <span className="font-medium text-slate-700 truncate">{m.name}</span>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   )

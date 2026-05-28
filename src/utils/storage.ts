@@ -6,6 +6,7 @@ const KEYS = {
     FREE_SLOTS: "study_free_slots",
     TASKS: "study_tasks",
     PLAN: "study_plan",
+    MILESTONES: "study_milestones",
 } as const;
 
 function load<T>(key: string, fallback: T): T {
@@ -71,6 +72,11 @@ export const saveTasks = (tasks: StudyTask[]): void => save(KEYS.TASKS, tasks);
 export const getPlan = (): StudyPlan | null => load<StudyPlan | null>(KEYS.PLAN, null);
 export const savePlan = (plan: StudyPlan): void => save(KEYS.PLAN, plan);
 export const deletePlan = (): void => localStorage.removeItem(KEYS.PLAN);
+
+// Milestones
+import type { Milestone } from "../types";
+export const getMilestones = (): Milestone[] => load(KEYS.MILESTONES, []);
+export const saveMilestones = (milestones: Milestone[]): void => save(KEYS.MILESTONES, milestones);
 
 // ─── Plan actions — pure function (không ghi localStorage trực tiếp) ──────────
 // Nhận vào state hiện tại, trả về bản sao đã cập nhật.
