@@ -14,6 +14,8 @@ import type { ExamInfo, StudyTask, StudyPlan, Syllabus } from "../types";
 import StatsCard from "../components/Dashboard/StatsCard";
 import ExamCard from "../components/Dashboard/ExamCard";
 import { useAllExamsCountdown } from "../hooks/useExamCountdown";
+import MilestoneTimeline from "../components/MilestoneTimeline/MilestoneTimeline";
+import { getMilestones } from "../utils/storage";
 
 export interface DashboardPageProps {
     exams: ExamInfo[];
@@ -87,6 +89,9 @@ export default function DashboardPage({
     };
     const doneCount = Object.values(stepDone).filter(Boolean).length;
     const circumference = 2 * Math.PI * 20;
+
+    // Lấy dữ liệu milestone từ localStorage
+    const milestones = getMilestones();
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
@@ -294,7 +299,7 @@ export default function DashboardPage({
                     alignItems: "start",
                 }}
             >
-                {/* ── Setup checklist panel ── */}
+                {/* ── Cột trái: Setup checklist panel ── */}
                 <div className="card rounded-3xl overflow-hidden">
                     <div
                         className="px-6 py-5 flex items-center gap-4"
@@ -371,105 +376,120 @@ export default function DashboardPage({
                     </div>
                 </div>
 
-                {/* ── Upcoming exams panel ── */}
-                <div className="card rounded-3xl overflow-hidden">
-                    <div
-                        className="px-6 py-5 flex items-center justify-between gap-4"
-                        style={{
-                            background: "linear-gradient(135deg, #fffbeb, #fef3c7)",
-                            borderBottom: "1.5px solid #fde68a",
-                        }}
-                    >
-                        <div className="flex items-center gap-4">
-                            <div
-                                className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-                                style={{
-                                    background: "rgba(255,255,255,0.6)",
-                                    border: "1.5px solid #fde68a",
-                                }}
-                            >
-                                <Award size={20} className="text-amber-500" />
-                            </div>
-                            <div>
-                                <h2 className="font-black text-slate-800 text-xl leading-none">
-                                    Môn thi sắp tới
-                                </h2>
-                                <p className="text-slate-600 text-sm mt-1">
-                                    Theo dõi thời gian còn lại
-                                </p>
-                            </div>
-                        </div>
-                        {sortedExams.length > 0 && (
-                            <Link
-                                to="/exams"
-                                className="inline-flex items-center gap-1.5 font-bold transition-colors shrink-0"
-                                style={{ fontSize: 13, color: "#d97706", textDecoration: "none" }}
-                            >
-                                Xem tất cả <ArrowRight size={13} />
-                            </Link>
-                        )}
-                    </div>
-
-                    <div className="p-6">
-                        {sortedExams.length > 0 ? (
-                            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                                {sortedExams.slice(0, 4).map((exam) => (
-                                    <ExamCard
-                                        key={exam.id}
-                                        exam={exam}
-                                        countdown={countdowns[exam.id] ?? null}
-                                    />
-                                ))}
-
-                                {exams.length > 0 && (
-                                    <div
-                                        className="rounded-2xl px-5 py-4 flex items-start gap-3 mt-1"
-                                        style={{
-                                            background: "#fffbeb",
-                                            border: "1.5px solid #fde68a",
-                                        }}
-                                    >
-                                        <Star
-                                            size={15}
-                                            className="text-amber-500 shrink-0 mt-0.5"
-                                        />
-                                        <p className="text-amber-800 text-sm">
-                                            <span className="font-semibold">Mẹo:</span> Ôn bài theo
-                                            chu kỳ lặp lại (spaced repetition) giúp ghi nhớ tốt hơn
-                                            70%.
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        ) : (
-                            <div className="py-14 text-center flex flex-col items-center gap-4">
+                {/* ── Cột phải: Bao gồm Các môn thi sắp tới & Milestone Timeline ── */}
+                <div 
+                    style={{ 
+                        display: "grid", 
+                        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", 
+                        gap: 24, 
+                        alignItems: "start" 
+                    }}
+                >
+                    {/* Upcoming exams panel */}
+                    <div className="card rounded-3xl overflow-hidden">
+                        <div
+                            className="px-6 py-5 flex items-center justify-between gap-4"
+                            style={{
+                                background: "linear-gradient(135deg, #fffbeb, #fef3c7)",
+                                borderBottom: "1.5px solid #fde68a",
+                            }}
+                        >
+                            <div className="flex items-center gap-4">
                                 <div
-                                    className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                                    style={{ background: "#f0ebff" }}
-                                >
-                                    <BookOpen size={24} className="text-violet-400" />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-slate-700 text-base mb-1">
-                                        Chưa có môn thi nào
-                                    </h3>
-                                    <p className="text-slate-400 text-sm">
-                                        Thêm môn thi đầu tiên để bắt đầu lên kế hoạch.
-                                    </p>
-                                </div>
-                                <Link
-                                    to="/exams"
-                                    className="btn btn-primary"
+                                    className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                                     style={{
-                                        textDecoration: "none",
-                                        borderRadius: 10,
-                                        padding: "10px 22px",
+                                        background: "rgba(255,255,255,0.6)",
+                                        border: "1.5px solid #fde68a",
                                     }}
                                 >
-                                    <BookOpen size={14} /> Thêm môn thi
-                                </Link>
+                                    <Award size={20} className="text-amber-500" />
+                                </div>
+                                <div>
+                                    <h2 className="font-black text-slate-800 text-xl leading-none">
+                                        Môn thi sắp tới
+                                    </h2>
+                                    <p className="text-slate-600 text-sm mt-1">
+                                        Theo dõi thời gian còn lại
+                                    </p>
+                                </div>
                             </div>
-                        )}
+                            {sortedExams.length > 0 && (
+                                <Link
+                                    to="/exams"
+                                    className="inline-flex items-center gap-1.5 font-bold transition-colors shrink-0"
+                                    style={{ fontSize: 13, color: "#d97706", textDecoration: "none" }}
+                                >
+                                    Xem tất cả <ArrowRight size={13} />
+                                </Link>
+                            )}
+                        </div>
+
+                        <div className="p-6">
+                            {sortedExams.length > 0 ? (
+                                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                                    {sortedExams.slice(0, 4).map((exam) => (
+                                        <ExamCard
+                                            key={exam.id}
+                                            exam={exam}
+                                            countdown={countdowns[exam.id] ?? null}
+                                        />
+                                    ))}
+
+                                    {exams.length > 0 && (
+                                        <div
+                                            className="rounded-2xl px-5 py-4 flex items-start gap-3 mt-1"
+                                            style={{
+                                                background: "#fffbeb",
+                                                border: "1.5px solid #fde68a",
+                                            }}
+                                        >
+                                            <Star
+                                                size={15}
+                                                className="text-amber-500 shrink-0 mt-0.5"
+                                            />
+                                            <p className="text-amber-800 text-sm">
+                                                <span className="font-semibold">Mẹo:</span> Ôn bài theo
+                                                chu kỳ lặp lại (spaced repetition) giúp ghi nhớ tốt hơn
+                                                70%.
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="py-14 text-center flex flex-col items-center gap-4">
+                                    <div
+                                        className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                                        style={{ background: "#f0ebff" }}
+                                    >
+                                        <BookOpen size={24} className="text-violet-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-700 text-base mb-1">
+                                            Chưa có môn thi nào
+                                        </h3>
+                                        <p className="text-slate-400 text-sm">
+                                            Thêm môn thi đầu tiên để bắt đầu lên kế hoạch.
+                                        </p>
+                                    </div>
+                                    <Link
+                                        to="/exams"
+                                        className="btn btn-primary"
+                                        style={{
+                                            textDecoration: "none",
+                                            borderRadius: 10,
+                                            padding: "10px 22px",
+                                        }}
+                                    >
+                                        <BookOpen size={14} /> Thêm môn thi
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Milestone Timeline Component */}
+                    <div>
+                        <MilestoneTimeline milestones={milestones} />
                     </div>
                 </div>
             </div>

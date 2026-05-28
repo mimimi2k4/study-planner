@@ -21,6 +21,8 @@ import {
   savePlan,
 } from "./utils/storage";
 import { totalHours } from "./utils/timeSlot";
+// 1. Import hook notification vừa tạo
+import { useAppNotification } from "./hooks/useAppNotification";
 
 export default function App() {
   const [exams, setExams] = useState<ExamInfo[]>(() => getExams());
@@ -28,6 +30,9 @@ export default function App() {
   const [freeSlots, setFreeSlots] = useState<FreeSlot[]>(() => getFreeSlots());
   const [tasks, setTasks] = useState<StudyTask[]>(() => getTasks());
   const [plan, setPlan] = useState<StudyPlan | null>(() => getPlan());
+
+  // 2. Gọi hook ở cấp độ root để chạy ngay khi mở app
+  const { permissionDenied } = useAppNotification();
 
   // Sync state changes to storage
   useEffect(() => {
@@ -72,6 +77,30 @@ export default function App() {
 
   return (
     <Layout>
+      {/* 3. Hiển thị banner cảnh báo nếu người dùng chưa cấp quyền nhận thông báo */}
+      {permissionDenied && (
+        <div 
+          className="mb-8 flex items-center gap-3 px-5 py-3.5 rounded-2xl animate-slide"
+          style={{ 
+            background: "linear-gradient(135deg, #fffbeb, #fef3c7)", 
+            border: "1.5px solid #fde68a",
+            boxShadow: "0 4px 12px rgba(245, 158, 11, 0.08)"
+          }}
+        >
+          <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+            🔔
+          </div>
+          <div>
+            <p className="text-amber-900 font-bold text-sm leading-tight">
+              Chưa bật thông báo trình duyệt
+            </p>
+            <p className="text-amber-700 text-xs mt-0.5 font-medium">
+              Bạn cần cấp quyền thông báo cho trang web này để AI có thể gửi nhắc nhở ôn thi và chúc mừng các mốc tiến độ!
+            </p>
+          </div>
+        </div>
+      )}
+
       <Routes>
         <Route
           path="/"
