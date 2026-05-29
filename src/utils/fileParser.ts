@@ -1,16 +1,4 @@
-declare class GoogleGenerativeAI {
-  constructor(apiKey: string);
-  getGenerativeModel(opts: any): any;
-}
-
-const SchemaType = {
-  OBJECT: "object",
-  ARRAY: "array",
-  STRING: "string",
-  INTEGER: "integer",
-} as const;
-
-type Schema = any;
+import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
 import type { Chapter } from "../types";
 import { nanoid } from "./nanoid";
 
