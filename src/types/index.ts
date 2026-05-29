@@ -93,3 +93,15 @@ export interface ScheduleWarning {
     message: string;
     suggestion?: string;
 }
+
+export interface Milestone {
+    milestoneId: string;
+    subjectId: string;
+    name: string;
+    deadlineDate: string; // "YYYY-MM-DD"
+    status: "chưa đạt" | "đã đạt";
+}
+
+export type MilestoneResult =
+    | { success: true; milestones: Milestone[] }
+    | { success: false; error: string };
