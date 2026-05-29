@@ -33,7 +33,6 @@ export default function OverviewCards({
   hasData,
   steps,
 }: OverviewCardsProps) {
-  const today = new Date().toISOString().split("T")[0];
 
   if (!hasData) {
     // Show onboarding (first three steps)

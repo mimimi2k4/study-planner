@@ -1,5 +1,6 @@
 import type { StudyTask, ExamInfo } from "../types";
-import { CheckSquare, Circle, Clock, Sparkles } from "lucide-react";
+import { getNextTaskStatus } from "../logic/taskStatus";
+import { CheckSquare, Circle, Clock, Sparkles, PlayCircle } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 
 const P_LABEL: Record<string, string> = { high: "Cao", medium: "TB", low: "Thấp" };
@@ -21,8 +22,7 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
             t.id === taskId
                 ? {
                       ...t,
-                      status:
-                          t.status === "completed" ? ("pending" as const) : ("completed" as const),
+                      status: getNextTaskStatus(t.status),
                   }
                 : t
         );
@@ -207,6 +207,8 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
                                             className={`flex items-center gap-3 px-5 py-3 border-b last:border-b-0 transition-colors ${
                                                 task.status === "completed"
                                                     ? "bg-slate-50/60"
+                                                    : task.status === "in_progress"
+                                                    ? "bg-amber-50/70 hover:bg-amber-100/50"
                                                     : "hover:bg-purple-50/30"
                                             }`}
                                             style={{ borderColor: "rgba(0,0,0,0.04)" }}
@@ -218,11 +220,15 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
                                                     color:
                                                         task.status === "completed"
                                                             ? exam.color
+                                                            : task.status === "in_progress"
+                                                            ? "#f59e0b"
                                                             : "#d8b4fe",
                                                 }}
                                             >
                                                 {task.status === "completed" ? (
                                                     <CheckSquare size={20} />
+                                                ) : task.status === "in_progress" ? (
+                                                    <PlayCircle size={20} />
                                                 ) : (
                                                     <Circle size={20} />
                                                 )}
