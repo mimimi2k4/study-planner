@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 export interface PageHeaderProps {
     emoji: string;
     title: string;
-    subtitle: string;
+    subtitle: ReactNode;
     action?: ReactNode;
 }
 
