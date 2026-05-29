@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot } from "../types";
-import { generateStudyTasks } from "../logic/studyTaskGenerator";
+
 import { generateSchedule } from "../utils/scheduler";
 import type { ScheduleWarning } from "../types";
 import PageHeader from "../components/PageHeader";

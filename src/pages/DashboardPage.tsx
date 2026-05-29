@@ -1,24 +1,16 @@
-import {
-    BookOpen,
-    Calendar,
-    Clock,
-    CheckSquare,
-    ArrowRight,
-    TrendingUp,
-    Award,
-    Zap,
-    Star,
-} from "lucide-react";
+import { BookOpen, Clock, ArrowRight, Zap, TrendingUp, Award, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ExamInfo, StudyTask, StudyPlan, Syllabus } from "../types";
-import StatsCard from "../components/Dashboard/StatsCard";
 import ExamCard from "../components/Dashboard/ExamCard";
+import OverviewCards from "../components/Dashboard/OverviewCards";
+import ProgressStepper from "../components/Dashboard/ProgressStepper";
 import { useAllExamsCountdown } from "../hooks/useExamCountdown";
 import MilestoneTimeline from "../components/MilestoneTimeline/MilestoneTimeline";
 import { getMilestones } from "../utils/storage";
 import { useState, useEffect } from "react";
 
-import NotificationTester from "../../tests/NotificationTester";
+
+
 export interface DashboardPageProps {
     exams: ExamInfo[];
     syllabuses: Syllabus[];
@@ -83,18 +75,30 @@ export default function DashboardPage({
     const completionRate = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
     const greeting = GREETINGS[new Date().getDay() % GREETINGS.length];
 
+
     const stepDone: Record<string, boolean> = {
         exams: exams.length > 0,
         syllabus: syllabuses.length > 0,
         timeslots: freeHoursPerWeek > 0,
         schedule: totalScheduled > 0,
     };
+
+    
     const doneCount = Object.values(stepDone).filter(Boolean).length;
     const circumference = 2 * Math.PI * 20;
 
-    // Lấy dữ liệu milestone từ localStorage
-    // THAY THẾ DÒNG CŨ BẰNG ĐOẠN NÀY:
-    const [milestones, setMilestones] = useState(() => getMilestones());
+// Lấy dữ liệu milestone từ localStorage
+const [milestones, setMilestones] = useState(() => getMilestones());
+
+// Prepare data for OverviewCards
+const todayStr = new Date().toISOString().split('T')[0];
+const todaySlots = plan?.slots.filter((s) => s.date === todayStr) ?? [];
+const upcomingMilestones = milestones
+  .filter((m) => new Date(m.deadlineDate) >= new Date())
+  .sort((a, b) => new Date(a.deadlineDate).getTime() - new Date(b.deadlineDate).getTime());
+const nearestMilestone = upcomingMilestones[0];
+const hasData = exams.length > 0 && milestones.length > 0 && (plan?.slots.length ?? 0) > 0;
+
 
     // Lắng nghe sự kiện để cập nhật lại danh sách ngay lập tức khi Hook báo tin
     useEffect(() => {
@@ -153,7 +157,7 @@ export default function DashboardPage({
                             </span>
                         </div>
                         <h1 className="text-white font-black text-4xl leading-tight">
-                            Xin chào, Hạ!
+                            Xin chào!
                         </h1>
                         <p className="text-purple-200 text-base mt-1.5">{greeting}</p>
 
@@ -249,66 +253,16 @@ export default function DashboardPage({
                 </div>
             </div>
 
-            {/* ── Stats ── */}
-            <div
-                className="stats-grid-responsive"
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-                    gap: 20,
-                }}
-            >
-                <StatsCard
-                    dark
-                    accentColor="#5b21b6"
-                    icon={<BookOpen size={20} />}
-                    iconLarge={<BookOpen size={90} />}
-                    label="Môn thi"
-                    value={exams.length}
-                    sub={exams.length === 0 ? "Chưa có môn nào" : `${exams.length} môn đã thêm`}
-                    gradient="linear-gradient(135deg, #ddd6fe 0%, #f5d0fe 100%)"
-                    shadow="0 6px 20px rgba(139,92,246,0.22)"
+                {/* ── Overview Cards ── */}
+                <OverviewCards
+                    completionRate={completionRate}
+                    nextExam={nextExam}
+                    nextCountdown={nextCountdown}
+                    nearestMilestone={nearestMilestone}
+                    todaySlots={todaySlots}
+                    hasData={hasData}
+                    steps={STEPS}
                 />
-                <StatsCard
-                    dark
-                    accentColor="#1d4ed8"
-                    icon={<Calendar size={20} />}
-                    iconLarge={<Calendar size={90} />}
-                    label="Ngày còn lại"
-                    value={
-                        nextCountdown
-                            ? nextCountdown.isOverdue
-                                ? "0"
-                                : nextCountdown.daysLeft
-                            : "—"
-                    }
-                    sub={nextExam ? nextExam.subjectName : "Chưa có môn thi"}
-                    gradient="linear-gradient(135deg, #bfdbfe 0%, #c7d2fe 100%)"
-                    shadow="0 6px 20px rgba(59,130,246,0.22)"
-                />
-                <StatsCard
-                    dark
-                    accentColor="#047857"
-                    icon={<Clock size={20} />}
-                    iconLarge={<Clock size={90} />}
-                    label="Giờ / tuần"
-                    value={freeHoursPerWeek.toFixed(1)}
-                    sub="thời gian rảnh"
-                    gradient="linear-gradient(135deg, #a7f3d0 0%, #99f6e4 100%)"
-                    shadow="0 6px 20px rgba(16,185,129,0.22)"
-                />
-                <StatsCard
-                    dark
-                    accentColor="#b45309"
-                    icon={<CheckSquare size={20} />}
-                    iconLarge={<CheckSquare size={90} />}
-                    label="Hoàn thành"
-                    value={tasks.length === 0 ? "—" : `${completedTasks}/${tasks.length}`}
-                    sub={tasks.length === 0 ? "Chưa có task" : `${completionRate}% done`}
-                    gradient="linear-gradient(135deg, #fde68a 0%, #fed7aa 100%)"
-                    shadow="0 6px 20px rgba(245,158,11,0.22)"
-                />
-            </div>
 
             {/* ── Body ── */}
             <div
@@ -352,48 +306,7 @@ export default function DashboardPage({
                         className="p-6"
                         style={{ display: "flex", flexDirection: "column", gap: 12 }}
                     >
-                        {STEPS.map((step, i) => {
-                            const done = stepDone[step.key];
-                            return (
-                                <Link
-                                    key={i}
-                                    to={step.to}
-                                    className="flex items-center gap-3.5 rounded-2xl transition-all duration-150 group"
-                                    style={{
-                                        padding: "14px 16px",
-                                        background: done ? "#f0fdf4" : "#faf8ff",
-                                        border: `1.5px solid ${done ? "#bbf7d0" : "#ede9fe"}`,
-                                        textDecoration: "none",
-                                    }}
-                                >
-                                    <span className="text-xl shrink-0 leading-none">
-                                        {step.emoji}
-                                    </span>
-                                    <div className="flex-1 min-w-0">
-                                        <p
-                                            className="font-bold text-base leading-none"
-                                            style={{ color: done ? "#15803d" : "#1e293b" }}
-                                        >
-                                            {step.label}
-                                        </p>
-                                        <p className="text-slate-500 text-sm mt-1">{step.desc}</p>
-                                    </div>
-                                    {done ? (
-                                        <span
-                                            className="font-black text-base shrink-0"
-                                            style={{ color: "#22c55e" }}
-                                        >
-                                            ✓
-                                        </span>
-                                    ) : (
-                                        <ArrowRight
-                                            size={15}
-                                            className="text-violet-300 group-hover:text-violet-500 shrink-0 transition-colors"
-                                        />
-                                    )}
-                                </Link>
-                            );
-                        })}
+                        <ProgressStepper steps={STEPS} stepDone={stepDone} />
                     </div>
                 </div>
 

@@ -3,8 +3,7 @@ import { nanoid } from "../utils/nanoid";
 
 export function generateMilestones(
     examId: string,
-    examDateStr: string,
-    totalTasks: number
+    examDateStr: string
 ): MilestoneResult {
     if (!examDateStr) {
         return { success: false, error: "Chưa nhập ngày thi (examDate bị trống)." };

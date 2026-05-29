@@ -23,8 +23,8 @@ export default function ExamForm({ exams, tasks, onAdd, onUpdate, onDelete }: Ex
   const countdowns = useAllExamsCountdown(exams, tasks)
 
   function handleGenerateMilestones(exam: ExamInfo) {
-    const totalTasks = tasks.filter((t) => t.subjectId === exam.id).length
-    const res = generateMilestones(exam.id, exam.examDateTime, totalTasks)
+
+    const res = generateMilestones(exam.id, exam.examDateTime)
     if (res.success === false) {
       alert("Lỗi: " + res.error)
     } else {
