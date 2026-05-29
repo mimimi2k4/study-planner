@@ -22,7 +22,7 @@ export default function PageHeader({ emoji, title, subtitle, action }: PageHeade
                 </div>
                 <div>
                     <h1 className="text-2xl font-black text-slate-800 leading-tight">{title}</h1>
-                    <p className="text-slate-400 text-sm mt-0.5">{subtitle}</p>
+                    <div className="text-slate-400 text-sm mt-0.5">{subtitle}</div>
                 </div>
             </div>
             {action && <div className="shrink-0">{action}</div>}

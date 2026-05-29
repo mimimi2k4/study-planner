@@ -1,10 +1,11 @@
-import { BookOpen, Clock, ArrowRight, Zap, TrendingUp, Award, Star } from "lucide-react";
+import { BookOpen, ArrowRight, Zap, TrendingUp, Award, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ExamInfo, StudyTask, StudyPlan, Syllabus } from "../types";
 import ExamCard from "../components/Dashboard/ExamCard";
 import OverviewCards from "../components/Dashboard/OverviewCards";
 import ProgressStepper from "../components/Dashboard/ProgressStepper";
 import { useAllExamsCountdown } from "../hooks/useExamCountdown";
+import CountdownProgress from "../components/CountdownProgress/CountdownProgress";
 import MilestoneTimeline from "../components/MilestoneTimeline/MilestoneTimeline";
 import { getMilestones } from "../utils/storage";
 import { useState, useEffect } from "react";
@@ -70,10 +71,18 @@ export default function DashboardPage({
     );
     const nextExam = sortedExams.find((e) => new Date(e.examDateTime) > new Date());
     const nextCountdown = nextExam ? countdowns[nextExam.id] : null;
-    const completedTasks = tasks.filter((t) => t.status === "completed").length;
-    const totalScheduled = plan?.slots.length ?? 0;
-    const completionRate = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
-    const greeting = GREETINGS[new Date().getDay() % GREETINGS.length];
+const completedTasks = tasks.filter((t) => t.status === "completed").length;
+  const totalScheduled = plan?.slots.length ?? 0;
+  const completionRate = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
+  const greeting = GREETINGS[new Date().getDay() % GREETINGS.length];
+
+  // Progress for next exam
+  const examProgress = nextExam
+    ? {
+        totalTasks: tasks.filter((t) => t.subjectId === nextExam.id).length,
+        completedTasks: tasks.filter((t) => t.subjectId === nextExam.id && t.status === "completed").length,
+      }
+    : undefined;
 
 
     const stepDone: Record<string, boolean> = {
@@ -161,23 +170,7 @@ const hasData = exams.length > 0 && milestones.length > 0 && (plan?.slots.length
                         </h1>
                         <p className="text-purple-200 text-base mt-1.5">{greeting}</p>
 
-                        {nextExam && nextCountdown && !nextCountdown.isOverdue && (
-                            <div
-                                className="mt-4 inline-flex items-center gap-2.5 px-4 py-2 rounded-xl"
-                                style={{
-                                    background: "rgba(255,255,255,0.12)",
-                                    border: "1px solid rgba(255,255,255,0.18)",
-                                }}
-                            >
-                                <Clock size={14} className="text-violet-300 shrink-0" />
-                                <span className="text-white text-sm">
-                                    <span className="font-bold">{nextExam.subjectName}</span> — còn{" "}
-                                    <span className="font-black text-yellow-200">
-                                        {nextCountdown.daysLeft} ngày
-                                    </span>
-                                </span>
-                            </div>
-                        )}
+<CountdownProgress exam={nextExam} progress={examProgress} />
                     </div>
 
                     {/* Progress ring */}
