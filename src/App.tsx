@@ -7,7 +7,7 @@ import SyllabusPage from "./pages/SyllabusPage";
 import TimeSlotPage from "./pages/TimeSlotPage";
 import SchedulePage from "./pages/SchedulePage";
 import TasksPage from "./pages/TasksPage";
-import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan } from "./types";
+import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, Milestone } from "./types";
 import {
   getExams,
   saveExams,
@@ -21,6 +21,7 @@ import {
   savePlan,
 } from "./utils/storage";
 import { totalHours } from "./utils/timeSlot";
+import { useMilestones } from "./hooks/useMilestones";
 // 1. Import hook notification vừa tạo
 import { useAppNotification } from "./hooks/useAppNotification";
 import { BellRing, CheckCircle, X } from "lucide-react";
@@ -32,8 +33,10 @@ export default function App() {
   const [tasks, setTasks] = useState<StudyTask[]>(() => getTasks());
   const [plan, setPlan] = useState<StudyPlan | null>(() => getPlan());
 
+  const { milestones, addMilestones, clearMilestones, setMilestones } = useMilestones();
+
   // 2. Gọi hook ở cấp độ root để chạy ngay khi mở app
-  const { permissionDenied, inAppNotifs, setInAppNotifs } = useAppNotification();
+  const { permissionDenied, inAppNotifs, setInAppNotifs } = useAppNotification({ milestones, setMilestones });
 
   // Sync state changes to storage
   useEffect(() => {
@@ -62,6 +65,7 @@ export default function App() {
     setExams((prev) => prev.filter((e) => e.id !== id));
     setSyllabuses((prev) => prev.filter((s) => s.subjectId !== id));
     setTasks((prev) => prev.filter((t) => t.subjectId !== id));
+    clearMilestones(id);
   }
 
   function handleAddSyllabus(s: Syllabus) {
@@ -81,12 +85,7 @@ export default function App() {
       {/* 3. Hiển thị banner cảnh báo nếu người dùng chưa cấp quyền nhận thông báo */}
       {permissionDenied && (
         <div 
-          className="mb-8 flex items-center gap-3 px-5 py-3.5 rounded-2xl animate-slide"
-          style={{ 
-            background: "linear-gradient(135deg, #fffbeb, #fef3c7)", 
-            border: "1.5px solid #fde68a",
-            boxShadow: "0 4px 12px rgba(245, 158, 11, 0.08)"
-          }}
+          className="mb-8 flex items-center gap-3 px-5 py-3.5 rounded-2xl animate-slide bg-gradient-to-br from-amber-50 to-amber-100 border-[1.5px] border-amber-200 shadow-[0_4px_12px_rgba(245,158,11,0.08)]"
         >
           <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
             🔔
@@ -144,6 +143,7 @@ export default function App() {
               tasks={tasks}
               plan={plan}
               freeHoursPerWeek={freeHoursPerWeek}
+              milestones={milestones}
             />
           }
         />
@@ -153,9 +153,11 @@ export default function App() {
             <ExamsPage
               exams={exams}
               tasks={tasks}
+              milestones={milestones}
               onAdd={handleAddExam}
               onUpdate={handleUpdateExam}
               onDelete={handleDeleteExam}
+              onAddMilestones={addMilestones}
             />
           }
         />

@@ -11,9 +11,11 @@ export interface ExamsPageProps {
     onAdd: (exam: ExamInfo) => void;
     onUpdate: (exam: ExamInfo) => void;
     onDelete: (id: string) => void;
+    milestones: import("../types").Milestone[];
+    onAddMilestones: (m: import("../types").Milestone[]) => void;
 }
 
-export default function ExamsPage({ exams, tasks, onAdd, onUpdate, onDelete }: ExamsPageProps) {
+export default function ExamsPage({ exams, tasks, milestones, onAdd, onUpdate, onDelete, onAddMilestones }: ExamsPageProps) {
     function handleAdd(state: ExamFormState) {
         onAdd({
             id: nanoid(),
@@ -50,6 +52,8 @@ export default function ExamsPage({ exams, tasks, onAdd, onUpdate, onDelete }: E
                 onAdd={handleAdd}
                 onUpdate={handleUpdate}
                 onDelete={onDelete}
+                milestones={milestones}
+                onAddMilestones={onAddMilestones}
             />
         </div>
     );

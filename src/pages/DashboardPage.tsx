@@ -7,8 +7,7 @@ import ProgressStepper from "../components/Dashboard/ProgressStepper";
 import { useAllExamsCountdown } from "../hooks/useExamCountdown";
 import CountdownProgress from "../components/CountdownProgress/CountdownProgress";
 import MilestoneTimeline from "../components/MilestoneTimeline/MilestoneTimeline";
-import { getMilestones } from "../utils/storage";
-import { useState, useEffect } from "react";
+import type { Milestone } from "../types";
 
 
 
@@ -18,6 +17,7 @@ export interface DashboardPageProps {
     tasks: StudyTask[];
     plan: StudyPlan | null;
     freeHoursPerWeek: number;
+    milestones: Milestone[];
 }
 
 const STEPS = [
@@ -64,6 +64,7 @@ export default function DashboardPage({
     tasks,
     plan,
     freeHoursPerWeek,
+    milestones,
 }: DashboardPageProps) {
     const countdowns = useAllExamsCountdown(exams, tasks);
     const sortedExams = [...exams].sort(
@@ -96,9 +97,6 @@ const completedTasks = tasks.filter((t) => t.status === "completed").length;
     const doneCount = Object.values(stepDone).filter(Boolean).length;
     const circumference = 2 * Math.PI * 20;
 
-// Lấy dữ liệu milestone từ localStorage
-const [milestones, setMilestones] = useState(() => getMilestones());
-
 // Prepare data for OverviewCards
 const todayStr = new Date().toISOString().split('T')[0];
 const todaySlots = plan?.slots.filter((s) => s.date === todayStr) ?? [];
@@ -108,20 +106,6 @@ const upcomingMilestones = milestones
 const nearestMilestone = upcomingMilestones[0];
 const hasData = exams.length > 0 && milestones.length > 0 && (plan?.slots.length ?? 0) > 0;
 
-
-    // Lắng nghe sự kiện để cập nhật lại danh sách ngay lập tức khi Hook báo tin
-    useEffect(() => {
-        const handleMilestonesUpdate = () => {
-            setMilestones(getMilestones());
-        };
-
-        // Lắng nghe sự kiện Custom Event từ useAppNotification
-        window.addEventListener("milestones-updated", handleMilestonesUpdate);
-        
-        return () => {
-            window.removeEventListener("milestones-updated", handleMilestonesUpdate);
-        };
-    }, []);
 // {/* Nút test hiển thị ở đây */}
  //       <NotificationTester />
  // Cho nút này lên trên phần "Hero" để dễ thấy hơn khi test nhé!

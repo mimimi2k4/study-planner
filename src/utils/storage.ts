@@ -1,4 +1,13 @@
-import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot } from "../types";
+import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot, Milestone } from "../types";
+import { z } from "zod";
+import { 
+    ExamInfoArraySchema, 
+    SyllabusArraySchema, 
+    FreeSlotArraySchema, 
+    StudyTaskArraySchema, 
+    StudyPlanSchema, 
+    MilestoneArraySchema 
+} from "../types/schemas";
 
 const KEYS = {
     EXAMS: "study_exams",
@@ -9,10 +18,20 @@ const KEYS = {
     MILESTONES: "study_milestones",
 } as const;
 
-function load<T>(key: string, fallback: T): T {
+function load<T>(key: string, fallback: T, schema?: z.ZodType<T>): T {
     try {
         const raw = localStorage.getItem(key);
-        return raw ? (JSON.parse(raw) as T) : fallback;
+        if (!raw) return fallback;
+        const parsed = JSON.parse(raw);
+        if (schema) {
+            const result = schema.safeParse(parsed);
+            if (!result.success) {
+                console.warn(`Lỗi validation schema cho key "${key}":`, result.error.message);
+                return fallback;
+            }
+            return result.data;
+        }
+        return parsed as T;
     } catch {
         return fallback;
     }
@@ -23,7 +42,7 @@ function save<T>(key: string, value: T): void {
 }
 
 // Exams
-export const getExams = (): ExamInfo[] => load(KEYS.EXAMS, []);
+export const getExams = (): ExamInfo[] => load(KEYS.EXAMS, [], ExamInfoArraySchema);
 export const saveExams = (exams: ExamInfo[]): void => save(KEYS.EXAMS, exams);
 export const addExam = (exam: ExamInfo): void => saveExams([...getExams(), exam]);
 export const updateExam = (exam: ExamInfo): void =>
@@ -43,7 +62,7 @@ function normalizeDifficulty(val: unknown): 'low' | 'medium' | 'high' {
 
 // Syllabuses
 export const getSyllabuses = (): Syllabus[] => {
-  const list = load<Syllabus[]>(KEYS.SYLLABUSES, [])
+  const list = load(KEYS.SYLLABUSES, [], SyllabusArraySchema)
   return list.map((s) => ({
     ...s,
     chapters: s.chapters.map((c) => ({
@@ -61,21 +80,20 @@ export const deleteSyllabus = (id: string): void =>
     saveSyllabuses(getSyllabuses().filter((x) => x.id !== id));
 
 // Free slots
-export const getFreeSlots = (): FreeSlot[] => load(KEYS.FREE_SLOTS, []);
+export const getFreeSlots = (): FreeSlot[] => load(KEYS.FREE_SLOTS, [], FreeSlotArraySchema);
 export const saveFreeSlots = (slots: FreeSlot[]): void => save(KEYS.FREE_SLOTS, slots);
 
 // Tasks
-export const getTasks = (): StudyTask[] => load(KEYS.TASKS, []);
+export const getTasks = (): StudyTask[] => load(KEYS.TASKS, [], StudyTaskArraySchema);
 export const saveTasks = (tasks: StudyTask[]): void => save(KEYS.TASKS, tasks);
 
 // Study plan
-export const getPlan = (): StudyPlan | null => load<StudyPlan | null>(KEYS.PLAN, null);
+export const getPlan = (): StudyPlan | null => load(KEYS.PLAN, null, StudyPlanSchema.nullable());
 export const savePlan = (plan: StudyPlan): void => save(KEYS.PLAN, plan);
 export const deletePlan = (): void => localStorage.removeItem(KEYS.PLAN);
 
 // Milestones
-import type { Milestone } from "../types";
-export const getMilestones = (): Milestone[] => load(KEYS.MILESTONES, []);
+export const getMilestones = (): Milestone[] => load(KEYS.MILESTONES, [], MilestoneArraySchema);
 export const saveMilestones = (milestones: Milestone[]): void => save(KEYS.MILESTONES, milestones);
 
 // ─── Plan actions — pure function (không ghi localStorage trực tiếp) ──────────

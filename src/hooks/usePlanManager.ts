@@ -47,7 +47,7 @@ export function usePlanManager({
 
             if (!result.success) {
                 if (onWarning) onWarning(result.error);
-                else alert(result.error);
+                else console.error(result.error);
                 return false;
             }
 

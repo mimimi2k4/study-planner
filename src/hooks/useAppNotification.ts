@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getMilestones, saveMilestones, getExams } from "../utils/storage";
+import { saveMilestones, getExams } from "../utils/storage";
+import type { Milestone } from "../types";
 
 // Khai báo kiểu dữ liệu cho thông báo trên màn hình
 export interface InAppNotif {
@@ -9,7 +10,12 @@ export interface InAppNotif {
   type: "success" | "warning";
 }
 
-export function useAppNotification() {
+export interface UseAppNotificationProps {
+  milestones: Milestone[];
+  setMilestones: React.Dispatch<React.SetStateAction<Milestone[]>>;
+}
+
+export function useAppNotification({ milestones, setMilestones }: UseAppNotificationProps) {
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [inAppNotifs, setInAppNotifs] = useState<InAppNotif[]>([]);
 
@@ -47,7 +53,6 @@ export function useAppNotification() {
       let hasSentNotification = false;
 
       // 1. Xử lý Milestone
-      const milestones = getMilestones();
       let isMilestoneUpdated = false;
       const updatedMilestones = milestones.map((m) => {
         if (m.deadlineDate === todayStr && m.status === "chưa đạt") {
@@ -67,9 +72,7 @@ export function useAppNotification() {
       });
 
       if (isMilestoneUpdated) {
-        saveMilestones(updatedMilestones);
-        // PHÓNG SỰ KIỆN: Báo cho React biết localStorage đã thay đổi để vẽ lại UI ngay lập tức
-        window.dispatchEvent(new Event("milestones-updated"));
+        setMilestones(updatedMilestones);
       }
 
       // 2. Xử lý Lịch thi
@@ -97,7 +100,7 @@ export function useAppNotification() {
     };
 
     checkAndNotify();
-  }, []);
+  }, [milestones, setMilestones]);
 
   // Trả về thêm state của InAppNotifs và hàm để đóng thủ công
   return { permissionDenied, inAppNotifs, setInAppNotifs };
