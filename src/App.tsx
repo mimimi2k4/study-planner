@@ -23,6 +23,7 @@ import {
 import { totalHours } from "./utils/timeSlot";
 // 1. Import hook notification vừa tạo
 import { useAppNotification } from "./hooks/useAppNotification";
+import { BellRing, CheckCircle, X } from "lucide-react";
 
 export default function App() {
   const [exams, setExams] = useState<ExamInfo[]>(() => getExams());
@@ -32,7 +33,7 @@ export default function App() {
   const [plan, setPlan] = useState<StudyPlan | null>(() => getPlan());
 
   // 2. Gọi hook ở cấp độ root để chạy ngay khi mở app
-  const { permissionDenied } = useAppNotification();
+  const { permissionDenied, inAppNotifs, setInAppNotifs } = useAppNotification();
 
   // Sync state changes to storage
   useEffect(() => {
@@ -101,6 +102,38 @@ export default function App() {
         </div>
       )}
 
+      {/* ── GIAO DIỆN THÔNG BÁO NỔI (IN-APP TOAST) ── */}
+      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none">
+        {inAppNotifs.map((notif) => (
+          <div
+            key={notif.id}
+            className={`pointer-events-auto flex items-start gap-3 w-[320px] p-4 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border backdrop-blur-md transition-all duration-500 translate-y-0 opacity-100 ${
+              notif.type === "success" 
+                ? "bg-emerald-50/95 border-emerald-200" 
+                : "bg-amber-50/95 border-amber-200"
+            }`}
+          >
+            <div className={`mt-0.5 shrink-0 ${notif.type === "success" ? "text-emerald-500" : "text-amber-500"}`}>
+              {notif.type === "success" ? <CheckCircle size={22} /> : <BellRing size={22} />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className={`text-sm font-bold ${notif.type === "success" ? "text-emerald-800" : "text-amber-800"}`}>
+                {notif.title}
+              </h4>
+              <p className={`text-xs mt-0.5 ${notif.type === "success" ? "text-emerald-600" : "text-amber-700"}`}>
+                {notif.message}
+              </p>
+            </div>
+            <button 
+              onClick={() => setInAppNotifs((prev) => prev.filter((n) => n.id !== notif.id))}
+              className={`shrink-0 p-1 rounded-lg transition-colors ${notif.type === "success" ? "hover:bg-emerald-100 text-emerald-600" : "hover:bg-amber-100 text-amber-600"}`}
+            >
+              <X size={16} />
+            </button>
+          </div>
+        ))}
+      </div>
+      
       <Routes>
         <Route
           path="/"

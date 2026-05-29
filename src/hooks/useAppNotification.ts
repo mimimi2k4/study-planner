@@ -1,16 +1,32 @@
 import { useEffect, useState } from "react";
 import { getMilestones, saveMilestones, getExams } from "../utils/storage";
 
+// Khai báo kiểu dữ liệu cho thông báo trên màn hình
+export interface InAppNotif {
+  id: string;
+  title: string;
+  message: string;
+  type: "success" | "warning";
+}
+
 export function useAppNotification() {
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const [inAppNotifs, setInAppNotifs] = useState<InAppNotif[]>([]);
+
+  // Hàm hiển thị thông báo nổi trên góc màn hình Web
+  const showInAppNotif = (title: string, message: string, type: "success" | "warning") => {
+    const newNotif = { id: Date.now().toString() + Math.random(), title, message, type };
+    setInAppNotifs((prev) => [...prev, newNotif]);
+    
+    // Tự động ẩn thông báo sau 5 giây
+    setTimeout(() => {
+      setInAppNotifs((prev) => prev.filter((n) => n.id !== newNotif.id));
+    }, 5000);
+  };
 
   useEffect(() => {
-    // Hàm yêu cầu quyền gửi thông báo
     const requestNotificationPermission = async () => {
-      if (!("Notification" in window)) {
-        console.warn("Trình duyệt này không hỗ trợ desktop notification");
-        return false;
-      }
+      if (!("Notification" in window)) return false;
       if (Notification.permission === "granted") return true;
       if (Notification.permission !== "denied") {
         const permission = await Notification.requestPermission();
@@ -21,17 +37,11 @@ export function useAppNotification() {
 
     const checkAndNotify = async () => {
       const hasPermission = await requestNotificationPermission();
-      if (!hasPermission) {
-        setPermissionDenied(true);
-        return; // Fallback banner sẽ được hiển thị trên UI
-      } else {
-        setPermissionDenied(false);
-      }
+      setPermissionDenied(!hasPermission);
 
       const todayStr = new Date().toISOString().split("T")[0];
       const todayStorageKey = `notified_${todayStr}`;
       
-      // Chống spam: Nếu đã thông báo trong ngày hôm nay rồi thì bỏ qua
       if (localStorage.getItem(todayStorageKey)) return;
 
       let hasSentNotification = false;
@@ -41,11 +51,14 @@ export function useAppNotification() {
       let isMilestoneUpdated = false;
       const updatedMilestones = milestones.map((m) => {
         if (m.deadlineDate === todayStr && m.status === "chưa đạt") {
-          // Gửi thông báo
-          new Notification("🎉 Chúc mừng!", {
-            body: `Bạn đã đạt mốc tiến độ: ${m.name}`,
-            icon: "/favicon.svg", 
-          });
+          
+          // Gửi System Notification (nếu được cấp quyền)
+          if (hasPermission) {
+            new Notification("🎉 Chúc mừng!", { body: `Bạn đã đạt mốc: ${m.name}` });
+          }
+          // LUÔN LUÔN GỬI In-App Notification trên giao diện
+          showInAppNotif("Chúc mừng đạt mốc! 🎉", `Hoàn thành: ${m.name}`, "success");
+
           isMilestoneUpdated = true;
           hasSentNotification = true;
           return { ...m, status: "đã đạt" as const };
@@ -55,9 +68,11 @@ export function useAppNotification() {
 
       if (isMilestoneUpdated) {
         saveMilestones(updatedMilestones);
+        // PHÓNG SỰ KIỆN: Báo cho React biết localStorage đã thay đổi để vẽ lại UI ngay lập tức
+        window.dispatchEvent(new Event("milestones-updated"));
       }
 
-      // 2. Xử lý Lịch thi (Exams)
+      // 2. Xử lý Lịch thi
       const exams = getExams();
       const todayMs = new Date(todayStr).getTime();
 
@@ -67,15 +82,15 @@ export function useAppNotification() {
         const diffDays = Math.ceil((examMs - todayMs) / (1000 * 60 * 60 * 24));
 
         if (diffDays === 7 || diffDays === 3 || diffDays === 1) {
-          new Notification("⏰ Nhắc nhở lịch thi!", {
-            body: `Chỉ còn ${diffDays} ngày nữa là đến ngày thi môn ${exam.subjectName}. Hãy ôn tập thật tốt nhé!`,
-            icon: "/favicon.svg",
-          });
+          const msg = `Chỉ còn ${diffDays} ngày nữa là thi môn ${exam.subjectName}!`;
+          if (hasPermission) {
+            new Notification("⏰ Nhắc nhở lịch thi", { body: msg });
+          }
+          showInAppNotif("Sắp thi rồi! ⏰", msg, "warning");
           hasSentNotification = true;
         }
       });
 
-      // Đánh dấu đã kiểm tra và thông báo trong ngày
       if (hasSentNotification) {
         localStorage.setItem(todayStorageKey, "true");
       }
@@ -84,5 +99,6 @@ export function useAppNotification() {
     checkAndNotify();
   }, []);
 
-  return { permissionDenied };
+  // Trả về thêm state của InAppNotifs và hàm để đóng thủ công
+  return { permissionDenied, inAppNotifs, setInAppNotifs };
 }

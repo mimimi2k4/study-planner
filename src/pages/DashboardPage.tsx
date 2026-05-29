@@ -16,7 +16,9 @@ import ExamCard from "../components/Dashboard/ExamCard";
 import { useAllExamsCountdown } from "../hooks/useExamCountdown";
 import MilestoneTimeline from "../components/MilestoneTimeline/MilestoneTimeline";
 import { getMilestones } from "../utils/storage";
+import { useState, useEffect } from "react";
 
+import NotificationTester from "../../tests/NotificationTester";
 export interface DashboardPageProps {
     exams: ExamInfo[];
     syllabuses: Syllabus[];
@@ -91,10 +93,29 @@ export default function DashboardPage({
     const circumference = 2 * Math.PI * 20;
 
     // Lấy dữ liệu milestone từ localStorage
-    const milestones = getMilestones();
+    // THAY THẾ DÒNG CŨ BẰNG ĐOẠN NÀY:
+    const [milestones, setMilestones] = useState(() => getMilestones());
 
+    // Lắng nghe sự kiện để cập nhật lại danh sách ngay lập tức khi Hook báo tin
+    useEffect(() => {
+        const handleMilestonesUpdate = () => {
+            setMilestones(getMilestones());
+        };
+
+        // Lắng nghe sự kiện Custom Event từ useAppNotification
+        window.addEventListener("milestones-updated", handleMilestonesUpdate);
+        
+        return () => {
+            window.removeEventListener("milestones-updated", handleMilestonesUpdate);
+        };
+    }, []);
+// {/* Nút test hiển thị ở đây */}
+ //       <NotificationTester />
+ // Cho nút này lên trên phần "Hero" để dễ thấy hơn khi test nhé!
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+
+           
             {/* ── Hero ── */}
             <div
                 className="relative rounded-3xl overflow-hidden"
