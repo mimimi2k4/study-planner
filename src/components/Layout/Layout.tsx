@@ -9,7 +9,7 @@ export interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
     return (
-        <div className="flex min-h-screen" style={{ background: "#f3f0ff" }}>
+        <div className="flex min-h-screen bg-zinc-50">
             <Sidebar width={SIDEBAR_W} />
             <main className="flex-1 min-h-screen" style={{ marginLeft: SIDEBAR_W }}>
                 <div

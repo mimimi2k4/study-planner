@@ -36,7 +36,6 @@ export default function ScheduleView({
     const todayStr = formatDate(new Date());
 
     function handleDeleteSlot(slotId: string) {
-        // Ưu tiên dùng dispatch để đi qua executePlanAction (pure, có validate)
         if (onDispatch) {
             onDispatch({ action: "delete_task", payload: { slotId } });
         } else {
@@ -86,43 +85,28 @@ export default function ScheduleView({
 
     const weekLabel = `${weekDates[0].slice(8)}.${weekDates[0].slice(5, 7)} – ${weekDates[6].slice(8)}.${weekDates[6].slice(5, 7)}.${weekDates[6].slice(0, 4)}`;
 
-  if (slots.length === 0 && warnings.length === 0) {
-    return (
-      <div
-        className="rounded-xl p-12 text-center"
-        style={{
-          background: "linear-gradient(135deg, #f8f6ff, #f0edff)",
-          border: "1.5px dashed #d5ccff",
-        }}
-      >
-        <div
-          className="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4"
-          style={{
-            background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
-            boxShadow: "0 8px 24px rgba(124,58,237,0.3)",
-          }}
-        >
-          <Calendar size={28} className="text-white" />
-        </div>
-        <p className="text-slate-600 font-semibold mb-2">Chưa có lịch học</p>
-        <p className="text-slate-400 text-sm mb-6">Vui lòng nhập thông tin cần thiết và tạo lịch</p>
-        <button
-          onClick={onRegenerate}
-          className="btn btn-primary"
-        >
-          <RefreshCw size={14} /> Tạo lịch học
-        </button>
-      </div>
-    )
-  }
+    if (slots.length === 0 && warnings.length === 0) {
+        return (
+            <div className="rounded-xl p-12 text-center bg-slate-50 border border-slate-200 border-dashed">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-white border border-slate-200 shadow-sm">
+                    <Calendar size={28} className="text-slate-400" />
+                </div>
+                <p className="text-slate-800 font-bold mb-2">Chưa có lịch học</p>
+                <p className="text-slate-500 font-medium text-sm mb-6">Vui lòng thiết lập cấu hình và tạo lịch học tự động.</p>
+                <button onClick={onRegenerate} className="btn btn-primary inline-flex items-center gap-2">
+                    <RefreshCw size={16} /> Tạo lịch học
+                </button>
+            </div>
+        );
+    }
 
-  return (
-    <div className="space-y-4">
+    return (
+        <div className="space-y-4">
             {/* Warnings */}
             {warnings.map((w, i) => (
                 <div
                     key={i}
-                    className={`flex items-start gap-3 p-4 rounded-lg text-sm ${
+                    className={`flex items-start gap-3 p-4 rounded-xl text-sm ${
                         w.type === "insufficient_time"
                             ? "bg-amber-50 text-amber-800 border border-amber-200"
                             : "bg-red-50 text-red-700 border border-red-200"
@@ -130,17 +114,17 @@ export default function ScheduleView({
                 >
                     <AlertTriangle size={16} className="mt-0.5 shrink-0" />
                     <div className="w-full">
-                        <p className="font-semibold">{w.message}</p>
+                        <p className="font-bold">{w.message}</p>
                         {w.suggestion && (
-                            <p className="mt-0.5 text-xs opacity-80">{w.suggestion}</p>
+                            <p className="mt-1 text-xs opacity-90 font-medium">{w.suggestion}</p>
                         )}
                         {w.type === "insufficient_time" && overflow && overflow.length > 0 && (
-                            <div className="mt-3 space-y-1.5 border-t border-amber-200/50 pt-2.5 w-full">
-                                <p className="text-xs font-bold uppercase tracking-wide opacity-90">Nhiệm vụ bị thiếu thời gian:</p>
-                                <ul className="list-disc pl-4 space-y-1 text-xs opacity-80">
+                            <div className="mt-3 space-y-1.5 border-t border-amber-200/60 pt-3 w-full">
+                                <p className="text-xs font-bold uppercase tracking-wider opacity-90">Nhiệm vụ bị thiếu thời gian:</p>
+                                <ul className="list-disc pl-4 space-y-1 text-xs opacity-80 font-medium">
                                     {overflow.map((task) => (
                                         <li key={task.id}>
-                                            <span className="font-semibold">{task.name}</span> ({task.subjectName}) — còn thiếu <span className="font-bold">{task.estimatedMinutes} phút</span>
+                                            <span className="font-bold">{task.name}</span> ({task.subjectName}) — còn thiếu <span className="font-bold">{task.estimatedMinutes} phút</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -151,84 +135,63 @@ export default function ScheduleView({
             ))}
 
             {/* Controls */}
-            <div
-              className="p-4 flex items-center gap-3"
-              style={{
-                background: "rgba(255,255,255,0.8)",
-                backdropFilter: "blur(12px)",
-                borderRadius: 14,
-                border: "1px solid rgba(226,232,240,0.8)",
-                boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
-              }}
-            >
-                <div className="flex items-center gap-1">
-                  <button
-                      onClick={prevWeek}
-                      className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-                  >
-                      <ChevronLeft size={18} className="text-slate-500" />
-                  </button>
-                  <button
-                      onClick={today}
-                      className="px-3 py-1.5 text-xs font-semibold text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                      style={{ border: "1px solid #e0e7ff" }}
-                  >
-                      Hôm nay
-                  </button>
-                  <button
-                      onClick={nextWeek}
-                      className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-                  >
-                      <ChevronRight size={18} className="text-slate-500" />
-                  </button>
+            <div className="p-4 flex items-center justify-between gap-3 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                <div className="flex items-center gap-1.5">
+                    <button
+                        onClick={prevWeek}
+                        className="p-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 text-slate-500 hover:text-slate-700"
+                    >
+                        <ChevronLeft size={16} />
+                    </button>
+                    <button
+                        onClick={today}
+                        className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200"
+                    >
+                        Hôm nay
+                    </button>
+                    <button
+                        onClick={nextWeek}
+                        className="p-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 text-slate-500 hover:text-slate-700"
+                    >
+                        <ChevronRight size={16} />
+                    </button>
                 </div>
-                <span className="flex-1 text-center text-sm font-bold text-slate-600 tracking-wide">
+                <span className="text-sm font-bold text-slate-700 tracking-wide">
                     {weekLabel}
                 </span>
                 <button
                     onClick={onRegenerate}
                     className="btn btn-primary"
-                    style={{ padding: "9px 18px", fontSize: 12 }}
+                    style={{ padding: "8px 16px", fontSize: 13 }}
                 >
-                    <RefreshCw size={13} /> Tạo lại lịch
+                    <RefreshCw size={14} /> Tạo lại lịch
                 </button>
             </div>
 
             {/* Calendar grid */}
-            <div
-              style={{
-                borderRadius: 14,
-                border: "1px solid rgba(226,232,240,0.8)",
-                overflow: "hidden",
-                background: "#fff",
-                boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
-              }}
-            >
+            <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-sm">
                 {/* Header */}
                 <div
-                    className="grid border-b border-slate-100"
+                    className="grid border-b border-slate-200 bg-slate-50"
                     style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}
                 >
-                    <div />
+                    <div className="border-r border-slate-200" />
                     {weekDates.map((date, i) => {
                         const isToday = date === todayStr;
                         const dayNum = date.slice(8);
                         return (
                             <div
                                 key={date}
-                                className={`py-3 text-center border-l border-slate-100 ${isToday ? "bg-indigo-50/60" : ""}`}
+                                className={`py-3 text-center border-r last:border-r-0 border-slate-200 ${isToday ? "bg-emerald-50/50" : ""}`}
                             >
-                                <p className="text-xs text-slate-400 font-semibold">{DAYS[i]}</p>
+                                <p className={`text-xs font-bold ${isToday ? "text-emerald-600" : "text-slate-500"}`}>{DAYS[i]}</p>
                                 <p
-                                    className={`text-sm font-bold mt-0.5 w-7 h-7 mx-auto flex items-center justify-center rounded-full ${
-                                        isToday ? "bg-indigo-600 text-white shadow-sm" : "text-slate-700"
+                                    className={`text-sm font-bold mt-1 w-7 h-7 mx-auto flex items-center justify-center rounded-full ${
+                                        isToday ? "bg-emerald-600 text-white" : "text-slate-700"
                                     }`}
                                 >
                                     {dayNum.replace(/^0/, "")}
                                 </p>
-                                {isToday && (
-                                  <div className="h-0.5 w-6 mx-auto mt-1 rounded-full bg-indigo-600" />
-                                )}
                             </div>
                         );
                     })}
@@ -236,44 +199,44 @@ export default function ScheduleView({
 
                 {/* Body */}
                 <div className="overflow-y-auto" style={{ maxHeight: "600px" }}>
-                    <div className="relative">
+                    <div className="relative bg-white">
                         {/* Time labels + grid lines */}
                         <div
                             className="grid"
                             style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}
                         >
                             {HOURS.map((h) => {
-                              const isEven = h % 2 === 0;
-                              return (
-                                <div key={h} className="contents">
-                                    <div
-                                      className="py-2 text-right pr-2 flex items-center justify-end"
-                                      style={{
-                                        borderBottom: "1px solid rgba(226,232,240,0.8)",
-                                        height: 40,
-                                        background: isEven ? "rgba(248,250,252,0.5)" : undefined,
-                                      }}
-                                    >
-                                        <span className="text-[10px] font-semibold text-slate-400 tabular-nums">
-                                            {String(h).padStart(2, "0")}:00
-                                        </span>
-                                    </div>
-                                    {weekDates.map((date) => (
+                                const isEven = h % 2 === 0;
+                                return (
+                                    <div key={h} className="contents">
                                         <div
-                                            key={date}
-                                            className="border-l hover:bg-indigo-50/30 cursor-pointer transition-colors"
+                                            className="py-2 text-right pr-2 flex items-center justify-end border-r border-slate-200"
                                             style={{
-                                              borderBottom: "1px solid rgba(226,232,240,0.8)",
-                                              height: 40,
-                                              background: isEven ? "rgba(248,250,252,0.5)" : undefined,
+                                                borderBottom: "1px solid #e2e8f0",
+                                                height: 48,
+                                                background: isEven ? "#f8fafc" : "#ffffff",
                                             }}
-                                            onClick={() => handleCellClick(date, h)}
-                                            onDragOver={(e) => e.preventDefault()}
-                                            onDrop={(e) => handleDrop(e, date, h)}
-                                        />
-                                    ))}
-                                </div>
-                              );
+                                        >
+                                            <span className="text-[11px] font-bold text-slate-400 tabular-nums">
+                                                {String(h).padStart(2, "0")}:00
+                                            </span>
+                                        </div>
+                                        {weekDates.map((date) => (
+                                            <div
+                                                key={date}
+                                                className="border-r last:border-r-0 border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors"
+                                                style={{
+                                                    borderBottom: "1px solid #e2e8f0",
+                                                    height: 48,
+                                                    background: isEven ? "#f8fafc" : "#ffffff",
+                                                }}
+                                                onClick={() => handleCellClick(date, h)}
+                                                onDragOver={(e) => e.preventDefault()}
+                                                onDrop={(e) => handleDrop(e, date, h)}
+                                            />
+                                        ))}
+                                    </div>
+                                );
                             })}
                         </div>
 
@@ -288,7 +251,7 @@ export default function ScheduleView({
                                 return (
                                     <div
                                         key={date}
-                                        className="relative border-l border-transparent"
+                                        className="relative"
                                     >
                                         {daySlots.map((slot) => {
                                             const top = timeToFraction(slot.startTime) * 100;
@@ -301,26 +264,27 @@ export default function ScheduleView({
                                                     key={slot.id}
                                                     draggable
                                                     onDragStart={(e) => handleDragStart(e, slot)}
-                                                    className="absolute left-0.5 right-0.5 rounded-lg px-1.5 py-1 overflow-hidden pointer-events-auto cursor-pointer group transition-all duration-150 hover:shadow-md hover:-translate-y-0.5"
+                                                    className="absolute left-1 right-1 rounded-md px-2 py-1 overflow-hidden pointer-events-auto cursor-pointer group transition-all duration-150 border hover:opacity-90 shadow-sm"
                                                     style={{
                                                         top: `${top}%`,
                                                         height: `${Math.max(height, 2)}%`,
-                                                        background: hexToRgba(slot.color, 0.12),
-                                                        borderLeft: `3px solid ${slot.color}`,
+                                                        background: hexToRgba(slot.color, 0.08),
+                                                        borderColor: hexToRgba(slot.color, 0.3),
+                                                        borderLeft: `4px solid ${slot.color}`,
                                                     }}
                                                     title={`${slot.taskName} (${slot.startTime}–${slot.endTime})`}
                                                 >
                                                     <p
-                                                        className="text-[10px] font-semibold truncate leading-tight"
+                                                        className="text-[11px] font-bold truncate leading-tight"
                                                         style={{ color: slot.color }}
                                                     >
                                                         {slot.taskName}
                                                     </p>
-                                                    <p className="text-[9px] text-slate-400 truncate">
+                                                    <p className="text-[10px] font-medium opacity-80 truncate" style={{ color: slot.color }}>
                                                         {slot.startTime}–{slot.endTime}
                                                     </p>
                                                     <button
-                                                        className="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-opacity text-[10px] leading-none bg-white/80 rounded-full w-4 h-4 flex items-center justify-center"
+                                                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all text-[12px] leading-none bg-white rounded-md w-5 h-5 flex items-center justify-center border border-slate-200"
                                                         onClick={() => handleDeleteSlot(slot.id)}
                                                     >
                                                         ✕
@@ -338,27 +302,19 @@ export default function ScheduleView({
 
             {/* Legend */}
             {exams.length > 0 && (
-                <div
-                  className="p-4 flex flex-wrap gap-3"
-                  style={{
-                    borderRadius: 14,
-                    border: "1px solid rgba(226,232,240,0.8)",
-                    background: "rgba(255,255,255,0.8)",
-                    backdropFilter: "blur(12px)",
-                    boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
-                  }}
-                >
+                <div className="p-4 flex flex-wrap gap-4 bg-white rounded-xl border border-slate-200 shadow-sm">
                     {exams.map((e) => (
-                        <div key={e.id} className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                        <div key={e.id} className="flex items-center gap-2 text-xs font-bold text-slate-600">
                             <div
-                              className="w-3 h-3 rounded-full shadow-sm"
-                              style={{ background: e.color }}
+                                className="w-3 h-3 rounded-md"
+                                style={{ background: e.color }}
                             />
                             {e.subjectName}
                         </div>
                     ))}
                 </div>
             )}
+            
             {/* Modal */}
             <AddTaskModal
                 isOpen={modalOpen}

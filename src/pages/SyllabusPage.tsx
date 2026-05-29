@@ -3,6 +3,7 @@ import type { Syllabus, ExamInfo, Chapter } from "../types";
 import SyllabusForm from "../components/SyllabusForm/SyllabusForm";
 import type { SyllabusFormState } from "../components/SyllabusForm/types";
 import PageHeader from "../components/PageHeader";
+import { FileText } from "lucide-react";
 import { parseFileToChapters } from "../utils/fileParser";
 import { nanoid } from "../utils/nanoid";
 
@@ -74,9 +75,9 @@ export default function SyllabusPage({
     return (
         <div className="space-y-8">
             <PageHeader
-                emoji="📝"
+                icon={FileText}
                 title="Đề cương môn học"
-                subtitle="Nhập chương học, độ khó — hỗ trợ import file PDF/Word 📎"
+                subtitle="Nhập chương học, độ khó — hỗ trợ import file PDF/Word"
             />
             <SyllabusForm
                 syllabuses={syllabuses}

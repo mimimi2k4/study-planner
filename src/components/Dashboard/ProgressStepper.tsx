@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import type { LucideIcon } from "lucide-react";
+import { Check } from "lucide-react";
 
 interface StepperProps {
-    steps: { label: string; desc: string; to: string; emoji: string; key: string }[];
+    steps: { label: string; desc: string; to: string; icon: LucideIcon; key: string }[];
     stepDone: Record<string, boolean>;
 }
 
@@ -10,29 +12,33 @@ export default function ProgressStepper({ steps, stepDone }: StepperProps) {
         <div className="flex flex-col gap-2">
             {steps.map((step, i) => {
                 const done = stepDone[step.key];
+                const Icon = step.icon;
                 return (
                     <Link
                         key={i}
                         to={step.to}
-                        className="flex items-center gap-3 rounded-xl p-3 transition-all duration-150 group"
+                        className="flex items-center gap-3 rounded-xl p-3 transition-all duration-150 group bg-white border border-slate-200 hover:border-slate-300 shadow-sm"
                         style={{
-                            background: done ? "#f0fdf4" : "#faf8ff",
-                            border: `1px solid ${done ? "#bbf7d0" : "#ede9fe"}`,
-                            textDecoration: "none",
+                            background: done ? "#f0fdf4" : undefined,
+                            borderColor: done ? "#bbf7d0" : undefined,
                         }}
                     >
-                        <span className="text-lg shrink-0">{done ? "✓" : step.emoji}</span>
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${done ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-500 group-hover:text-slate-700'}`}>
+                            {done ? <Check size={18} strokeWidth={3} /> : <Icon size={18} />}
+                        </div>
                         <div className="flex-1 min-w-0">
                             <p
                                 className="font-semibold text-sm"
-                                style={{ color: done ? "#15803d" : "#1e293b" }}
+                                style={{ color: done ? "#15803d" : "#0f172a" }}
                             >
                                 {step.label}
                             </p>
                             <p className="text-xs text-slate-500">{step.desc}</p>
                         </div>
                         {done && (
-                            <span className="text-green-500 text-base shrink-0">✓</span>
+                            <span className="text-green-500 shrink-0">
+                                <Check size={18} strokeWidth={3} />
+                            </span>
                         )}
                     </Link>
                 );

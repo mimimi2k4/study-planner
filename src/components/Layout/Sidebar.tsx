@@ -7,15 +7,16 @@ import {
     Calendar,
     CheckSquare,
     Sparkles,
+    GraduationCap,
 } from "lucide-react";
 
 const NAV = [
-    { to: "/", icon: LayoutDashboard, label: "Tổng quan", emoji: "🏠" },
-    { to: "/exams", icon: BookOpen, label: "Môn thi", emoji: "📚" },
-    { to: "/syllabus", icon: FileText, label: "Đề cương", emoji: "📝" },
-    { to: "/timeslots", icon: Clock, label: "Giờ học", emoji: "⏰" },
-    { to: "/schedule", icon: Calendar, label: "Lịch học", emoji: "📅" },
-    { to: "/tasks", icon: CheckSquare, label: "Nhiệm vụ", emoji: "✅" },
+    { to: "/", icon: LayoutDashboard, label: "Tổng quan" },
+    { to: "/exams", icon: BookOpen, label: "Môn thi" },
+    { to: "/syllabus", icon: FileText, label: "Đề cương" },
+    { to: "/timeslots", icon: Clock, label: "Giờ học" },
+    { to: "/schedule", icon: Calendar, label: "Lịch học" },
+    { to: "/tasks", icon: CheckSquare, label: "Nhiệm vụ" },
 ];
 
 export interface SidebarProps {
@@ -25,99 +26,50 @@ export interface SidebarProps {
 export default function Sidebar({ width }: SidebarProps) {
     return (
         <aside
-            className="fixed left-0 top-0 h-screen flex flex-col z-50"
-            style={{
-                width,
-                background:
-                    "linear-gradient(180deg, #1e0a4e 0%, #2d1270 35%, #3b1f8c 65%, #4c2aad 100%)",
-                boxShadow: "4px 0 24px rgba(109,40,217,0.25)",
-            }}
+            className="fixed left-0 top-0 h-screen flex flex-col z-50 bg-white border-r border-slate-200"
+            style={{ width }}
         >
-            {/* Ambient glow */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div
-                    className="absolute -top-12 -left-12 w-56 h-56 rounded-full animate-glow"
-                    style={{
-                        background:
-                            "radial-gradient(circle, rgba(167,139,250,0.22) 0%, transparent 70%)",
-                    }}
-                />
-                <div
-                    className="absolute bottom-20 right-0 w-40 h-40 rounded-full animate-glow"
-                    style={{
-                        background:
-                            "radial-gradient(circle, rgba(196,181,253,0.15) 0%, transparent 70%)",
-                        animationDelay: "2s",
-                    }}
-                />
-            </div>
-
             {/* Logo */}
-            <div className="relative z-10 flex items-center gap-2.5 px-5 pt-6 pb-5">
-                <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0"
-                    style={{
-                        background: "rgba(255,255,255,0.15)",
-                        border: "1.5px solid rgba(255,255,255,0.2)",
-                    }}
-                >
-                    🎓
+            <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-5">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-emerald-500 text-white shrink-0 shadow-sm">
+                    <GraduationCap size={20} strokeWidth={2.5} />
                 </div>
                 <div className="min-w-0">
-                    <p className="text-white font-black text-[17px] leading-none truncate">
+                    <p className="text-slate-900 font-black text-[17px] leading-none truncate">
                         StudyPlanner
                     </p>
-                    <p
-                        className="text-[11px] font-medium mt-0.5 truncate"
-                        style={{ color: "#c4b5fd" }}
-                    >
-                        ✨ Ôn thi thông minh
+                    <p className="text-[11px] font-medium mt-1 truncate text-slate-500">
+                        Ôn thi thông minh
                     </p>
                 </div>
             </div>
 
             {/* Divider */}
-            <div
-                className="relative z-10 mx-4 h-px mb-2"
-                style={{
-                    background:
-                        "linear-gradient(90deg, transparent, rgba(196,181,253,0.35), transparent)",
-                }}
-            />
+            <div className="mx-5 h-px bg-slate-100 mb-3" />
 
             {/* Nav */}
-            <nav className="relative z-10 flex-1 px-2.5 py-2 space-y-0.5 overflow-y-auto">
-                {NAV.map(({ to, label, emoji }) => (
+            <nav className="relative z-10 flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+                {NAV.map(({ to, label, icon: Icon }) => (
                     <NavLink
                         key={to}
                         to={to}
                         end={to === "/"}
                         className={({ isActive }) =>
-                            `flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[14px] transition-all duration-150 ${
+                            `flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-[14px] transition-all duration-150 ${
                                 isActive
-                                    ? "text-white"
-                                    : "text-purple-200 hover:text-white hover:bg-white/[0.07]"
+                                    ? "bg-emerald-50 text-emerald-700 shadow-sm border border-emerald-100/50"
+                                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
                             }`
-                        }
-                        style={({ isActive }) =>
-                            isActive
-                                ? {
-                                      background: "rgba(255,255,255,0.16)",
-                                      border: "1.5px solid rgba(255,255,255,0.22)",
-                                  }
-                                : {}
                         }
                     >
                         {({ isActive }) => (
                             <>
-                                <span className="text-base leading-none shrink-0 w-5 text-center">
-                                    {emoji}
-                                </span>
+                                <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className="shrink-0" />
                                 <span className={`truncate ${isActive ? "font-bold" : ""}`}>
                                     {label}
                                 </span>
                                 {isActive && (
-                                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-violet-300 shrink-0" />
+                                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                                 )}
                             </>
                         )}
@@ -126,41 +78,32 @@ export default function Sidebar({ width }: SidebarProps) {
             </nav>
 
             {/* Motivational card */}
-            <div className="relative z-10 mx-2.5 mb-2">
-                <div
-                    className="rounded-2xl px-3.5 py-3"
-                    style={{
-                        background: "rgba(255,255,255,0.07)",
-                        border: "1.5px solid rgba(255,255,255,0.10)",
-                    }}
-                >
+            <div className="mx-3 mb-4">
+                <div className="rounded-2xl px-4 py-3 bg-emerald-50 border border-emerald-100">
                     <div className="flex items-center gap-1.5 mb-1.5">
-                        <Sparkles size={11} className="text-yellow-300" />
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-yellow-300">
+                        <Sparkles size={12} className="text-emerald-600" />
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                             Động lực hôm nay
                         </p>
                     </div>
-                    <p className="text-white/75 text-[12px] leading-relaxed">
-                        "Mỗi phút ôn bài là một bước gần hơn đến thành công! 💪"
+                    <p className="text-emerald-900/80 text-[12px] leading-relaxed font-medium">
+                        Mỗi phút ôn bài là một bước gần hơn đến thành công!
                     </p>
                 </div>
             </div>
 
             {/* User */}
-            <div
-                className="relative z-10 px-3.5 py-4"
-                style={{ borderTop: "1px solid rgba(255,255,255,0.09)" }}
-            >
-                <div className="flex items-center gap-2.5">
-                    <div
-                        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-black text-white"
-                        style={{ background: "linear-gradient(135deg, #a78bfa, #7c3aed)" }}
-                    >
-                        Hạ
+            <div className="px-4 py-4 border-t border-slate-100">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-black bg-slate-100 text-slate-700">
+                        H
                     </div>
-                    <div className="min-w-0">
-                        <p className="text-purple-200 text-[12px] mt-0.5 truncate font-semibold">
-                            🌟 Học siêng lên nào!
+                    <div className="min-w-0 flex-1">
+                        <p className="text-slate-700 text-[13px] truncate font-bold">
+                            Hạ
+                        </p>
+                        <p className="text-slate-400 text-[11px] font-medium truncate">
+                            Học viên chăm chỉ
                         </p>
                     </div>
                 </div>

@@ -20,13 +20,8 @@ body {
     font-size: 15px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    color: #1e1b4b;
-    background: #f3f0ff;
-    background-image:
-        radial-gradient(circle at 10% 10%, rgba(167, 139, 250, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 90% 90%, rgba(196, 181, 253, 0.14) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(224, 231, 255, 0.1) 0%, transparent 55%);
-    background-attachment: fixed;
+    color: #0f172a; /* slate-900 */
+    background: #fafafa; /* zinc-50 */
 }
 
 #root {
@@ -43,19 +38,17 @@ button {
 
 /* ── Card ── */
 .card {
-    background: #fff;
+    background: #ffffff;
     border-radius: var(--radius-lg);
-    border: 1.5px solid rgba(139, 92, 246, 0.1);
-    box-shadow:
-        0 2px 8px rgba(109, 40, 217, 0.06),
-        0 0 0 0 transparent;
+    border: 1px solid #e2e8f0; /* slate-200 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition:
         box-shadow 0.2s,
         transform 0.2s;
 }
 .card-hover:hover {
-    box-shadow: 0 6px 24px rgba(109, 40, 217, 0.14);
-    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
 }
 
 /* ── Inputs ── */
@@ -66,114 +59,43 @@ input[type="email"],
 select,
 textarea {
     border-radius: var(--radius-sm);
-    border: 1.5px solid #e5e0ff;
-    background: #faf8ff;
+    border: 1.5px solid #cbd5e1; /* slate-300 */
+    background: #ffffff;
     padding: 10px 14px;
     font-size: 14px;
     font-weight: 500;
-    color: #1e1b4b;
+    color: #0f172a;
     transition: all 0.15s;
     width: 100%;
 }
 input:hover,
 select:hover,
 textarea:hover {
-    border-color: #a78bfa;
+    border-color: #94a3b8; /* slate-400 */
 }
 input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: #7c3aed;
+    border-color: #10b981; /* emerald-500 */
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); /* emerald ring */
 }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
 }
 ::-webkit-scrollbar-track {
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: #c4b5fd;
+    background: #cbd5e1; /* slate-300 */
     border-radius: 99px;
 }
-
-/* ── Gradient text ── */
-.grad {
-    background: linear-gradient(135deg, #7c3aed, #a855f7);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* ── Animations ── */
-@keyframes float-up {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-8px);
-    }
-}
-@keyframes pulse-glow {
-    0%,
-    100% {
-        opacity: 0.4;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.8;
-        transform: scale(1.05);
-    }
-}
-@keyframes slide-up {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-@keyframes pop-in {
-    0% {
-        opacity: 0;
-        transform: scale(0.85);
-    }
-    70% {
-        transform: scale(1.04);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-@keyframes spin-slow {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.animate-float {
-    animation: float-up 4s ease-in-out infinite;
-}
-.animate-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-}
-.animate-slide {
-    animation: slide-up 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-.animate-pop {
-    animation: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-.animate-spin-s {
-    animation: spin-slow 3s linear infinite;
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; /* slate-400 */
 }
 
 /* ── Buttons ── */
@@ -182,61 +104,50 @@ textarea:focus {
     align-items: center;
     gap: 8px;
     padding: 11px 22px;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 14px;
     border-radius: var(--radius-sm);
     border: none;
     cursor: pointer;
-    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s ease-out;
     white-space: nowrap;
 }
 .btn-primary {
-    background: linear-gradient(135deg, #7c3aed, #6d28d9);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+    background: #10b981; /* emerald-500 */
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .btn-primary:hover:not(:disabled) {
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.55);
-    transform: translateY(-2px);
+    background: #059669; /* emerald-600 */
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+    transform: translateY(-1px);
 }
 .btn-primary:active:not(:disabled) {
     transform: translateY(0);
+    background: #047857; /* emerald-700 */
 }
 .btn-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.btn-glow {
-    background: linear-gradient(135deg, #7c3aed, #6d28d9);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-}
-.btn-glow:hover:not(:disabled) {
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.55);
-    transform: translateY(-2px);
-}
-.btn-glow:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 .btn-soft {
-    background: #f0ebff;
-    color: #6d28d9;
-    border: 1.5px solid #e9d5ff;
+    background: #ecfdf5; /* emerald-50 */
+    color: #059669; /* emerald-600 */
+    border: 1px solid #d1fae5; /* emerald-100 */
 }
 .btn-soft:hover {
-    background: #e9d5ff;
+    background: #d1fae5; /* emerald-100 */
+    border-color: #a7f3d0; /* emerald-200 */
 }
 
 /* ── Section label ── */
 .label {
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #a78bfa;
+    color: #64748b; /* slate-500 */
 }
 
 /* ── Badge ── */

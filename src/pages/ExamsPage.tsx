@@ -4,6 +4,7 @@ import ExamForm from "../components/ExamForm/ExamForm";
 import PageHeader from "../components/PageHeader";
 import { nanoid } from "../utils/nanoid";
 import { getSubjectColor } from "../utils/colors";
+import { BookOpen } from "lucide-react";
 
 export interface ExamsPageProps {
     exams: ExamInfo[];
@@ -42,7 +43,7 @@ export default function ExamsPage({ exams, tasks, milestones, onAdd, onUpdate, o
     return (
         <div className="space-y-8">
             <PageHeader
-                emoji="📚"
+                icon={BookOpen}
                 title="Môn thi"
                 subtitle="Thêm môn thi, ngày thi và điểm mục tiêu của bạn"
             />

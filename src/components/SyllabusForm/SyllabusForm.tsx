@@ -15,9 +15,9 @@ const BADGE: Record<DifficultyLevel, string> = {
 
 // Màu sắc theo cấp độ phân cấp
 const LEVEL_COLORS = [
-  { gradient: 'linear-gradient(135deg,#4f46e5,#7c3aed)', text: '#4f46e5', bg: '#eef2ff', border: '#c7d2fe' },
-  { gradient: 'linear-gradient(135deg,#0891b2,#0e7490)', text: '#0891b2', bg: '#ecfeff', border: '#a5f3fc' },
-  { gradient: 'linear-gradient(135deg,#059669,#047857)', text: '#059669', bg: '#f0fdf4', border: '#a7f3d0' },
+  { gradient: '#059669', text: '#059669', bg: '#ecfdf5', border: '#a7f3d0' }, // emerald-600
+  { gradient: '#0284c7', text: '#0284c7', bg: '#f0f9ff', border: '#bae6fd' }, // sky-600
+  { gradient: '#4f46e5', text: '#4f46e5', bg: '#eef2ff', border: '#c7d2fe' }, // indigo-600
 ]
 
 function getLevelColor(level: number) {
@@ -148,20 +148,18 @@ export default function SyllabusForm({
     <div className="grid grid-cols-1 xl:grid-cols-5 gap-8">
       {/* ── Form (3/5) ── */}
       <div className="xl:col-span-3">
-        <div className="bg-white rounded-3xl shadow-sm border border-white overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
           {/* Card header */}
-          <div className="px-7 py-5 flex items-center justify-between"
-            style={{ background: isEditing ? 'linear-gradient(135deg,#fdf4ff,#f0fdf4)' : 'linear-gradient(135deg,#eef2ff,#f5f3ff)' }}>
+          <div className="px-7 py-5 flex items-center justify-between bg-slate-50 border-b border-slate-100">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md"
-                style={{ background: isEditing ? 'linear-gradient(135deg,#8b5cf6,#06b6d4)' : 'linear-gradient(135deg,#4f46e5,#7c3aed)' }}>
-                {isEditing ? <Pencil size={20} className="text-white" /> : <Plus size={22} className="text-white" />}
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm ${isEditing ? 'bg-amber-50 border-amber-200 text-amber-500' : 'bg-emerald-50 border-emerald-100 text-emerald-600'}`}>
+                {isEditing ? <Pencil size={20} /> : <Plus size={20} />}
               </div>
               <div>
-                <h3 className="font-extrabold text-slate-900 text-lg">
+                <h3 className="font-bold text-slate-900 text-lg leading-none">
                   {isEditing ? 'Chỉnh sửa đề cương' : 'Thêm đề cương môn học'}
                 </h3>
-                <p className="text-slate-400 text-sm">
+                <p className="text-slate-500 font-medium text-sm mt-0.5">
                   {isEditing
                     ? `Đang sửa: ${selectedExam?.subjectName}`
                     : 'Import file → tự động phân cấp chương lớn & chương con'}
@@ -169,7 +167,7 @@ export default function SyllabusForm({
               </div>
             </div>
             {isEditing && (
-              <button onClick={resetForm} className="p-2 text-slate-400 hover:text-slate-700 hover:bg-white rounded-xl transition-all">
+              <button onClick={resetForm} className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-lg transition-all border border-transparent hover:border-slate-300">
                 <X size={18} />
               </button>
             )}
@@ -178,54 +176,54 @@ export default function SyllabusForm({
           <div className="p-7">
             {exams.length === 0 ? (
               <div className="text-center py-14">
-                <BookOpen size={40} className="mx-auto text-indigo-200 mb-4" />
-                <p className="text-slate-400">Chưa có môn thi. Hãy thêm ở trang <strong>Môn thi</strong> trước.</p>
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 border border-slate-200 mx-auto mb-4 text-slate-400">
+                  <BookOpen size={32} />
+                </div>
+                <p className="text-slate-500 font-medium text-sm">Chưa có môn thi. Hãy thêm ở trang <strong>Môn thi</strong> trước.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
                 {/* Subject select */}
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                     Chọn môn học <span className="text-red-500">*</span>
                   </label>
                   <select value={subjectId} disabled={isEditing}
                     onChange={(e) => { setSubjectId(e.target.value); if (submitted) setErrors(validateSyllabusForm({ subjectId: e.target.value, chapters })) }}
-                    className={`w-full px-5 py-3.5 rounded-2xl border-2 text-base font-medium transition-all ${
-                      errors.subjectName ? 'border-red-400 bg-red-50'
-                      : 'border-slate-100 bg-slate-50 hover:border-indigo-200 focus:border-indigo-400 focus:bg-white'
+                    className={`w-full px-5 py-3.5 rounded-xl border text-[15px] font-medium transition-all outline-none ${
+                      errors.subjectName ? 'border-red-300 bg-red-50 focus:border-red-500'
+                      : 'border-slate-300 bg-slate-50 focus:border-emerald-500 focus:bg-white'
                     } ${isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}>
                     <option value="">-- Chọn môn thi --</option>
                     {availableExams.map((e) => <option key={e.id} value={e.id}>{e.subjectName}</option>)}
                   </select>
-                  {errors.subjectName && <p className="mt-2 text-sm text-red-500 flex items-center gap-1.5"><AlertCircle size={14} />{errors.subjectName}</p>}
+                  {errors.subjectName && <p className="mt-2 text-xs font-medium text-red-500 flex items-center gap-1.5"><AlertCircle size={13} />{errors.subjectName}</p>}
                 </div>
 
                 {/* ── File import ── */}
-                <div className="rounded-2xl border-2 border-dashed border-indigo-200 bg-indigo-50/50 p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
-                      {uploading ? <Loader2 size={18} className="text-indigo-500 animate-spin" /> : <Upload size={18} className="text-indigo-500" />}
+                <div className="rounded-2xl border border-dashed border-emerald-300 bg-emerald-50/50 p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0 border border-emerald-200">
+                      {uploading ? <Loader2 size={18} className="text-emerald-600 animate-spin" /> : <Upload size={18} className="text-emerald-600" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-indigo-800 text-sm">Import từ file — AI phân cấp tự động</p>
-                      <p className="text-indigo-500 text-xs mt-0.5">
+                      <p className="font-bold text-emerald-800 text-[15px]">Import từ file — AI phân cấp tự động</p>
+                      <p className="text-emerald-600 text-[13px] mt-1 font-medium">
                         Hỗ trợ&nbsp;
-                        <code className="bg-indigo-100 px-1 py-0.5 rounded font-mono">.pdf</code>&nbsp;
-                        <code className="bg-indigo-100 px-1 py-0.5 rounded font-mono">.docx</code>&nbsp;
-                        <code className="bg-indigo-100 px-1 py-0.5 rounded font-mono">.txt</code>&nbsp;
-                        <code className="bg-indigo-100 px-1 py-0.5 rounded font-mono">.json</code>
-                        &nbsp;— AI tự nhận diện chương lớn / chương con
+                        <code className="bg-white border border-emerald-100 px-1 py-0.5 rounded font-mono font-bold text-emerald-700">.pdf</code>&nbsp;
+                        <code className="bg-white border border-emerald-100 px-1 py-0.5 rounded font-mono font-bold text-emerald-700">.docx</code>&nbsp;
+                        <code className="bg-white border border-emerald-100 px-1 py-0.5 rounded font-mono font-bold text-emerald-700">.txt</code>&nbsp;
+                        <code className="bg-white border border-emerald-100 px-1 py-0.5 rounded font-mono font-bold text-emerald-700">.json</code>
                       </p>
                       {uploadMsg && (
-                        <p className={`text-xs mt-1.5 font-semibold ${uploadMsg.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
+                        <p className={`text-[13px] mt-2 font-bold ${uploadMsg.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
                           {uploadMsg.type === 'success' ? '✓' : '✗'} {uploadMsg.text}
                         </p>
                       )}
                     </div>
                     <input ref={fileRef} type="file" accept=".pdf,.docx,.doc,.txt,.json" className="hidden" onChange={handleFileSelected} />
                     <button type="button" disabled={uploading} onClick={() => fileRef.current?.click()}
-                      className="shrink-0 px-4 py-2 font-bold text-sm rounded-xl text-white transition-all disabled:opacity-60"
-                      style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)' }}>
+                      className="shrink-0 px-4 py-2 font-bold text-[13px] rounded-lg text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-all disabled:opacity-60 border border-emerald-200">
                       {uploading ? 'Đang đọc...' : 'Chọn file'}
                     </button>
                   </div>
@@ -235,10 +233,10 @@ export default function SyllabusForm({
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-700">
+                      <p className="text-[13px] font-bold text-slate-700">
                         Cấu trúc chương học <span className="text-red-500">*</span>
                       </p>
-                      <p className="text-xs font-semibold" style={{ color: '#6366f1' }}>
+                      <p className="text-[11px] font-bold text-emerald-600 uppercase tracking-wide mt-0.5">
                         {mainChaptersCount} chương lớn ·{' '}
                         {chapters.filter((c) => (c.level ?? 0) === 1).length} chương con ·{' '}
                         {chapters.filter((c) => (c.level ?? 0) >= 2).length} mục nhỏ
@@ -246,16 +244,16 @@ export default function SyllabusForm({
                     </div>
                     <button type="button"
                       onClick={() => setChapters((cs) => [...cs, newChapter(0)])}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-bold rounded-xl transition-all border border-indigo-200">
+                      className="flex items-center gap-1.5 px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[13px] font-bold rounded-lg transition-all border border-slate-200">
                       <Plus size={14} /> Thêm chương
                     </button>
                   </div>
 
                   {errors.chapters && (
-                    <p className="mb-2 text-sm text-red-500 flex items-center gap-1.5"><AlertCircle size={14} />{errors.chapters}</p>
+                    <p className="mb-2 text-xs font-medium text-red-500 flex items-center gap-1.5"><AlertCircle size={13} />{errors.chapters}</p>
                   )}
 
-                  <div className="max-h-[560px] overflow-y-auto pr-1" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div className="max-h-[560px] overflow-y-auto pr-1" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {chapters.map((c, idx) => {
                       const lv = c.level ?? 0
                       const color = getLevelColor(lv)
@@ -266,47 +264,47 @@ export default function SyllabusForm({
                       if (lv === 0) {
                         return (
                           <div key={c.id}
-                            className={`rounded-2xl border-2 transition-all ${
-                              hasError ? 'border-red-200 bg-red-50' : 'border-slate-100 bg-slate-50 hover:border-indigo-200 focus-within:border-indigo-300'
+                            className={`rounded-xl border transition-all ${
+                              hasError ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-white hover:border-emerald-300'
                             }`}>
                             <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-                              <span className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-black text-white shrink-0"
+                              <span className="w-8 h-8 rounded-lg flex items-center justify-center text-[13px] font-bold text-white shrink-0 shadow-sm"
                                 style={{ background: color.gradient }}>
                                 {label}
                               </span>
                               <input type="text" value={c.name}
                                 onChange={(e) => changeChapter(c.id, 'name', e.target.value)}
                                 placeholder={`Tên chương ${label}...`}
-                                className="flex-1 px-3 py-2 rounded-xl border-2 border-slate-100 bg-white text-base font-medium focus:border-indigo-400 outline-none transition-all min-w-0" />
+                                className="flex-1 px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-[15px] font-medium focus:border-emerald-500 outline-none transition-all min-w-0" />
                               <button type="button" onClick={() => addSubChapter(c.id)}
                                 title="Thêm chương con"
-                                className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-xl shrink-0 transition-all border"
+                                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-bold rounded-lg shrink-0 transition-all border"
                                 style={{ background: color.bg, color: color.text, borderColor: color.border }}>
-                                <Plus size={11} /> Mục con
+                                <Plus size={12} /> Mục con
                               </button>
                               <button type="button"
                                 onClick={() => deleteChapterWithChildren(c.id)}
                                 disabled={mainChaptersCount === 1 && chapters.length === 1}
-                                className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl disabled:opacity-20 transition-all shrink-0">
+                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-30 transition-all shrink-0 border border-transparent hover:border-red-100">
                                 <Trash2 size={15} />
                               </button>
                             </div>
 
                             {hasError && (
-                              <p className="px-4 pb-2 text-xs text-red-500 flex items-center gap-1">
-                                <AlertCircle size={11} />{errors.chapterNames![c.id]}
+                              <p className="px-4 pb-2 text-xs font-medium text-red-500 flex items-center gap-1.5">
+                                <AlertCircle size={13} />{errors.chapterNames![c.id]}
                               </p>
                             )}
 
-                            <div className="grid grid-cols-2 gap-3 px-4 pb-4 ml-11">
+                            <div className="grid grid-cols-2 gap-4 px-4 pb-4 ml-11">
                               {(['difficulty', 'importance'] as const).map((field) => (
                                 <div key={field}>
-                                  <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wide">
+                                  <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
                                     {field === 'difficulty' ? 'Độ khó' : 'Tầm quan trọng'}
                                   </label>
                                   <select value={c[field]}
                                     onChange={(e) => changeChapter(c.id, field, e.target.value)}
-                                    className="w-full px-3 py-2 rounded-xl border-2 border-slate-100 bg-white text-sm font-semibold focus:border-indigo-400 outline-none transition-all">
+                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-[13px] font-bold focus:border-emerald-500 outline-none transition-all">
                                     {(Object.keys(DIFFICULTY_LABELS) as DifficultyLevel[]).map((d) => (
                                       <option key={d} value={d}>{DIFFICULTY_LABELS[d]}</option>
                                     ))}
@@ -321,15 +319,15 @@ export default function SyllabusForm({
                       /* ── Chương con / mục nhỏ (level 1, 2) ── */
                       return (
                         <div key={c.id}
-                          className="flex items-center gap-2.5 rounded-xl border transition-all"
+                          className="flex items-center gap-2.5 rounded-lg border transition-all"
                           style={{
                             marginLeft: lv * 24,
-                            background: hasError ? '#fff1f2' : color.bg,
-                            borderColor: hasError ? '#fecdd3' : color.border,
-                            padding: '7px 12px',
+                            background: hasError ? '#fef2f2' : color.bg,
+                            borderColor: hasError ? '#fca5a5' : color.border,
+                            padding: '8px 12px',
                           }}>
                           {/* Level label */}
-                          <span className="text-xs font-black shrink-0 min-w-[2rem] text-right"
+                          <span className="text-[12px] font-bold shrink-0 min-w-[2rem] text-right"
                             style={{ color: color.text }}>
                             {label}
                           </span>
@@ -337,28 +335,28 @@ export default function SyllabusForm({
                           <input type="text" value={c.name}
                             onChange={(e) => changeChapter(c.id, 'name', e.target.value)}
                             placeholder={`Mục ${label}...`}
-                            className="flex-1 px-2.5 py-1.5 rounded-lg border bg-white text-sm font-medium outline-none transition-all min-w-0"
-                            style={{ borderColor: hasError ? '#fca5a5' : '#e2e8f0' }}
+                            className="flex-1 px-3 py-1.5 rounded-md border bg-white text-[13px] font-medium outline-none transition-all min-w-0"
+                            style={{ borderColor: hasError ? '#fca5a5' : '#cbd5e1' }}
                             onFocus={(e) => (e.currentTarget.style.borderColor = color.text)}
-                            onBlur={(e) => (e.currentTarget.style.borderColor = hasError ? '#fca5a5' : '#e2e8f0')} />
+                            onBlur={(e) => (e.currentTarget.style.borderColor = hasError ? '#fca5a5' : '#cbd5e1')} />
 
                           {/* Compact difficulty/importance with labels */}
-                          <div className="flex items-center gap-1 shrink-0">
+                          <div className="flex items-center gap-1.5 shrink-0">
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">KH</span>
                             <select value={c.difficulty}
                               onChange={(e) => changeChapter(c.id, 'difficulty', e.target.value)}
-                              className="px-2 py-1.5 rounded-lg border border-slate-100 bg-white text-xs font-semibold outline-none focus:border-indigo-300 transition-colors">
+                              className="px-2 py-1.5 rounded-md border border-slate-200 bg-white text-[11px] font-bold outline-none focus:border-emerald-500 transition-colors">
                               {(Object.keys(DIFFICULTY_SHORT) as DifficultyLevel[]).map((d) => (
                                 <option key={d} value={d}>{DIFFICULTY_SHORT[d]}</option>
                               ))}
                             </select>
                           </div>
 
-                          <div className="flex items-center gap-1 shrink-0">
+                          <div className="flex items-center gap-1.5 shrink-0">
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">QT</span>
                             <select value={c.importance}
                               onChange={(e) => changeChapter(c.id, 'importance', e.target.value)}
-                              className="px-2 py-1.5 rounded-lg border border-slate-100 bg-white text-xs font-semibold outline-none focus:border-indigo-300 transition-colors">
+                              className="px-2 py-1.5 rounded-md border border-slate-200 bg-white text-[11px] font-bold outline-none focus:border-emerald-500 transition-colors">
                               {(Object.keys(DIFFICULTY_SHORT) as DifficultyLevel[]).map((d) => (
                                 <option key={d} value={d}>{DIFFICULTY_SHORT[d]}</option>
                               ))}
@@ -368,17 +366,15 @@ export default function SyllabusForm({
                           {lv < 2 && (
                             <button type="button" onClick={() => addSubChapter(c.id)}
                               title="Thêm mục con"
-                              className="p-1.5 rounded-lg transition-all shrink-0"
-                              style={{ color: color.text, background: 'transparent' }}
-                              onMouseEnter={(e) => (e.currentTarget.style.background = 'white')}
-                              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-                              <Plus size={12} />
+                              className="p-1.5 rounded-md transition-all shrink-0 hover:bg-white"
+                              style={{ color: color.text }}>
+                              <Plus size={14} />
                             </button>
                           )}
 
                           <button type="button" onClick={() => deleteChapterWithChildren(c.id)}
-                            className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all shrink-0">
-                            <Trash2 size={13} />
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-white rounded-md transition-all shrink-0">
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       )
@@ -389,14 +385,14 @@ export default function SyllabusForm({
                 {/* Actions */}
                 <div className="flex gap-3">
                   <button type="submit"
-                    className="flex-1 flex items-center justify-center gap-2 py-4 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-xl transition-all text-base"
-                    style={{ background: isEditing ? 'linear-gradient(135deg,#8b5cf6,#06b6d4)' : 'linear-gradient(135deg,#4f46e5,#7c3aed)' }}>
-                    <Check size={20} />
+                    className="flex-1 flex items-center justify-center gap-2 h-[52px] text-white font-bold rounded-xl shadow-sm hover:opacity-90 transition-all text-[15px]"
+                    style={{ background: isEditing ? '#0ea5e9' : '#059669' }}>
+                    <Check size={18} />
                     {isEditing ? 'Cập nhật đề cương' : 'Lưu đề cương'}
                   </button>
                   {isEditing && (
                     <button type="button" onClick={resetForm}
-                      className="px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-2xl transition-all">
+                      className="px-6 h-[52px] bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold rounded-xl transition-all">
                       Hủy
                     </button>
                   )}
@@ -409,27 +405,27 @@ export default function SyllabusForm({
 
       {/* ── Saved list (2/5) ── */}
       <div className="xl:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-        <div className="card rounded-3xl overflow-hidden">
-          <div className="px-6 py-5 flex items-center justify-between"
-            style={{ background: 'linear-gradient(135deg,#eef2ff,#f5f3ff)', borderBottom: '1.5px solid #e0e7ff' }}>
+        <div className="card rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
+          <div className="px-6 py-5 flex items-center justify-between bg-slate-50 border-b border-slate-100">
             <div>
-              <h2 className="font-black text-slate-800 text-xl leading-none">Đề cương đã lưu</h2>
-              <p className="text-slate-500 text-sm mt-1">
+              <h2 className="font-bold text-slate-900 text-lg leading-none">Đề cương đã lưu</h2>
+              <p className="text-slate-500 font-medium text-sm mt-0.5">
                 {syllabuses.length === 0 ? 'Chưa có đề cương nào' : `${syllabuses.length} môn đã nhập`}
               </p>
             </div>
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shrink-0"
-              style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: '#fff', boxShadow: '0 4px 12px rgba(79,70,229,0.35)' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shrink-0 bg-white border border-slate-200 text-slate-700 shadow-sm">
               {syllabuses.length}
             </div>
           </div>
 
-          <div className="p-5">
+          <div className="p-6">
             {syllabuses.length === 0 ? (
               <div className="py-12 text-center flex flex-col items-center gap-3">
-                <BookOpen size={36} className="text-indigo-200" />
-                <p className="text-slate-400 font-medium">Chưa có đề cương nào</p>
-                <p className="text-slate-400 text-sm">Điền form bên trái để thêm!</p>
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-400">
+                    <BookOpen size={24} />
+                </div>
+                <p className="text-slate-900 font-bold text-base">Chưa có đề cương nào</p>
+                <p className="text-slate-500 font-medium text-sm">Điền form bên trái để thêm!</p>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -442,78 +438,70 @@ export default function SyllabusForm({
                   const subCount = s.chapters.filter((c) => (c.level ?? 0) > 0).length
                   return (
                     <div key={s.id}
-                      className="rounded-2xl overflow-hidden transition-all"
+                      className="rounded-xl overflow-hidden transition-all bg-white"
                       style={{
-                        border: isCurrentEdit ? '2px solid #7c3aed' : '1.5px solid rgba(139,92,246,0.12)',
-                        boxShadow: isCurrentEdit ? '0 0 0 3px rgba(124,58,237,0.12)' : '0 2px 6px rgba(109,40,217,0.05)',
-                        background: '#fff',
+                        border: isCurrentEdit ? '2px solid #059669' : '1px solid #e2e8f0',
                       }}>
-                      <div className="flex items-center gap-3 px-5 py-4 cursor-pointer"
+                      <div className="flex items-center gap-3 px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors"
                         onClick={() => setExpanded(isOpen ? null : s.id)}>
-                        <div className="w-3 h-3 rounded-full shrink-0 mt-0.5" style={{ background: exam?.color ?? '#6366f1' }} />
+                        <div className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: exam?.color ?? '#10b981' }} />
                         <div className="flex-1 min-w-0">
                           <p className="font-bold text-slate-800 text-[15px] truncate">{s.subjectName}</p>
-                          <p className="text-sm text-slate-400 mt-0.5">
+                          <p className="text-[13px] font-medium text-slate-500 mt-0.5">
                             {mainCount} chương lớn
-                            {subCount > 0 && <> · <span className="text-indigo-400">{subCount} mục con</span></>}
+                            {subCount > 0 && <> · <span className="text-emerald-600 font-semibold">{subCount} mục con</span></>}
                           </p>
                         </div>
-                        <div className="flex items-center gap-0.5 shrink-0">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button onClick={(e) => { e.stopPropagation(); handleStartEdit(s) }}
-                            className="p-2 rounded-xl transition-all"
-                            style={{ color: '#a78bfa' }}
-                            onMouseEnter={(e) => (e.currentTarget.style.background = '#f5f0ff')}
-                            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                            className="p-1.5 rounded-lg transition-all text-slate-400 hover:text-emerald-600 hover:bg-slate-100 border border-transparent hover:border-slate-200"
                             title="Chỉnh sửa">
-                            <Pencil size={14} />
+                            <Pencil size={15} />
                           </button>
                           <button onClick={(e) => { e.stopPropagation(); onDelete(s.id) }}
-                            className="p-2 rounded-xl transition-all"
-                            style={{ color: '#cbd5e1' }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = '#fff1f2'; e.currentTarget.style.color = '#ef4444' }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#cbd5e1' }}>
-                            <Trash2 size={14} />
+                            className="p-1.5 rounded-lg transition-all text-slate-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-100">
+                            <Trash2 size={15} />
                           </button>
-                          {isOpen
-                            ? <ChevronUp size={14} className="text-slate-300 ml-1" />
-                            : <ChevronDown size={14} className="text-slate-300 ml-1" />}
+                          <div className="p-1 text-slate-400">
+                            {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                          </div>
                         </div>
                       </div>
 
                       {isOpen && (
-                        <div style={{ borderTop: '1px solid #f1f5f9', padding: '10px 16px 14px', background: '#fafafa' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <div className="border-t border-slate-100 px-4 py-3 bg-slate-50">
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             {s.chapters.map((c, i) => {
                               const lv = c.level ?? 0
                               const color = getLevelColor(lv)
                               const lbl = savedLabels[i]
                               return (
                                 <div key={c.id}
-                                  className="flex items-center gap-2"
-                                  style={{ marginLeft: lv * 20 }}>
+                                  className="flex items-center gap-2.5"
+                                  style={{ marginLeft: lv * 24 }}>
                                   {lv === 0 ? (
-                                    <span className="w-6 h-6 rounded-lg text-white text-xs font-black flex items-center justify-center shrink-0"
+                                    <span className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold text-white shrink-0 shadow-sm"
                                       style={{ background: color.gradient }}>
                                       {lbl}
                                     </span>
                                   ) : (
-                                    <span className="text-xs font-bold shrink-0 w-8 text-right"
+                                    <span className="text-[11px] font-bold shrink-0 w-6 text-right"
                                       style={{ color: color.text }}>
                                       {lbl}
                                     </span>
                                   )}
-                                  <span className={`flex-1 min-w-0 truncate ${lv === 0 ? 'text-slate-700 font-semibold text-sm' : 'text-slate-500 text-xs'}`}>
+                                  <span className={`flex-1 min-w-0 truncate ${lv === 0 ? 'text-slate-800 font-bold text-[13px]' : 'text-slate-600 font-medium text-[12px]'}`}>
                                     {c.name}
                                   </span>
                                   <div className="flex items-center gap-1 shrink-0">
-                                    <span className="text-[10px] text-slate-400 font-semibold">KH</span>
-                                    <span className={`text-xs px-1.5 py-0.5 rounded-full border font-bold ${BADGE[c.difficulty]}`}>
+                                    <span className="text-[9px] font-bold text-slate-400 uppercase">KH</span>
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded border font-bold ${BADGE[c.difficulty]}`}>
                                       {DIFFICULTY_SHORT[c.difficulty]}
                                     </span>
                                   </div>
                                   <div className="flex items-center gap-1 shrink-0">
-                                    <span className="text-[10px] text-slate-400 font-semibold">QT</span>
-                                    <span className={`text-xs px-1.5 py-0.5 rounded-full border font-bold ${BADGE[c.importance]}`}>
+                                    <span className="text-[9px] font-bold text-slate-400 uppercase">QT</span>
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded border font-bold ${BADGE[c.importance]}`}>
                                       {DIFFICULTY_SHORT[c.importance]}
                                     </span>
                                   </div>
@@ -532,20 +520,20 @@ export default function SyllabusForm({
         </div>
 
         {/* Legend */}
-        <div className="rounded-2xl p-5 text-sm" style={{ background: '#fffbeb', border: '1.5px solid #fde68a' }}>
-          <p className="font-bold text-amber-800 mb-3">📊 Phân cấp chương học</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }} className="text-xs text-amber-700">
+        <div className="rounded-xl p-5 text-sm bg-slate-50 border border-slate-200 shadow-sm">
+          <p className="font-bold text-slate-700 mb-3 text-[13px] uppercase tracking-wider">📊 Phân cấp chương học</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }} className="text-xs text-slate-600">
             {[
               { color: LEVEL_COLORS[0], label: 'Chương lớn', example: 'Chương 1: Cấu trúc dữ liệu' },
               { color: LEVEL_COLORS[1], label: 'Chương con', example: '1.1. Mảng và danh sách' },
               { color: LEVEL_COLORS[2], label: 'Mục nhỏ', example: '1.1.1. Mảng một chiều' },
             ].map((item) => (
-              <div key={item.label} className="flex items-center gap-2.5">
-                <span className="w-5 h-5 rounded-md shrink-0"
+              <div key={item.label} className="flex items-center gap-3">
+                <span className="w-4 h-4 rounded shadow-sm shrink-0"
                   style={{ background: item.color.gradient }} />
                 <div>
-                  <span className="font-bold">{item.label}</span>
-                  <span className="text-amber-600 ml-1">— {item.example}</span>
+                  <span className="font-bold text-slate-800">{item.label}</span>
+                  <span className="text-slate-500 ml-1.5">— {item.example}</span>
                 </div>
               </div>
             ))}

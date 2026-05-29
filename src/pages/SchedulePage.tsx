@@ -4,6 +4,7 @@ import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot }
 import { generateSchedule } from "../utils/scheduler";
 import type { ScheduleWarning } from "../types";
 import PageHeader from "../components/PageHeader";
+import { Calendar } from "lucide-react";
 import ScheduleView from "../components/ScheduleView/ScheduleView";
 import { usePlanManager } from "../hooks/usePlanManager";
 
@@ -88,7 +89,7 @@ export default function SchedulePage({
             )}
 
             <PageHeader
-                emoji="📅"
+                icon={Calendar}
                 title="Lịch học"
                 subtitle={
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">

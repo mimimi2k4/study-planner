@@ -6,24 +6,24 @@ export const ZONE: Record<
     { bg: string; selBg: string; labelColor: string; name: string; legendBorder: string }
 > = {
     morning: {
-        bg: "#fffbeb",
-        selBg: "#f59e0b",
-        labelColor: "#92400e",
+        bg: "#f8fafc", // slate-50
+        selBg: "#10b981", // emerald-500
+        labelColor: "#64748b", // slate-500
         name: "Sáng",
-        legendBorder: "#fbbf24",
+        legendBorder: "#e2e8f0", // slate-200
     },
     afternoon: {
-        bg: "#eff6ff",
-        selBg: "#2563eb",
-        labelColor: "#1e3a8a",
+        bg: "#f8fafc",
+        selBg: "#10b981",
+        labelColor: "#64748b",
         name: "Chiều",
-        legendBorder: "#60a5fa",
+        legendBorder: "#e2e8f0",
     },
     evening: {
-        bg: "#fff1f2",
-        selBg: "#e11d48",
-        labelColor: "#881337",
+        bg: "#f8fafc",
+        selBg: "#10b981",
+        labelColor: "#64748b",
         name: "Tối",
-        legendBorder: "#fda4af",
+        legendBorder: "#e2e8f0",
     },
 };
