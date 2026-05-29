@@ -1,13 +1,13 @@
 import type { StudyTask, ExamInfo } from "../types";
 import { getNextTaskStatus } from "../logic/taskStatus";
-import { CheckSquare, Circle, Clock, Sparkles, PlayCircle } from "lucide-react";
+import { CheckSquare, Circle, Clock, Sparkles, PlayCircle, Trophy, BookOpen, Target } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 
 const P_LABEL: Record<string, string> = { high: "Cao", medium: "TB", low: "Thấp" };
 const P_STYLE: Record<string, { bg: string; text: string; border: string }> = {
-    high: { bg: "#fff1f2", text: "#be123c", border: "#fecdd3" },
-    medium: { bg: "#fffbeb", text: "#b45309", border: "#fde68a" },
-    low: { bg: "#f0fdf4", text: "#15803d", border: "#bbf7d0" },
+    high: { bg: "#fff1f2", text: "#e11d48", border: "#fecdd3" },
+    medium: { bg: "#fffbeb", text: "#d97706", border: "#fde68a" },
+    low: { bg: "#f0fdf4", text: "#16a34a", border: "#bbf7d0" },
 };
 
 export interface TasksPageProps {
@@ -42,33 +42,25 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
 
     if (tasks.length === 0) {
         return (
-            <div className="space-y-8">
+            <div className="space-y-8 flex flex-col h-full">
                 <PageHeader
-                    emoji="✅"
+                    icon={CheckSquare}
                     title="Nhiệm vụ học tập"
                     subtitle="Theo dõi tiến độ hoàn thành từng nhiệm vụ"
                 />
-                <div
-                    className="card rounded-3xl p-16 text-center flex flex-col items-center gap-4"
-                    style={{
-                        background: "#faf8ff",
-                        border: "2px dashed #ddd6fe",
-                        boxShadow: "none",
-                    }}
-                >
-                    <div className="text-5xl animate-float">🎯</div>
+                <div className="card rounded-3xl p-16 text-center flex flex-col items-center justify-center flex-1 gap-5 bg-white border border-slate-200 shadow-sm border-dashed min-h-[400px]">
+                    <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-400">
+                        <Target size={40} />
+                    </div>
                     <div>
-                        <p className="font-bold text-slate-700 text-lg">Chưa có nhiệm vụ nào</p>
-                        <p className="text-slate-400 text-sm mt-1">
-                            Vào <span className="text-violet-600 font-semibold">Lịch học</span> để
-                            AI tạo nhiệm vụ cho bạn nhé!
+                        <p className="font-bold text-slate-900 text-xl">Chưa có nhiệm vụ nào</p>
+                        <p className="text-slate-500 text-base mt-2 max-w-md mx-auto leading-relaxed">
+                            Vào <span className="text-emerald-600 font-bold">Lịch học</span> để
+                            AI phân chia đề cương và tạo nhiệm vụ cho bạn nhé!
                         </p>
                     </div>
-                    <div
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-violet-600"
-                        style={{ background: "#f5f0ff", border: "1.5px solid #ddd6fe" }}
-                    >
-                        <Sparkles size={14} /> Tạo lịch → nhiệm vụ tự sinh!
+                    <div className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mt-4 shadow-sm">
+                        <Sparkles size={18} /> Tạo lịch → nhiệm vụ tự sinh
                     </div>
                 </div>
             </div>
@@ -78,178 +70,137 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
     return (
         <div className="space-y-8">
             <PageHeader
-                emoji="✅"
+                icon={CheckSquare}
                 title="Nhiệm vụ học tập"
                 subtitle="Theo dõi tiến độ hoàn thành từng nhiệm vụ"
             />
 
             {/* Progress banner */}
-            <div
-                className="relative rounded-3xl overflow-hidden"
-                style={{
-                    background: "linear-gradient(135deg, #3b0d8f 0%, #5b21b6 40%, #7c3aed 100%)",
-                    boxShadow: "0 10px 32px rgba(109,40,217,0.30)",
-                }}
-            >
-                <div className="absolute inset-0 pointer-events-none">
-                    <div
-                        className="absolute -top-8 -left-8 w-48 h-48 rounded-full animate-glow"
-                        style={{
-                            background:
-                                "radial-gradient(circle, rgba(196,181,253,0.30) 0%, transparent 70%)",
-                        }}
-                    />
-                    <div
-                        className="absolute -bottom-6 right-10 w-36 h-36 rounded-full animate-glow"
-                        style={{
-                            background:
-                                "radial-gradient(circle, rgba(233,213,255,0.25) 0%, transparent 70%)",
-                            animationDelay: "2s",
-                        }}
-                    />
-                </div>
-                <div className="relative z-10 px-8 py-6 flex items-center gap-8 flex-wrap">
-                    <div className="shrink-0">
-                        <p className="text-purple-300 text-xs font-bold uppercase tracking-widest mb-2">
-                            Tổng tiến độ
-                        </p>
-                        <div className="flex items-baseline gap-1">
-                            <span
-                                className="font-black leading-none"
-                                style={{ fontSize: 52, color: "#fde68a" }}
-                            >
-                                {rate}
-                            </span>
-                            <span className="text-2xl font-bold text-white/40">%</span>
-                        </div>
-                        <p className="text-purple-300 text-sm mt-1">
-                            {done}/{tasks.length} nhiệm vụ hoàn thành 🎉
-                        </p>
+            <div className="rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm px-8 py-8 flex items-center gap-10 flex-wrap">
+                <div className="shrink-0">
+                    <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2">
+                        Tổng tiến độ
+                    </p>
+                    <div className="flex items-baseline gap-1.5">
+                        <span className="font-black leading-none text-emerald-600" style={{ fontSize: 56 }}>
+                            {rate}
+                        </span>
+                        <span className="text-3xl font-bold text-slate-300">%</span>
                     </div>
-                    <div className="flex-1 min-w-[140px]">
+                    <p className="text-slate-500 font-bold text-sm mt-2">
+                        {done}/{tasks.length} nhiệm vụ hoàn thành
+                    </p>
+                </div>
+                
+                <div className="flex-1 min-w-[200px]">
+                    <div className="h-4 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shadow-inner">
                         <div
-                            className="h-3 rounded-full overflow-hidden"
-                            style={{ background: "rgba(255,255,255,0.12)" }}
-                        >
-                            <div
-                                className="h-full rounded-full transition-all duration-1000"
-                                style={{
-                                    width: `${rate}%`,
-                                    background: "linear-gradient(90deg, #fde68a, #f9a8d4, #c084fc)",
-                                    boxShadow: "0 0 12px rgba(253,230,138,0.5)",
-                                }}
-                            />
-                        </div>
-                        <div className="flex justify-between mt-2 text-[10px] font-bold text-purple-400">
-                            <span>0%</span>
-                            <span>50%</span>
-                            <span>100%</span>
-                        </div>
+                            className="h-full rounded-full transition-all duration-1000 bg-emerald-500"
+                            style={{ width: `${rate}%` }}
+                        />
                     </div>
-                    {rate === 100 && <div className="text-3xl animate-float shrink-0">🏆</div>}
+                    <div className="flex justify-between mt-3 text-xs font-bold text-slate-400">
+                        <span>0%</span>
+                        <span>50%</span>
+                        <span>100%</span>
+                    </div>
                 </div>
+                
+                {rate === 100 && (
+                    <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-amber-50 border border-amber-100 text-amber-500 shrink-0 shadow-sm">
+                        <Trophy size={40} />
+                    </div>
+                )}
             </div>
 
             {/* Task groups */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 {Object.values(grouped).map(({ exam, tasks: sub }) => {
                     if (sub.length === 0) return null;
                     const subDone = sub.filter((t) => t.status === "completed").length;
                     const subRate = Math.round((subDone / sub.length) * 100);
                     return (
-                        <div key={exam.id} className="card rounded-3xl overflow-hidden">
+                        <div key={exam.id} className="card rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm">
                             {/* Color header */}
-                            <div
-                                className="px-5 py-4 flex items-center gap-3"
-                                style={{
-                                    background: exam.color + "12",
-                                    borderBottom: `1.5px solid ${exam.color}20`,
-                                }}
-                            >
+                            <div className="px-6 py-5 flex items-center gap-4 bg-slate-50 border-b border-slate-100">
                                 <div
-                                    className="w-4 h-4 rounded-full shrink-0"
+                                    className="w-4 h-4 rounded-full shrink-0 shadow-sm"
                                     style={{ background: exam.color }}
                                 />
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-bold text-slate-800 truncate">
+                                    <p className="font-bold text-slate-800 text-lg truncate">
                                         {exam.subjectName}
                                     </p>
-                                    <div className="flex items-center gap-2.5 mt-1.5">
-                                        <div
-                                            className="flex-1 h-1.5 rounded-full overflow-hidden"
-                                            style={{ background: exam.color + "20" }}
-                                        >
+                                    <div className="flex items-center gap-4 mt-2">
+                                        <div className="flex-1 h-2 rounded-full overflow-hidden bg-slate-200">
                                             <div
                                                 className="h-full rounded-full transition-all"
-                                                style={{
-                                                    width: `${subRate}%`,
-                                                    background: exam.color,
-                                                }}
+                                                style={{ width: `${subRate}%`, background: exam.color }}
                                             />
                                         </div>
-                                        <span
-                                            className="text-xs font-bold shrink-0"
-                                            style={{ color: exam.color }}
-                                        >
+                                        <span className="text-xs font-bold shrink-0 text-slate-500">
                                             {subDone}/{sub.length}
                                         </span>
                                     </div>
                                 </div>
-                                {subRate === 100 && <span className="text-xl shrink-0">🌟</span>}
+                                {subRate === 100 && <span className="text-amber-500 shrink-0"><Trophy size={24} /></span>}
                             </div>
+                            
                             {/* Rows */}
-                            <div>
+                            <div className="divide-y divide-slate-100">
                                 {sub.map((task) => {
                                     const ps = P_STYLE[task.priority];
+                                    const isCompleted = task.status === "completed";
+                                    const isInProgress = task.status === "in_progress";
+                                    
                                     return (
                                         <div
                                             key={task.id}
-                                            className={`flex items-center gap-3 px-5 py-3 border-b last:border-b-0 transition-colors ${
-                                                task.status === "completed"
-                                                    ? "bg-slate-50/60"
-                                                    : task.status === "in_progress"
-                                                    ? "bg-amber-50/70 hover:bg-amber-100/50"
-                                                    : "hover:bg-purple-50/30"
+                                            className={`flex items-center gap-5 px-6 py-4 transition-colors ${
+                                                isCompleted
+                                                    ? "bg-slate-50/50"
+                                                    : isInProgress
+                                                    ? "bg-amber-50/30 hover:bg-amber-50"
+                                                    : "hover:bg-slate-50"
                                             }`}
-                                            style={{ borderColor: "rgba(0,0,0,0.04)" }}
                                         >
                                             <button
                                                 onClick={() => toggle(task.id)}
-                                                className="shrink-0 transition-all hover:scale-110"
+                                                className="shrink-0 transition-all hover:scale-110 focus:outline-none"
                                                 style={{
-                                                    color:
-                                                        task.status === "completed"
-                                                            ? exam.color
-                                                            : task.status === "in_progress"
+                                                    color: isCompleted
+                                                            ? "#10b981"
+                                                            : isInProgress
                                                             ? "#f59e0b"
-                                                            : "#d8b4fe",
+                                                            : "#cbd5e1",
                                                 }}
                                             >
-                                                {task.status === "completed" ? (
-                                                    <CheckSquare size={20} />
-                                                ) : task.status === "in_progress" ? (
-                                                    <PlayCircle size={20} />
+                                                {isCompleted ? (
+                                                    <CheckSquare size={24} strokeWidth={2.5} />
+                                                ) : isInProgress ? (
+                                                    <PlayCircle size={24} strokeWidth={2.5} />
                                                 ) : (
-                                                    <Circle size={20} />
+                                                    <Circle size={24} strokeWidth={2.5} />
                                                 )}
                                             </button>
+                                            
                                             <div className="flex-1 min-w-0">
-                                                <p
-                                                    className={`font-medium text-sm ${task.status === "completed" ? "line-through text-slate-400" : "text-slate-700"}`}
-                                                >
+                                                <p className={`font-semibold text-base truncate ${isCompleted ? "line-through text-slate-400" : "text-slate-800"}`}>
                                                     {task.name}
                                                 </p>
-                                                <p className="text-xs text-slate-400 truncate">
-                                                    {task.chapter}
-                                                </p>
+                                                <div className="flex items-center gap-1.5 mt-1 text-sm text-slate-500 truncate font-medium">
+                                                    <BookOpen size={14} className="shrink-0 text-slate-400" />
+                                                    <span className="truncate">{task.chapter}</span>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-1.5 shrink-0">
-                                                <span className="flex items-center gap-1 text-[11px] text-slate-400 font-medium">
-                                                    <Clock size={10} />
-                                                    {task.estimatedMinutes}ph
+                                            
+                                            <div className="flex flex-col items-end gap-2 shrink-0">
+                                                <span className="flex items-center gap-1.5 text-xs text-slate-500 font-bold">
+                                                    <Clock size={14} />
+                                                    {task.estimatedMinutes} phút
                                                 </span>
                                                 <span
-                                                    className="badge text-[10px]"
+                                                    className="px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide shadow-sm"
                                                     style={{
                                                         background: ps.bg,
                                                         color: ps.text,

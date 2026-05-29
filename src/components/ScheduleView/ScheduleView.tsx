@@ -217,7 +217,7 @@ export default function ScheduleView({
                                                 background: isEven ? "#f8fafc" : "#ffffff",
                                             }}
                                         >
-                                            <span className="text-[11px] font-bold text-slate-400 tabular-nums">
+                                            <span className="text-xs font-bold text-slate-400 tabular-nums">
                                                 {String(h).padStart(2, "0")}:00
                                             </span>
                                         </div>
@@ -275,16 +275,16 @@ export default function ScheduleView({
                                                     title={`${slot.taskName} (${slot.startTime}–${slot.endTime})`}
                                                 >
                                                     <p
-                                                        className="text-[11px] font-bold truncate leading-tight"
+                                                        className="text-xs font-bold truncate leading-tight"
                                                         style={{ color: slot.color }}
                                                     >
                                                         {slot.taskName}
                                                     </p>
-                                                    <p className="text-[10px] font-medium opacity-80 truncate" style={{ color: slot.color }}>
+                                                    <p className="text-xs font-medium opacity-80 truncate" style={{ color: slot.color }}>
                                                         {slot.startTime}–{slot.endTime}
                                                     </p>
                                                     <button
-                                                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all text-[12px] leading-none bg-white rounded-md w-5 h-5 flex items-center justify-center border border-slate-200"
+                                                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all text-xs leading-none bg-white rounded-md w-5 h-5 flex items-center justify-center border border-slate-200"
                                                         onClick={() => handleDeleteSlot(slot.id)}
                                                     >
                                                         ✕
