@@ -51,7 +51,7 @@ export default function AddTaskModal({
             alert("Thời lượng phải lớn hơn 0");
             return;
         }
-        
+
         const startMin = parseTime(selectedStartTime);
         const endMin = startMin + duration;
         const endTime = formatTime(endMin);
@@ -80,9 +80,12 @@ export default function AddTaskModal({
                 {/* Body */}
                 <div className="px-6 py-5 space-y-4">
                     <div>
-                        <p className="text-sm font-semibold text-slate-600 mb-2">Thông tin thời gian</p>
-                        <p className="text-sm font-medium text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg border border-indigo-100">
-                            Ngày: {selectedDate.split("-").reverse().join("/")} — Bắt đầu: {selectedStartTime}
+                        <p className="text-sm font-semibold text-slate-600 mb-2">
+                            Thông tin thời gian
+                        </p>
+                        <p className="text-sm font-medium text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg border border-emerald-100">
+                            Ngày: {selectedDate.split("-").reverse().join("/")} - Bắt đầu:{" "}
+                            {selectedStartTime}
                         </p>
                     </div>
 
@@ -91,7 +94,7 @@ export default function AddTaskModal({
                             Chọn nhiệm vụ cần học
                         </label>
                         <select
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition-colors"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition-colors"
                             value={taskId}
                             onChange={(e) => setTaskId(e.target.value)}
                         >
@@ -110,7 +113,7 @@ export default function AddTaskModal({
                         </label>
                         <input
                             type="number"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition-colors"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition-colors"
                             value={duration}
                             onChange={(e) => setDuration(Number(e.target.value))}
                             min="5"
@@ -129,7 +132,7 @@ export default function AddTaskModal({
                     </button>
                     <button
                         onClick={handleSave}
-                        className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
+                        className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-sm"
                     >
                         Thêm vào lịch
                     </button>

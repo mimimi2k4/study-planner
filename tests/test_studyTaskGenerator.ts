@@ -28,7 +28,7 @@ const mockExam: ExamInfo = {
 
 const mockSyllabus: Syllabus = {
     id: "syl-1",
-    subjectId: "exam-math",  // matches exam.id so color resolves
+    subjectId: "exam-math", // matches exam.id so color resolves
     subjectName: "Toán",
     chapters: [
         { id: "ch-1", name: "Giới hạn", difficulty: "high", importance: "high" },
@@ -55,7 +55,10 @@ console.log("\nTest 2: difficulty=high, importance=high → priority=high");
     const tasks = generateStudyTasks([mockSyllabus], [mockExam]);
     const highTask = tasks.find((t) => t.chapter === "Giới hạn");
     assert(highTask !== undefined, "Phải có task cho chương 'Giới hạn'");
-    assert(highTask?.priority === "high", `priority phải là 'high' (nhận được '${highTask?.priority}')`);
+    assert(
+        highTask?.priority === "high",
+        `priority phải là 'high' (nhận được '${highTask?.priority}')`
+    );
 }
 
 // Test 3: low difficulty + low importance → priority = "low"
@@ -64,7 +67,10 @@ console.log("\nTest 3: difficulty=low, importance=low → priority=low");
     const tasks = generateStudyTasks([mockSyllabus], [mockExam]);
     const lowTask = tasks.find((t) => t.chapter === "Tích phân");
     assert(lowTask !== undefined, "Phải có task cho chương 'Tích phân'");
-    assert(lowTask?.priority === "low", `priority phải là 'low' (nhận được '${lowTask?.priority}')`);
+    assert(
+        lowTask?.priority === "low",
+        `priority phải là 'low' (nhận được '${lowTask?.priority}')`
+    );
 }
 
 // Test 4: All tasks have status = "pending"
@@ -80,7 +86,10 @@ console.log("\nTest 5: Color lấy từ exam tương ứng theo subjectId");
 {
     const tasks = generateStudyTasks([mockSyllabus], [mockExam]);
     const allRed = tasks.every((t) => t.color === "#ff0000");
-    assert(allRed, `Tất cả tasks phải có color='#ff0000' (exam color), nhận được: ${tasks.map(t => t.color).join(", ")}`);
+    assert(
+        allRed,
+        `Tất cả tasks phải có color='#ff0000' (exam color), nhận được: ${tasks.map((t) => t.color).join(", ")}`
+    );
 }
 
 // Test 6: Empty syllabuses → empty array
@@ -96,10 +105,16 @@ console.log("\nTest 7: Mỗi task phải có đủ các trường bắt buộc")
     const tasks = generateStudyTasks([mockSyllabus], [mockExam]);
     for (const task of tasks) {
         assert(typeof task.id === "string" && task.id.length > 0, `task.id phải là string hợp lệ`);
-        assert(typeof task.name === "string" && task.name.length > 0, `task.name phải là string hợp lệ`);
+        assert(
+            typeof task.name === "string" && task.name.length > 0,
+            `task.name phải là string hợp lệ`
+        );
         assert(typeof task.chapter === "string", `task.chapter phải là string`);
         assert(typeof task.subjectId === "string", `task.subjectId phải là string`);
-        assert(typeof task.estimatedMinutes === "number" && task.estimatedMinutes > 0, `task.estimatedMinutes phải > 0`);
+        assert(
+            typeof task.estimatedMinutes === "number" && task.estimatedMinutes > 0,
+            `task.estimatedMinutes phải > 0`
+        );
     }
 }
 
@@ -115,7 +130,10 @@ console.log("\nTest 8: Tasks được sắp xếp theo priority (high → medium
             break;
         }
     }
-    assert(sorted, `Tasks phải được sắp xếp high → medium → low (nhận được: ${tasks.map(t => t.priority).join(", ")})`);
+    assert(
+        sorted,
+        `Tasks phải được sắp xếp high → medium → low (nhận được: ${tasks.map((t) => t.priority).join(", ")})`
+    );
 }
 
 console.log("\n=== KẾT THÚC TEST ===");

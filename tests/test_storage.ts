@@ -1,24 +1,24 @@
-import { getExams, getTasks } from '../src/utils/storage';
+import { getExams, getTasks } from "../src/utils/storage";
 
 // Mock localStorage for tests
 const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value.toString();
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    }
-  };
+    let store: Record<string, string> = {};
+    return {
+        getItem: (key: string) => store[key] || null,
+        setItem: (key: string, value: string) => {
+            store[key] = value.toString();
+        },
+        removeItem: (key: string) => {
+            delete store[key];
+        },
+        clear: () => {
+            store = {};
+        },
+    };
 })();
 
-Object.defineProperty(global, 'localStorage', {
-  value: localStorageMock
+Object.defineProperty(global, "localStorage", {
+    value: localStorageMock,
 });
 
 console.log("=== BẮT ĐẦU KIỂM THỬ STORAGE VALIDATION ===");
@@ -39,14 +39,16 @@ if (exams.length === 0) {
 }
 
 // Test valid data
-const validData = [{
-    id: "123",
-    subjectName: "Math",
-    examDateTime: "2024-01-01T10:00:00Z",
-    examFormat: "multiple_choice",
-    targetScore: 9,
-    color: "#ff0000"
-}];
+const validData = [
+    {
+        id: "123",
+        subjectName: "Math",
+        examDateTime: "2024-01-01T10:00:00Z",
+        examFormat: "multiple_choice",
+        targetScore: 9,
+        color: "#ff0000",
+    },
+];
 localStorage.setItem("study_exams", JSON.stringify(validData));
 
 const exams2 = getExams();
@@ -58,17 +60,19 @@ if (exams2.length === 1 && exams2[0].id === "123") {
 }
 
 // Test tasks with invalid enum
-const invalidTasks = [{
-    id: "t1",
-    name: "T1",
-    chapter: "C1",
-    subjectId: "s1",
-    subjectName: "S1",
-    estimatedMinutes: 30,
-    priority: "super_high", // invalid priority
-    status: "pending",
-    color: "#000"
-}];
+const invalidTasks = [
+    {
+        id: "t1",
+        name: "T1",
+        chapter: "C1",
+        subjectId: "s1",
+        subjectName: "S1",
+        estimatedMinutes: 30,
+        priority: "super_high", // invalid priority
+        status: "pending",
+        color: "#000",
+    },
+];
 localStorage.setItem("study_tasks", JSON.stringify(invalidTasks));
 
 const tasks = getTasks();

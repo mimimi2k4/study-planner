@@ -23,7 +23,9 @@ export default function ProgressStepper({ steps, stepDone }: StepperProps) {
                             borderColor: done ? "#bbf7d0" : undefined,
                         }}
                     >
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${done ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-500 group-hover:text-slate-700'}`}>
+                        <div
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${done ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-500 group-hover:text-slate-700"}`}
+                        >
                             {done ? <Check size={20} strokeWidth={3} /> : <Icon size={20} />}
                         </div>
                         <div className="flex-1 min-w-0">

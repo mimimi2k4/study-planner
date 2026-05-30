@@ -77,7 +77,7 @@ export default function SyllabusPage({
             <PageHeader
                 icon={FileText}
                 title="Đề cương môn học"
-                subtitle="Nhập chương học, độ khó — hỗ trợ import file PDF/Word"
+                subtitle="Nhập chương học, độ khó, hỗ trợ import file PDF/Word"
             />
             <SyllabusForm
                 syllabuses={syllabuses}

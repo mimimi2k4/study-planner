@@ -1,6 +1,6 @@
-import '@testing-library/jest-dom';
-import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import "@testing-library/jest-dom";
+import { cleanup } from "@testing-library/react";
+import { afterEach, vi } from "vitest";
 
 // Cleanup after each test case
 afterEach(() => {
@@ -8,9 +8,9 @@ afterEach(() => {
 });
 
 // Mock matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
     writable: true,
-    value: vi.fn().mockImplementation(query => ({
+    value: vi.fn().mockImplementation((query) => ({
         matches: false,
         media: query,
         onchange: null,
@@ -24,12 +24,12 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock window.Notification
 const NotificationMock = vi.fn();
-NotificationMock.permission = 'granted';
-NotificationMock.requestPermission = vi.fn().mockResolvedValue('granted');
+NotificationMock.permission = "granted";
+NotificationMock.requestPermission = vi.fn().mockResolvedValue("granted");
 
-Object.defineProperty(window, 'Notification', {
+Object.defineProperty(window, "Notification", {
     value: NotificationMock,
-    writable: true
+    writable: true,
 });
 
 // Mock LocalStorage (using an in-memory store)
@@ -49,6 +49,6 @@ const localStorageMock = (() => {
     };
 })();
 
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
     value: localStorageMock,
 });

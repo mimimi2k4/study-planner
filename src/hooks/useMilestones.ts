@@ -11,18 +11,18 @@ export function useMilestones() {
     }, [milestones]);
 
     const addMilestones = (newMilestones: Milestone[]) => {
-        setMilestones(prev => {
+        setMilestones((prev) => {
             // Lọc ra các milestone cũ cùng môn, và thay thế bằng milestone mới
             const subjectId = newMilestones[0]?.subjectId;
             if (!subjectId) return prev;
-            
-            const others = prev.filter(m => m.subjectId !== subjectId);
+
+            const others = prev.filter((m) => m.subjectId !== subjectId);
             return [...others, ...newMilestones];
         });
     };
 
     const clearMilestones = (subjectId: string) => {
-        setMilestones(prev => prev.filter(m => m.subjectId !== subjectId));
+        setMilestones((prev) => prev.filter((m) => m.subjectId !== subjectId));
     };
 
     return { milestones, addMilestones, clearMilestones, setMilestones };

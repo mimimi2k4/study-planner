@@ -1,4 +1,14 @@
-import { BookOpen, ArrowRight, Zap, TrendingUp, Award, Star, FileText, Clock, Calendar, CheckSquare } from "lucide-react";
+import {
+    BookOpen,
+    ArrowRight,
+    Zap,
+    TrendingUp,
+    Award,
+    Star,
+    FileText,
+    Clock,
+    Calendar,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ExamInfo, StudyTask, StudyPlan, Syllabus } from "../types";
 import ExamCard from "../components/Dashboard/ExamCard";
@@ -78,9 +88,11 @@ export default function DashboardPage({
     // Progress for next exam
     const examProgress = nextExam
         ? {
-            totalTasks: tasks.filter((t) => t.subjectId === nextExam.id).length,
-            completedTasks: tasks.filter((t) => t.subjectId === nextExam.id && t.status === "completed").length,
-        }
+              totalTasks: tasks.filter((t) => t.subjectId === nextExam.id).length,
+              completedTasks: tasks.filter(
+                  (t) => t.subjectId === nextExam.id && t.status === "completed"
+              ).length,
+          }
         : undefined;
 
     const stepDone: Record<string, boolean> = {
@@ -94,7 +106,7 @@ export default function DashboardPage({
     const circumference = 2 * Math.PI * 20;
 
     // Prepare data for OverviewCards
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = new Date().toISOString().split("T")[0];
     const todaySlots = plan?.slots.filter((s) => s.date === todayStr) ?? [];
     const upcomingMilestones = milestones
         .filter((m) => new Date(m.deadlineDate) >= new Date())
@@ -104,19 +116,16 @@ export default function DashboardPage({
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-
             {/* ── Hero ── */}
-            <div className="relative rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm px-10 py-8 flex items-center justify-between flex-wrap gap-8">
+            <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm px-10 py-8 flex items-center justify-between flex-wrap gap-8">
                 <div className="flex-1">
                     <div className="flex items-center gap-2 mb-3">
                         <Zap size={14} className="text-emerald-500" />
-                        <span className="text-emerald-600 text-[11px] font-bold uppercase tracking-widest">
+                        <span className="text-emerald-600 text-xs font-bold uppercase tracking-widest">
                             Dashboard
                         </span>
                     </div>
-                    <h1 className="text-slate-900 font-black text-4xl leading-tight">
-                        Xin chào!
-                    </h1>
+                    <h1 className="text-slate-900 font-black text-4xl leading-tight">Xin chào!</h1>
                     <p className="text-slate-500 font-medium text-base mt-2">{greeting}</p>
 
                     <div className="mt-6">
@@ -156,7 +165,7 @@ export default function DashboardPage({
                                 </span>
                             </div>
                         </div>
-                        <p className="text-slate-600 font-semibold text-[11px] uppercase tracking-wide mt-3">
+                        <p className="text-slate-600 font-semibold text-xs uppercase tracking-wide mt-3">
                             Thiết lập: {doneCount}/4
                         </p>
                     </div>
@@ -167,7 +176,7 @@ export default function DashboardPage({
                                 {completionRate}
                                 <span className="text-xl text-emerald-400 ml-1">%</span>
                             </p>
-                            <p className="text-emerald-700/80 text-[11px] font-bold uppercase tracking-wide mt-2">
+                            <p className="text-emerald-700/80 text-xs font-bold uppercase tracking-wide mt-2">
                                 Nhiệm vụ xong
                             </p>
                         </div>
@@ -197,7 +206,7 @@ export default function DashboardPage({
                 }}
             >
                 {/* ── Cột trái: Setup checklist panel ── */}
-                <div className="card rounded-3xl overflow-hidden bg-white border border-slate-200">
+                <div className="card rounded-2xl overflow-hidden bg-white border border-slate-200">
                     <div className="px-6 py-5 flex items-center gap-4 bg-slate-50 border-b border-slate-100">
                         <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white border border-slate-200 shadow-sm shrink-0">
                             <TrendingUp size={20} className="text-emerald-600" />
@@ -223,11 +232,11 @@ export default function DashboardPage({
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
                         gap: 24,
-                        alignItems: "start"
+                        alignItems: "start",
                     }}
                 >
                     {/* Upcoming exams panel */}
-                    <div className="card rounded-3xl overflow-hidden bg-white border border-slate-200">
+                    <div className="card rounded-2xl overflow-hidden bg-white border border-slate-200">
                         <div className="px-6 py-5 flex items-center justify-between gap-4 bg-slate-50 border-b border-slate-100">
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white border border-slate-200 shadow-sm shrink-0">
@@ -265,9 +274,14 @@ export default function DashboardPage({
 
                                     {exams.length > 0 && (
                                         <div className="rounded-xl px-5 py-4 flex items-start gap-3 mt-2 bg-amber-50 border border-amber-100">
-                                            <Star size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                                            <Star
+                                                size={18}
+                                                className="text-amber-500 shrink-0 mt-0.5"
+                                            />
                                             <p className="text-amber-900 text-sm font-medium leading-relaxed">
-                                                <span className="font-bold">Mẹo:</span> Ôn bài theo chu kỳ lặp lại (spaced repetition) giúp ghi nhớ tốt hơn 70%.
+                                                <span className="font-bold">Mẹo:</span> Ôn bài theo
+                                                chu kỳ lặp lại (spaced repetition) giúp ghi nhớ tốt
+                                                hơn 70%.
                                             </p>
                                         </div>
                                     )}

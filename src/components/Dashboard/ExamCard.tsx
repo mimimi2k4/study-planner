@@ -36,9 +36,7 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
 
                 {/* Info chips */}
                 <div className="mt-3 flex flex-wrap gap-2">
-                    <span
-                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[13px] font-semibold bg-slate-100 text-slate-700"
-                    >
+                    <span className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-semibold bg-slate-100 text-slate-700">
                         <Clock size={14} />
                         {new Date(exam.examDateTime).toLocaleString("vi-VN", {
                             day: "2-digit",
@@ -49,7 +47,7 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                         })}
                     </span>
                     <span
-                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[13px] font-bold"
+                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-bold"
                         style={{
                             background: exam.color + "10",
                             color: exam.color,
@@ -70,12 +68,8 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                                   ? "#fff7ed"
                                   : exam.color + "0a",
                             border: `1px solid ${
-                                overdue 
-                                ? "#ffe4e6" 
-                                : urgent 
-                                ? "#ffedd5" 
-                                : exam.color + "20"
-                            }`
+                                overdue ? "#ffe4e6" : urgent ? "#ffedd5" : exam.color + "20"
+                            }`,
                         }}
                     >
                         {overdue ? (
@@ -94,14 +88,14 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                             <>
                                 <div className="flex items-center justify-between mb-2">
                                     <span
-                                        className="font-bold text-[14px]"
+                                        className="font-bold text-sm"
                                         style={{ color: exam.color }}
                                     >
                                         Còn {countdown.daysLeft} ngày
                                     </span>
                                     {countdown.totalTasks > 0 && (
                                         <span
-                                            className="flex items-center gap-1.5 font-bold text-[12px]"
+                                            className="flex items-center gap-1.5 font-bold text-xs"
                                             style={{ color: exam.color }}
                                         >
                                             {countdown.completionRate === 100 && (

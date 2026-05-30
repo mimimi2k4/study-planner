@@ -18,11 +18,11 @@ export interface ExamInfo {
 }
 
 export interface Chapter {
-  id: string
-  name: string
-  difficulty: DifficultyLevel
-  importance: DifficultyLevel
-  level?: number // 0 = chương lớn, 1 = chương con, 2 = mục nhỏ
+    id: string;
+    name: string;
+    difficulty: DifficultyLevel;
+    importance: DifficultyLevel;
+    level?: number; // 0 = chương lớn, 1 = chương con, 2 = mục nhỏ
 }
 
 export interface Syllabus {
@@ -80,12 +80,12 @@ export interface ExamCountdownResult {
 }
 
 export interface TimetableSlot {
-  date: string        // "YYYY-MM-DD"
-  startTime: string   // "HH:mm"
-  endTime: string     // "HH:mm"
-  taskName: string
-  subjectName: string
-  color: string
+    date: string; // "YYYY-MM-DD"
+    startTime: string; // "HH:mm"
+    endTime: string; // "HH:mm"
+    taskName: string;
+    subjectName: string;
+    color: string;
 }
 
 export interface ScheduleWarning {

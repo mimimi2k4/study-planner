@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, RefreshCw, Calendar, AlertTriangle } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCw, Calendar, AlertTriangle, X } from "lucide-react";
 import { hexToRgba } from "../../utils/colors";
 import {
     getWeekStart,
@@ -44,7 +44,10 @@ export default function ScheduleView({
     }
 
     const [modalOpen, setModalOpen] = useState(false);
-    const [selectedCell, setSelectedCell] = useState<{date: string, time: string}>({date: "", time: "00:00"});
+    const [selectedCell, setSelectedCell] = useState<{ date: string; time: string }>({
+        date: "",
+        time: "00:00",
+    });
 
     function parseTime(t: string): number {
         const [h, m] = t.split(":").map(Number);
@@ -78,7 +81,7 @@ export default function ScheduleView({
         if (onDispatch) {
             onDispatch({
                 action: "move_task",
-                payload: { slotId, newDate: targetDate, newStartTime, newEndTime }
+                payload: { slotId, newDate: targetDate, newStartTime, newEndTime },
             });
         }
     }
@@ -92,8 +95,13 @@ export default function ScheduleView({
                     <Calendar size={28} className="text-slate-400" />
                 </div>
                 <p className="text-slate-800 font-bold mb-2">Chưa có lịch học</p>
-                <p className="text-slate-500 font-medium text-sm mb-6">Vui lòng thiết lập cấu hình và tạo lịch học tự động.</p>
-                <button onClick={onRegenerate} className="btn btn-primary inline-flex items-center gap-2">
+                <p className="text-slate-500 font-medium text-sm mb-6">
+                    Vui lòng thiết lập cấu hình và tạo lịch học tự động.
+                </p>
+                <button
+                    onClick={onRegenerate}
+                    className="btn btn-primary inline-flex items-center gap-2"
+                >
                     <RefreshCw size={16} /> Tạo lịch học
                 </button>
             </div>
@@ -120,11 +128,17 @@ export default function ScheduleView({
                         )}
                         {w.type === "insufficient_time" && overflow && overflow.length > 0 && (
                             <div className="mt-3 space-y-1.5 border-t border-amber-200/60 pt-3 w-full">
-                                <p className="text-xs font-bold uppercase tracking-wider opacity-90">Nhiệm vụ bị thiếu thời gian:</p>
+                                <p className="text-xs font-bold uppercase tracking-wider opacity-90">
+                                    Nhiệm vụ bị thiếu thời gian:
+                                </p>
                                 <ul className="list-disc pl-4 space-y-1 text-xs opacity-80 font-medium">
                                     {overflow.map((task) => (
                                         <li key={task.id}>
-                                            <span className="font-bold">{task.name}</span> ({task.subjectName}) — còn thiếu <span className="font-bold">{task.estimatedMinutes} phút</span>
+                                            <span className="font-bold">{task.name}</span> (
+                                            {task.subjectName}), còn thiếu{" "}
+                                            <span className="font-bold">
+                                                {task.estimatedMinutes} phút
+                                            </span>
                                         </li>
                                     ))}
                                 </ul>
@@ -156,9 +170,7 @@ export default function ScheduleView({
                         <ChevronRight size={16} />
                     </button>
                 </div>
-                <span className="text-sm font-bold text-slate-700 tracking-wide">
-                    {weekLabel}
-                </span>
+                <span className="text-sm font-bold text-slate-700 tracking-wide">{weekLabel}</span>
                 <button
                     onClick={onRegenerate}
                     className="btn btn-primary"
@@ -184,7 +196,11 @@ export default function ScheduleView({
                                 key={date}
                                 className={`py-3 text-center border-r last:border-r-0 border-slate-200 ${isToday ? "bg-emerald-50/50" : ""}`}
                             >
-                                <p className={`text-xs font-bold ${isToday ? "text-emerald-600" : "text-slate-500"}`}>{DAYS[i]}</p>
+                                <p
+                                    className={`text-xs font-bold ${isToday ? "text-emerald-600" : "text-slate-500"}`}
+                                >
+                                    {DAYS[i]}
+                                </p>
                                 <p
                                     className={`text-sm font-bold mt-1 w-7 h-7 mx-auto flex items-center justify-center rounded-full ${
                                         isToday ? "bg-emerald-600 text-white" : "text-slate-700"
@@ -249,10 +265,7 @@ export default function ScheduleView({
                             {weekDates.map((date, _colIdx) => {
                                 const daySlots = slots.filter((s) => s.date === date);
                                 return (
-                                    <div
-                                        key={date}
-                                        className="relative"
-                                    >
+                                    <div key={date} className="relative">
                                         {daySlots.map((slot) => {
                                             const top = timeToFraction(slot.startTime) * 100;
                                             const height = slotHeightPercent(
@@ -264,7 +277,7 @@ export default function ScheduleView({
                                                     key={slot.id}
                                                     draggable
                                                     onDragStart={(e) => handleDragStart(e, slot)}
-                                                    className="absolute left-1 right-1 rounded-md px-2 py-1 overflow-hidden pointer-events-auto cursor-pointer group transition-all duration-150 border hover:opacity-90 shadow-sm"
+                                                    className="absolute left-1 right-1 rounded-lg px-2 py-1 overflow-hidden pointer-events-auto cursor-pointer group transition-all duration-150 border hover:opacity-90 shadow-sm"
                                                     style={{
                                                         top: `${top}%`,
                                                         height: `${Math.max(height, 2)}%`,
@@ -280,14 +293,17 @@ export default function ScheduleView({
                                                     >
                                                         {slot.taskName}
                                                     </p>
-                                                    <p className="text-xs font-medium opacity-80 truncate" style={{ color: slot.color }}>
+                                                    <p
+                                                        className="text-xs font-medium opacity-80 truncate"
+                                                        style={{ color: slot.color }}
+                                                    >
                                                         {slot.startTime}–{slot.endTime}
                                                     </p>
                                                     <button
-                                                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all text-xs leading-none bg-white rounded-md w-5 h-5 flex items-center justify-center border border-slate-200"
+                                                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all text-xs leading-none bg-white rounded-lg w-5 h-5 flex items-center justify-center border border-slate-200"
                                                         onClick={() => handleDeleteSlot(slot.id)}
                                                     >
-                                                        ✕
+                                                        <X size={12} />
                                                     </button>
                                                 </div>
                                             );
@@ -304,17 +320,17 @@ export default function ScheduleView({
             {exams.length > 0 && (
                 <div className="p-4 flex flex-wrap gap-4 bg-white rounded-xl border border-slate-200 shadow-sm">
                     {exams.map((e) => (
-                        <div key={e.id} className="flex items-center gap-2 text-xs font-bold text-slate-600">
-                            <div
-                                className="w-3 h-3 rounded-md"
-                                style={{ background: e.color }}
-                            />
+                        <div
+                            key={e.id}
+                            className="flex items-center gap-2 text-xs font-bold text-slate-600"
+                        >
+                            <div className="w-3 h-3 rounded" style={{ background: e.color }} />
                             {e.subjectName}
                         </div>
                     ))}
                 </div>
             )}
-            
+
             {/* Modal */}
             <AddTaskModal
                 isOpen={modalOpen}
@@ -324,7 +340,10 @@ export default function ScheduleView({
                 selectedStartTime={selectedCell.time}
                 onSave={(taskId, date, startTime, endTime) => {
                     if (onDispatch) {
-                        onDispatch({ action: "add_task", payload: { taskId, date, startTime, endTime } });
+                        onDispatch({
+                            action: "add_task",
+                            payload: { taskId, date, startTime, endTime },
+                        });
                     }
                 }}
             />

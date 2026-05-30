@@ -35,10 +35,10 @@ export default function Sidebar({ width }: SidebarProps) {
                     <GraduationCap size={20} strokeWidth={2.5} />
                 </div>
                 <div className="min-w-0">
-                    <p className="text-slate-900 font-black text-[17px] leading-none truncate">
+                    <p className="text-slate-900 font-black text-lg leading-none truncate">
                         StudyPlanner
                     </p>
-                    <p className="text-[11px] font-medium mt-1 truncate text-slate-500">
+                    <p className="text-xs font-medium mt-1 truncate text-slate-500">
                         Ôn thi thông minh
                     </p>
                 </div>
@@ -55,7 +55,7 @@ export default function Sidebar({ width }: SidebarProps) {
                         to={to}
                         end={to === "/"}
                         className={({ isActive }) =>
-                            `flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-[14px] transition-all duration-150 ${
+                            `flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-sm transition-all duration-150 ${
                                 isActive
                                     ? "bg-emerald-50 text-emerald-700 shadow-sm border border-emerald-100/50"
                                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
@@ -64,7 +64,11 @@ export default function Sidebar({ width }: SidebarProps) {
                     >
                         {({ isActive }) => (
                             <>
-                                <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className="shrink-0" />
+                                <Icon
+                                    size={18}
+                                    strokeWidth={isActive ? 2.5 : 2}
+                                    className="shrink-0"
+                                />
                                 <span className={`truncate ${isActive ? "font-bold" : ""}`}>
                                     {label}
                                 </span>
@@ -82,32 +86,18 @@ export default function Sidebar({ width }: SidebarProps) {
                 <div className="rounded-2xl px-4 py-3 bg-emerald-50 border border-emerald-100">
                     <div className="flex items-center gap-1.5 mb-1.5">
                         <Sparkles size={12} className="text-emerald-600" />
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                        <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">
                             Động lực hôm nay
                         </p>
                     </div>
-                    <p className="text-emerald-900/80 text-[12px] leading-relaxed font-medium">
+                    <p className="text-emerald-900/80 text-xs leading-relaxed font-medium">
                         Mỗi phút ôn bài là một bước gần hơn đến thành công!
                     </p>
                 </div>
             </div>
 
             {/* User */}
-            <div className="px-4 py-4 border-t border-slate-100">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-black bg-slate-100 text-slate-700">
-                        H
-                    </div>
-                    <div className="min-w-0 flex-1">
-                        <p className="text-slate-700 text-[13px] truncate font-bold">
-                            Hạ
-                        </p>
-                        <p className="text-slate-400 text-[11px] font-medium truncate">
-                            Học viên chăm chỉ
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <div className="px-1 py-1"></div>
         </aside>
     );
 }

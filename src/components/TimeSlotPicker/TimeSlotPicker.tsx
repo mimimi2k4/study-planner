@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { AlertCircle, Clock, RefreshCw, Save } from "lucide-react";
+import { AlertCircle, Clock, RefreshCw, Save, Check } from "lucide-react";
 import type { TimeSlotPickerProps } from "./types";
 import { ZONE, DAYS, DAYS_SHORT } from "./constants";
 import {
@@ -89,11 +89,11 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
                 {/* Legend */}
                 <div className="ml-auto flex items-center gap-4 text-xs font-bold text-slate-500">
                     <span className="flex items-center gap-1.5">
-                        <span className="w-3.5 h-3.5 rounded-md bg-slate-50 border border-slate-200" />
+                        <span className="w-3.5 h-3.5 rounded bg-slate-50 border border-slate-200" />
                         Trống
                     </span>
                     <span className="flex items-center gap-1.5">
-                        <span className="w-3.5 h-3.5 rounded-md bg-emerald-500" />
+                        <span className="w-3.5 h-3.5 rounded bg-emerald-500" />
                         Đã chọn
                     </span>
                 </div>
@@ -141,7 +141,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
                                     >
                                         <div className="flex items-center justify-end pr-3 border-r border-slate-200 bg-slate-50">
                                             {showLabel && (
-                                                <span className="text-[11px] font-bold text-slate-500">
+                                                <span className="text-xs font-bold text-slate-500">
                                                     {slotToTime(row)}
                                                 </span>
                                             )}
@@ -183,7 +183,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
             <div className="flex items-center gap-3">
                 <button
                     onClick={handleSave}
-                    className="btn btn-primary flex items-center gap-2.5 text-[15px]"
+                    className="btn btn-primary flex items-center gap-2.5 text-base"
                     style={{
                         padding: "14px 32px",
                         borderRadius: 12,
@@ -191,8 +191,8 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
                         boxShadow: saved ? "none" : undefined,
                     }}
                 >
-                    <Save size={18} />
-                    {saved ? "✓ Đã lưu thành công!" : "Lưu thời gian rảnh"}
+                    {saved ? <Check size={18} /> : <Save size={18} />}
+                    {saved ? "Đã lưu thành công!" : "Lưu thời gian rảnh"}
                 </button>
                 <button
                     onClick={() => {
@@ -200,7 +200,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
                         setSaved(false);
                         setError("");
                     }}
-                    className="flex items-center gap-2 font-bold rounded-xl transition-all text-[15px] bg-white text-slate-500 border border-slate-200 hover:bg-slate-50 hover:text-slate-700"
+                    className="flex items-center gap-2 font-bold rounded-xl transition-all text-base bg-white text-slate-500 border border-slate-200 hover:bg-slate-50 hover:text-slate-700"
                     style={{ padding: "14px 24px" }}
                 >
                     <RefreshCw size={16} /> Đặt lại
@@ -217,7 +217,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
                                 Tóm tắt lịch rảnh
                             </h3>
                             <p className="text-slate-500 text-sm mt-0.5 font-medium">
-                                {current.length} khung giờ — {hours.toFixed(1)} giờ/tuần
+                                {current.length} khung giờ - {hours.toFixed(1)} giờ/tuần
                             </p>
                         </div>
                     </div>
