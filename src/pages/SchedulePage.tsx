@@ -4,6 +4,7 @@ import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot }
 import { generateSchedule } from "../utils/scheduler";
 import type { ScheduleWarning } from "../types";
 import PageHeader from "../components/PageHeader";
+import { Calendar } from "lucide-react";
 import ScheduleView from "../components/ScheduleView/ScheduleView";
 import { usePlanManager } from "../hooks/usePlanManager";
 
@@ -44,7 +45,13 @@ export default function SchedulePage({
 
     // Recalculate warnings when plan changes (nếu chưa edit tay)
     useEffect(() => {
-        if (plan && !plan.manualEdited && tasks.length > 0 && freeSlots.length > 0 && exams.length > 0) {
+        if (
+            plan &&
+            !plan.manualEdited &&
+            tasks.length > 0 &&
+            freeSlots.length > 0 &&
+            exams.length > 0
+        ) {
             const { warnings: w } = generateSchedule(tasks, freeSlots, exams);
             setWarnings(w);
         }
@@ -88,13 +95,18 @@ export default function SchedulePage({
             )}
 
             <PageHeader
-                emoji="📅"
+                icon={Calendar}
                 title="Lịch học"
                 subtitle={
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
-                        <span className="text-slate-500">Xem và quản lý thời khóa biểu học tập của bạn</span>
+                        <span className="text-slate-500">
+                            Xem và quản lý thời khóa biểu học tập của bạn
+                        </span>
                         {plan?.manualEdited && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200" title="Lịch này sẽ không bị ghi đè tự động trừ khi bạn Tạo lại lịch">
+                            <span
+                                className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200"
+                                title="Lịch này sẽ không bị ghi đè tự động trừ khi bạn Tạo lại lịch"
+                            >
                                 ✍️ Đã chỉnh sửa thủ công
                             </span>
                         )}
@@ -103,7 +115,11 @@ export default function SchedulePage({
                 action={
                     <div className="flex gap-2">
                         {canGenerate && !plan && (
-                            <button onClick={doRegenerate} className="btn btn-primary" style={{ borderRadius: 12 }}>
+                            <button
+                                onClick={doRegenerate}
+                                className="btn btn-primary"
+                                style={{ borderRadius: 12 }}
+                            >
                                 ✨ Tạo lịch học
                             </button>
                         )}

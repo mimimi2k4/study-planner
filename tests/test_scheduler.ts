@@ -21,7 +21,10 @@ function runTests() {
     // ==========================================
     const testDate = new Date("2026-05-25T00:00:00"); // 25/05/2026 midnight local
     const formatted = formatDate(testDate);
-    assert(formatted === "2026-05-25", `formatDate cục bộ phải trả về "2026-05-25", thực tế: "${formatted}"`);
+    assert(
+        formatted === "2026-05-25",
+        `formatDate cục bộ phải trả về "2026-05-25", thực tế: "${formatted}"`
+    );
 
     // ==========================================
     // TEST CASE 2: Sắp xếp EDF (Earliest Deadline First) & Tie-breakers
@@ -118,7 +121,8 @@ function runTests() {
     }
 
     assert(
-        JSON.stringify(uniqueTaskOrder) === JSON.stringify(["task-A2", "task-A3", "task-A1", "task-B1"]),
+        JSON.stringify(uniqueTaskOrder) ===
+            JSON.stringify(["task-A2", "task-A3", "task-A1", "task-B1"]),
         `Thứ tự EDF xếp lịch thực tế: ${JSON.stringify(uniqueTaskOrder)}`
     );
 
@@ -137,32 +141,58 @@ function runTests() {
     //   + Thứ 4 (27/05) còn 120 phút rảnh (19:00 - 21:00) -> xếp nốt chunk 1 10m của task-A1 từ 19:00 - 19:10. Cursor Thứ 4 = 19:15.
     // - task-B1 (60m) xếp vào Thứ 4 từ 19:15 - 20:15. Cursor Thứ 4 = 20:20.
 
-    const slotsA2 = result.plan.slots.filter(s => s.taskId === "task-A2");
-    
+    const slotsA2 = result.plan.slots.filter((s) => s.taskId === "task-A2");
+
     // Kiểm tra task-A2 có đúng 2 slots (đã bị split)
     assert(slotsA2.length === 2, `task-A2 phải bị chia làm 2 slots, thực tế: ${slotsA2.length}`);
-    
+
     // Kiểm tra thông tin chi tiết từng chunk của task-A2
-    assert(slotsA2[0].date === "2026-05-25" && slotsA2[0].startTime === "19:00" && slotsA2[0].endTime === "21:00", 
-        "Chunk 0 của task-A2 phải xếp vào Thứ 2 từ 19:00 đến 21:00");
-    assert(slotsA2[1].date === "2026-05-26" && slotsA2[1].startTime === "19:00" && slotsA2[1].endTime === "19:30", 
-        "Chunk 1 của task-A2 phải xếp vào Thứ 3 từ 19:00 đến 19:30");
+    assert(
+        slotsA2[0].date === "2026-05-25" &&
+            slotsA2[0].startTime === "19:00" &&
+            slotsA2[0].endTime === "21:00",
+        "Chunk 0 của task-A2 phải xếp vào Thứ 2 từ 19:00 đến 21:00"
+    );
+    assert(
+        slotsA2[1].date === "2026-05-26" &&
+            slotsA2[1].startTime === "19:00" &&
+            slotsA2[1].endTime === "19:30",
+        "Chunk 1 của task-A2 phải xếp vào Thứ 3 từ 19:00 đến 19:30"
+    );
 
     // Kiểm tra các task còn lại có được xếp đúng vị trí nối tiếp (có tính break 5 phút)
-    const slotA3 = result.plan.slots.find(s => s.taskId === "task-A3");
-    assert(slotA3 !== undefined && slotA3.date === "2026-05-26" && slotA3.startTime === "19:35" && slotA3.endTime === "20:05",
-        "task-A3 phải được xếp vào Thứ 3 từ 19:35 đến 20:05 (đã tính 5 phút nghỉ)");
+    const slotA3 = result.plan.slots.find((s) => s.taskId === "task-A3");
+    assert(
+        slotA3 !== undefined &&
+            slotA3.date === "2026-05-26" &&
+            slotA3.startTime === "19:35" &&
+            slotA3.endTime === "20:05",
+        "task-A3 phải được xếp vào Thứ 3 từ 19:35 đến 20:05 (đã tính 5 phút nghỉ)"
+    );
 
-    const slotsA1 = result.plan.slots.filter(s => s.taskId === "task-A1");
+    const slotsA1 = result.plan.slots.filter((s) => s.taskId === "task-A1");
     assert(slotsA1.length === 2, `task-A1 phải bị chia làm 2 slots, thực tế: ${slotsA1.length}`);
-    assert(slotsA1[0].date === "2026-05-26" && slotsA1[0].startTime === "20:10" && slotsA1[0].endTime === "21:00",
-        "Chunk 0 của task-A1 phải xếp vào Thứ 3 từ 20:10 đến 21:00");
-    assert(slotsA1[1].date === "2026-05-27" && slotsA1[1].startTime === "19:00" && slotsA1[1].endTime === "19:20",
-        "Chunk 1 của task-A1 phải xếp vào Thứ 4 từ 19:00 đến 19:20 (được snap từ 10m lên 20m)");
+    assert(
+        slotsA1[0].date === "2026-05-26" &&
+            slotsA1[0].startTime === "20:10" &&
+            slotsA1[0].endTime === "21:00",
+        "Chunk 0 của task-A1 phải xếp vào Thứ 3 từ 20:10 đến 21:00"
+    );
+    assert(
+        slotsA1[1].date === "2026-05-27" &&
+            slotsA1[1].startTime === "19:00" &&
+            slotsA1[1].endTime === "19:20",
+        "Chunk 1 của task-A1 phải xếp vào Thứ 4 từ 19:00 đến 19:20 (được snap từ 10m lên 20m)"
+    );
 
-    const slotB1 = result.plan.slots.find(s => s.taskId === "task-B1");
-    assert(slotB1 !== undefined && slotB1.date === "2026-05-27" && slotB1.startTime === "19:25" && slotB1.endTime === "20:25",
-        "task-B1 phải được xếp vào Thứ 4 từ 19:25 đến 20:25 (đã tính 5 phút nghỉ sau slot A1 đã snap)");
+    const slotB1 = result.plan.slots.find((s) => s.taskId === "task-B1");
+    assert(
+        slotB1 !== undefined &&
+            slotB1.date === "2026-05-27" &&
+            slotB1.startTime === "19:25" &&
+            slotB1.endTime === "20:25",
+        "task-B1 phải được xếp vào Thứ 4 từ 19:25 đến 20:25 (đã tính 5 phút nghỉ sau slot A1 đã snap)"
+    );
 
     // ==========================================
     // TEST CASE 4: Quá tải (Overflow) & Cảnh báo (Warnings)
@@ -188,7 +218,7 @@ function runTests() {
     // - task-A3 thiếu 30m
     // - task-A1 thiếu 60m
     // - task-B1 thiếu 60m
-    
+
     const tasksWithOverflow: StudyTask[] = [
         ...tasks,
         {
@@ -201,29 +231,50 @@ function runTests() {
             priority: "high",
             status: "pending",
             color: "#ff0000",
-        }
+        },
     ];
 
-    const resultOverflow = generateSchedule(tasksWithOverflow, freeSlots, exams, new Date("2026-05-25"));
-    
+    const resultOverflow = generateSchedule(
+        tasksWithOverflow,
+        freeSlots,
+        exams,
+        new Date("2026-05-25")
+    );
+
     // Kiểm tra danh sách overflow
     if (resultOverflow.overflow.length !== 3) {
-        console.error("Danh sách overflow thực tế:", resultOverflow.overflow.map(t => `${t.id}: còn thiếu ${t.estimatedMinutes}m`));
+        console.error(
+            "Danh sách overflow thực tế:",
+            resultOverflow.overflow.map((t) => `${t.id}: còn thiếu ${t.estimatedMinutes}m`)
+        );
     }
-    assert(resultOverflow.overflow.length === 3, `Số lượng task bị overflow thực tế: ${resultOverflow.overflow.length}`);
-    
-    const hasA3 = resultOverflow.overflow.some(t => t.id === "task-A3" && t.estimatedMinutes === 30);
-    const hasA1 = resultOverflow.overflow.some(t => t.id === "task-A1" && t.estimatedMinutes === 60);
-    const hasB1 = resultOverflow.overflow.some(t => t.id === "task-B1" && t.estimatedMinutes === 60);
-    
+    assert(
+        resultOverflow.overflow.length === 3,
+        `Số lượng task bị overflow thực tế: ${resultOverflow.overflow.length}`
+    );
+
+    const hasA3 = resultOverflow.overflow.some(
+        (t) => t.id === "task-A3" && t.estimatedMinutes === 30
+    );
+    const hasA1 = resultOverflow.overflow.some(
+        (t) => t.id === "task-A1" && t.estimatedMinutes === 60
+    );
+    const hasB1 = resultOverflow.overflow.some(
+        (t) => t.id === "task-B1" && t.estimatedMinutes === 60
+    );
+
     assert(hasA3, "task-A3 phải bị overflow 30 phút");
     assert(hasA1, "task-A1 phải bị overflow 60 phút");
     assert(hasB1, "task-B1 phải bị overflow 60 phút");
 
     // Kiểm tra cảnh báo trễ hạn
-    const hasInsufficientTimeWarning = resultOverflow.warnings.some(w => w.type === "insufficient_time");
+    const hasInsufficientTimeWarning = resultOverflow.warnings.some(
+        (w) => w.type === "insufficient_time"
+    );
     assert(hasInsufficientTimeWarning, "Phải tồn tại cảnh báo insufficient_time");
-    console.log(`Cảnh báo thực tế: ${resultOverflow.warnings.find(w => w.type === "insufficient_time")?.message}`);
+    console.log(
+        `Cảnh báo thực tế: ${resultOverflow.warnings.find((w) => w.type === "insufficient_time")?.message}`
+    );
 
     // ==========================================
     // TEST CASE 5: Snap-to-Min for small remaining chunks
@@ -258,17 +309,33 @@ function runTests() {
         { day: 1, startTime: "19:00", endTime: "20:00" }, // Thứ 3: 60 phút
     ];
 
-    const test5Result = generateSchedule(test5Tasks, test5FreeSlots, test5Exams, new Date("2026-05-25"));
+    const test5Result = generateSchedule(
+        test5Tasks,
+        test5FreeSlots,
+        test5Exams,
+        new Date("2026-05-25")
+    );
 
-    const slotsLiskov = test5Result.plan.slots.filter(s => s.taskId === "task-liskov");
-    
-    assert(slotsLiskov.length === 2, `task-liskov phải bị chia làm 2 slots, thực tế: ${slotsLiskov.length}`);
-    assert(slotsLiskov[0].date === "2026-05-25" && slotsLiskov[0].startTime === "19:00" && slotsLiskov[0].endTime === "19:20",
-        `Slot 1 của task-liskov phải dài 20 phút (19:00 - 19:20), thực tế: ${slotsLiskov[0]?.startTime} - ${slotsLiskov[0]?.endTime}`);
-    
+    const slotsLiskov = test5Result.plan.slots.filter((s) => s.taskId === "task-liskov");
+
+    assert(
+        slotsLiskov.length === 2,
+        `task-liskov phải bị chia làm 2 slots, thực tế: ${slotsLiskov.length}`
+    );
+    assert(
+        slotsLiskov[0].date === "2026-05-25" &&
+            slotsLiskov[0].startTime === "19:00" &&
+            slotsLiskov[0].endTime === "19:20",
+        `Slot 1 của task-liskov phải dài 20 phút (19:00 - 19:20), thực tế: ${slotsLiskov[0]?.startTime} - ${slotsLiskov[0]?.endTime}`
+    );
+
     // Với logic Snap-to-Min, slot thứ hai phải được làm tròn lên thành 20 phút (19:00 - 19:20) thay vì chỉ có 5 phút (19:00 - 19:05)
-    assert(slotsLiskov[1].date === "2026-05-26" && slotsLiskov[1].startTime === "19:00" && slotsLiskov[1].endTime === "19:20",
-        `Slot 2 của task-liskov phải dài 20 phút nhờ Snap-to-Min, thực tế: ${slotsLiskov[1]?.startTime} - ${slotsLiskov[1]?.endTime}`);
+    assert(
+        slotsLiskov[1].date === "2026-05-26" &&
+            slotsLiskov[1].startTime === "19:00" &&
+            slotsLiskov[1].endTime === "19:20",
+        `Slot 2 của task-liskov phải dài 20 phút nhờ Snap-to-Min, thực tế: ${slotsLiskov[1]?.startTime} - ${slotsLiskov[1]?.endTime}`
+    );
 
     // ==========================================
     // TEST CASE 6: Bỏ qua slot quá khứ và tôn trọng thời gian chuẩn bị (Preparation Buffer)
@@ -302,19 +369,22 @@ function runTests() {
     ];
 
     // Slot Thứ 4 (day: 2)
-    const test6FreeSlots: FreeSlot[] = [
-        { day: 2, startTime: "19:00", endTime: "21:00" },
-    ];
+    const test6FreeSlots: FreeSlot[] = [{ day: 2, startTime: "19:00", endTime: "21:00" }];
 
     // Khởi tạo thời gian hiện tại là 19:30 Thứ 4 (2026-05-27)
     const currentDateTime = new Date("2026-05-27T19:30:00");
     const test6Result = generateSchedule(test6Tasks, test6FreeSlots, test6Exams, currentDateTime);
 
-    const slotsPrep = test6Result.plan.slots.filter(s => s.taskId === "task-prep");
-    assert(slotsPrep.length === 1, `task-prep phải được xếp lịch vào hôm nay, thực tế: ${slotsPrep.length}`);
+    const slotsPrep = test6Result.plan.slots.filter((s) => s.taskId === "task-prep");
+    assert(
+        slotsPrep.length === 1,
+        `task-prep phải được xếp lịch vào hôm nay, thực tế: ${slotsPrep.length}`
+    );
     assert(slotsPrep[0].date === "2026-05-27", "Nhiệm vụ phải được xếp vào ngày hôm nay");
-    assert(slotsPrep[0].startTime === "19:45" && slotsPrep[0].endTime === "20:15",
-        `Slot học phải bắt đầu từ 19:45 (sau 15m chuẩn bị từ 19:30), thực tế: ${slotsPrep[0]?.startTime} - ${slotsPrep[0]?.endTime}`);
+    assert(
+        slotsPrep[0].startTime === "19:45" && slotsPrep[0].endTime === "20:15",
+        `Slot học phải bắt đầu từ 19:45 (sau 15m chuẩn bị từ 19:30), thực tế: ${slotsPrep[0]?.startTime} - ${slotsPrep[0]?.endTime}`
+    );
 
     console.log("=== TẤT CẢ CÁC BÀI KIỂM THỬ ĐÃ THÀNH CÔNG! ===");
 }

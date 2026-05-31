@@ -1,139 +1,148 @@
 import { ArrowRight, BookOpen, Clock, Calendar, Award } from "lucide-react";
-
 import { Link } from "react-router-dom";
 import type { ExamInfo, Milestone, ScheduleSlot } from "../../types";
+import type { LucideIcon } from "lucide-react";
 
 interface OverviewCardsProps {
-  completionRate: number;
-  nextExam?: ExamInfo;
-  nextCountdown: { daysLeft: number; isOverdue: boolean } | null;
-  nearestMilestone?: Milestone;
-  todaySlots: ScheduleSlot[];
-  /**
-   * Whether the user has completed the required data entry steps.
-   * If false, the component shows the onboarding three‑step UI.
-   */
-  hasData: boolean;
-  /** Steps used for onboarding – reuse the same array from DashboardPage */
-  steps: {
-    label: string;
-    desc: string;
-    to: string;
-    emoji: string;
-    key: string;
-  }[];
+    completionRate: number;
+    nextExam?: ExamInfo;
+    nextCountdown: { daysLeft: number; isOverdue: boolean } | null;
+    nearestMilestone?: Milestone;
+    todaySlots: ScheduleSlot[];
+    hasData: boolean;
+    steps: {
+        label: string;
+        desc: string;
+        to: string;
+        icon: LucideIcon;
+        key: string;
+    }[];
 }
 
 export default function OverviewCards({
-  completionRate,
-  nextExam,
-  nextCountdown,
-  nearestMilestone,
-  todaySlots,
-  hasData,
-  steps,
+    completionRate,
+    nextExam,
+    nextCountdown,
+    nearestMilestone,
+    todaySlots,
+    hasData,
+    steps,
 }: OverviewCardsProps) {
+    if (!hasData) {
+        const onboarding = steps.slice(0, 3);
+        return (
+            <div className="card rounded-2xl overflow-hidden shadow-sm">
+                <div className="px-6 py-5 flex items-center gap-3 bg-slate-50 border-b border-slate-100">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white border border-slate-200 text-slate-700">
+                        <BookOpen size={20} />
+                    </div>
+                    <h2 className="font-bold text-slate-800 text-lg">Bắt đầu - 3 bước thiết lập</h2>
+                </div>
+                <div className="p-5 flex flex-col gap-3">
+                    {onboarding.map((step, i) => {
+                        const Icon = step.icon;
+                        return (
+                            <Link
+                                key={i}
+                                to={step.to}
+                                className="flex items-center gap-4 rounded-xl p-4 transition-all duration-150 group bg-white border border-slate-200 hover:border-slate-300 shadow-sm"
+                            >
+                                <div className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 group-hover:text-emerald-600 group-hover:bg-emerald-50 group-hover:border-emerald-100 transition-colors">
+                                    <Icon size={20} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-bold text-base text-slate-900">
+                                        {step.label}
+                                    </p>
+                                    <p className="text-slate-500 text-sm mt-0.5">{step.desc}</p>
+                                </div>
+                                <ArrowRight
+                                    size={18}
+                                    className="text-slate-300 group-hover:text-emerald-500 shrink-0 transition-colors"
+                                />
+                            </Link>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    }
 
-  if (!hasData) {
-    // Show onboarding (first three steps)
-    const onboarding = steps.slice(0, 3);
+    const formatRange = (slot: ScheduleSlot) => `${slot.startTime}–${slot.endTime}`;
+
     return (
-      <div className="card rounded-3xl overflow-hidden">
-        <div className="px-6 py-5 flex items-center gap-4" style={{ background: "linear-gradient(135deg, #f5f0ff, #ede9fe)" }}>
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.6)" }}>
-            <BookOpen size={20} className="text-violet-600" />
-          </div>
-          <h2 className="font-black text-slate-800 text-xl">Bắt đầu – 3 bước thiết lập</h2>
-        </div>
-        <div className="p-6" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {onboarding.map((step, i) => (
-            <Link
-              key={i}
-              to={step.to}
-              className="flex items-center gap-3.5 rounded-2xl transition-all duration-150 group"
-              style={{
-                padding: "14px 16px",
-                background: "#faf8ff",
-                border: "1.5px solid #ede9fe",
-                textDecoration: "none",
-              }}
-            >
-              <span className="text-xl shrink-0 leading-none">{step.emoji}</span>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-base" style={{ color: "#1e293b" }}>
-                  {step.label}
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {/* Countdown card */}
+            {nextExam && nextCountdown && !nextCountdown.isOverdue && (
+                <div className="card rounded-2xl p-5 border border-orange-200 bg-orange-50 shadow-sm col-span-1 md:col-span-2 lg:col-span-1">
+                    <div className="flex items-center gap-2.5 mb-3">
+                        <Clock size={18} className="text-orange-600" />
+                        <h3 className="font-bold text-orange-900 text-sm">
+                            {nextExam.subjectName}
+                        </h3>
+                    </div>
+                    <p className="text-3xl font-black text-orange-700 mt-1">
+                        {nextCountdown.daysLeft} ngày
+                    </p>
+                    <p className="text-orange-600/80 text-xs font-semibold mt-1 uppercase tracking-wide">
+                        Đếm ngược thi
+                    </p>
+                </div>
+            )}
+
+            {/* Completion rate card */}
+            <div className="card rounded-2xl p-5 border border-emerald-200 bg-emerald-50 shadow-sm">
+                <div className="flex items-center gap-2.5 mb-3">
+                    <BookOpen size={18} className="text-emerald-600" />
+                    <h3 className="font-bold text-emerald-900 text-sm">Tiến độ tổng</h3>
+                </div>
+                <p className="text-3xl font-black text-emerald-700 mt-1">{completionRate}%</p>
+                <p className="text-emerald-600/80 text-xs font-semibold mt-1 uppercase tracking-wide">
+                    Hoàn thành
                 </p>
-                <p className="text-slate-500 text-sm mt-1">{step.desc}</p>
-              </div>
-              <ArrowRight size={15} className="text-violet-300 group-hover:text-violet-500 shrink-0 transition-colors" />
-            </Link>
-          ))}
+            </div>
+
+            {/* Today schedule */}
+            <div className="card rounded-2xl p-5 border border-slate-200 bg-white shadow-sm md:col-span-2">
+                <div className="flex items-center gap-2.5 mb-3 border-b border-slate-100 pb-3">
+                    <Calendar size={18} className="text-slate-600" />
+                    <h3 className="font-bold text-slate-800 text-sm">Lịch học hôm nay</h3>
+                </div>
+                {todaySlots.length > 0 ? (
+                    <ul className="space-y-3 mt-3">
+                        {todaySlots.map((slot) => (
+                            <li key={slot.id} className="flex justify-between items-center text-sm">
+                                <span className="font-semibold text-slate-700 truncate mr-4">
+                                    {slot.subjectName}
+                                </span>
+                                <span className="font-medium text-slate-500 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 shrink-0">
+                                    {formatRange(slot)}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-slate-500 text-sm mt-3 font-medium">
+                        Không có lịch học hôm nay
+                    </p>
+                )}
+            </div>
+
+            {/* Milestone card */}
+            {nearestMilestone && (
+                <div className="card rounded-2xl p-5 border border-blue-200 bg-blue-50 shadow-sm md:col-span-2 lg:col-span-4">
+                    <div className="flex items-center gap-2.5 mb-2">
+                        <Award size={18} className="text-blue-600" />
+                        <h3 className="font-bold text-blue-900 text-sm">Milestone gần nhất</h3>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between">
+                        <p className="font-bold text-blue-800 text-lg">{nearestMilestone.name}</p>
+                        <p className="text-sm font-semibold text-blue-600/80 uppercase tracking-wide bg-blue-100 px-2.5 py-1 rounded-lg">
+                            Hạn: {nearestMilestone.deadlineDate}
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
-      </div>
     );
-  }
-
-  // Helper to format time range
-  const formatRange = (slot: ScheduleSlot) => `${slot.startTime}–${slot.endTime}`;
-
-  return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-      {/* Countdown card – ưu tiên hiển thị ở trên */}
-      {nextExam && nextCountdown && !nextCountdown.isOverdue && (
-        <div className="card rounded-3xl p-5" style={{ background: "linear-gradient(135deg, #fffbeb, #fef3c7)" }}>
-          <div className="flex items-center gap-3 mb-2">
-            <Clock size={20} className="text-amber-500" />
-            <h3 className="font-black text-slate-800 text-lg">{nextExam.subjectName} – còn lại</h3>
-          </div>
-          <p className="text-4xl font-black text-amber-800">
-            {nextCountdown.daysLeft} ngày
-          </p>
-        </div>
-      )}
-
-      {/* Today schedule */}
-      <div className="card rounded-3xl p-5" style={{ background: "linear-gradient(135deg, #a7f3d0, #99f6e4)" }}>
-        <div className="flex items-center gap-3 mb-2">
-          <Calendar size={20} className="text-emerald-600" />
-          <h3 className="font-black text-slate-800 text-lg">Lịch học hôm nay</h3>
-        </div>
-        {todaySlots.length > 0 ? (
-          <ul className="space-y-2 text-sm">
-            {todaySlots.map((slot) => (
-              <li key={slot.id} className="flex justify-between text-slate-800">
-                <span>{slot.subjectName}</span>
-                <span className="font-medium">{formatRange(slot)}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-slate-600">Không có lịch học hôm nay</p>
-        )}
-      </div>
-
-      {/* Milestone card */}
-      {nearestMilestone && (
-        <div className="card rounded-3xl p-5" style={{ background: "linear-gradient(135deg, #fff1f2, #fecdd3)" }}>
-          <div className="flex items-center gap-3 mb-2">
-            <Award size={20} className="text-pink-600" />
-            <h3 className="font-black text-slate-800 text-lg">Milestone gần nhất</h3>
-          </div>
-          <p className="font-medium text-slate-800">{nearestMilestone.name}</p>
-          <p className="text-sm text-slate-600">Hạn: {nearestMilestone.deadlineDate}</p>
-        </div>
-      )}
-
-      {/* Completion rate card */}
-      <div className="card rounded-3xl p-5" style={{ background: "linear-gradient(135deg, #fde68a, #fcd34d)" }}>
-        <div className="flex items-center gap-3 mb-2">
-          <BookOpen size={20} className="text-amber-600" />
-          <h3 className="font-black text-slate-800 text-lg">Tiến độ</h3>
-        </div>
-        <p className="text-4xl font-black text-amber-800">
-          {completionRate}%
-        </p>
-        <p className="text-slate-600">Nhiệm vụ đã hoàn thành</p>
-      </div>
-    </div>
-  );
 }

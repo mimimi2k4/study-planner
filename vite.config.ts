@@ -1,4 +1,5 @@
-import { defineConfig } from "vite";
+/// <reference types="vitest" />
+import { defineConfig } from "vitest/config";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
@@ -6,4 +7,9 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
     plugins: [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()],
     base: "/study-planner/",
+    test: {
+        environment: "jsdom",
+        setupFiles: "./tests/setup.ts",
+        globals: true,
+    },
 });

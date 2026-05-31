@@ -1,104 +1,106 @@
 import { useEffect, useState } from "react";
-import { getMilestones, saveMilestones, getExams } from "../utils/storage";
+import { getExams } from "../utils/storage";
+import type { Milestone } from "../types";
 
 // Khai báo kiểu dữ liệu cho thông báo trên màn hình
 export interface InAppNotif {
-  id: string;
-  title: string;
-  message: string;
-  type: "success" | "warning";
+    id: string;
+    title: string;
+    message: string;
+    type: "success" | "warning";
 }
 
-export function useAppNotification() {
-  const [permissionDenied, setPermissionDenied] = useState(false);
-  const [inAppNotifs, setInAppNotifs] = useState<InAppNotif[]>([]);
+export interface UseAppNotificationProps {
+    milestones: Milestone[];
+    setMilestones: React.Dispatch<React.SetStateAction<Milestone[]>>;
+}
 
-  // Hàm hiển thị thông báo nổi trên góc màn hình Web
-  const showInAppNotif = (title: string, message: string, type: "success" | "warning") => {
-    const newNotif = { id: Date.now().toString() + Math.random(), title, message, type };
-    setInAppNotifs((prev) => [...prev, newNotif]);
-    
-    // Tự động ẩn thông báo sau 5 giây
-    setTimeout(() => {
-      setInAppNotifs((prev) => prev.filter((n) => n.id !== newNotif.id));
-    }, 5000);
-  };
+export function useAppNotification({ milestones, setMilestones }: UseAppNotificationProps) {
+    const [permissionDenied, setPermissionDenied] = useState(false);
+    const [inAppNotifs, setInAppNotifs] = useState<InAppNotif[]>([]);
 
-  useEffect(() => {
-    const requestNotificationPermission = async () => {
-      if (!("Notification" in window)) return false;
-      if (Notification.permission === "granted") return true;
-      if (Notification.permission !== "denied") {
-        const permission = await Notification.requestPermission();
-        return permission === "granted";
-      }
-      return false;
+    // Hàm hiển thị thông báo nổi trên góc màn hình Web
+    const showInAppNotif = (title: string, message: string, type: "success" | "warning") => {
+        const newNotif = { id: Date.now().toString() + Math.random(), title, message, type };
+        setInAppNotifs((prev) => [...prev, newNotif]);
+
+        // Tự động ẩn thông báo sau 5 giây
+        setTimeout(() => {
+            setInAppNotifs((prev) => prev.filter((n) => n.id !== newNotif.id));
+        }, 5000);
     };
 
-    const checkAndNotify = async () => {
-      const hasPermission = await requestNotificationPermission();
-      setPermissionDenied(!hasPermission);
+    useEffect(() => {
+        const requestNotificationPermission = async () => {
+            if (!("Notification" in window)) return false;
+            if (Notification.permission === "granted") return true;
+            if (Notification.permission !== "denied") {
+                const permission = await Notification.requestPermission();
+                return permission === "granted";
+            }
+            return false;
+        };
 
-      const todayStr = new Date().toISOString().split("T")[0];
-      const todayStorageKey = `notified_${todayStr}`;
-      
-      if (localStorage.getItem(todayStorageKey)) return;
+        const checkAndNotify = async () => {
+            const hasPermission = await requestNotificationPermission();
+            setPermissionDenied(!hasPermission);
 
-      let hasSentNotification = false;
+            const todayStr = new Date().toISOString().split("T")[0];
+            const todayStorageKey = `notified_${todayStr}`;
 
-      // 1. Xử lý Milestone
-      const milestones = getMilestones();
-      let isMilestoneUpdated = false;
-      const updatedMilestones = milestones.map((m) => {
-        if (m.deadlineDate === todayStr && m.status === "chưa đạt") {
-          
-          // Gửi System Notification (nếu được cấp quyền)
-          if (hasPermission) {
-            new Notification("🎉 Chúc mừng!", { body: `Bạn đã đạt mốc: ${m.name}` });
-          }
-          // LUÔN LUÔN GỬI In-App Notification trên giao diện
-          showInAppNotif("Chúc mừng đạt mốc! 🎉", `Hoàn thành: ${m.name}`, "success");
+            if (localStorage.getItem(todayStorageKey)) return;
 
-          isMilestoneUpdated = true;
-          hasSentNotification = true;
-          return { ...m, status: "đã đạt" as const };
-        }
-        return m;
-      });
+            let hasSentNotification = false;
 
-      if (isMilestoneUpdated) {
-        saveMilestones(updatedMilestones);
-        // PHÓNG SỰ KIỆN: Báo cho React biết localStorage đã thay đổi để vẽ lại UI ngay lập tức
-        window.dispatchEvent(new Event("milestones-updated"));
-      }
+            // 1. Xử lý Milestone
+            let isMilestoneUpdated = false;
+            const updatedMilestones = milestones.map((m) => {
+                if (m.deadlineDate === todayStr && m.status === "chưa đạt") {
+                    // Gửi System Notification (nếu được cấp quyền)
+                    if (hasPermission) {
+                        new Notification("🎉 Chúc mừng!", { body: `Bạn đã đạt mốc: ${m.name}` });
+                    }
+                    // LUÔN LUÔN GỬI In-App Notification trên giao diện
+                    showInAppNotif("Chúc mừng đạt mốc! 🎉", `Hoàn thành: ${m.name}`, "success");
 
-      // 2. Xử lý Lịch thi
-      const exams = getExams();
-      const todayMs = new Date(todayStr).getTime();
+                    isMilestoneUpdated = true;
+                    hasSentNotification = true;
+                    return { ...m, status: "đã đạt" as const };
+                }
+                return m;
+            });
 
-      exams.forEach((exam) => {
-        const examDateStr = exam.examDateTime.split("T")[0];
-        const examMs = new Date(examDateStr).getTime();
-        const diffDays = Math.ceil((examMs - todayMs) / (1000 * 60 * 60 * 24));
+            if (isMilestoneUpdated) {
+                setMilestones(updatedMilestones);
+            }
 
-        if (diffDays === 7 || diffDays === 3 || diffDays === 1) {
-          const msg = `Chỉ còn ${diffDays} ngày nữa là thi môn ${exam.subjectName}!`;
-          if (hasPermission) {
-            new Notification("⏰ Nhắc nhở lịch thi", { body: msg });
-          }
-          showInAppNotif("Sắp thi rồi! ⏰", msg, "warning");
-          hasSentNotification = true;
-        }
-      });
+            // 2. Xử lý Lịch thi
+            const exams = getExams();
+            const todayMs = new Date(todayStr).getTime();
 
-      if (hasSentNotification) {
-        localStorage.setItem(todayStorageKey, "true");
-      }
-    };
+            exams.forEach((exam) => {
+                const examDateStr = exam.examDateTime.split("T")[0];
+                const examMs = new Date(examDateStr).getTime();
+                const diffDays = Math.ceil((examMs - todayMs) / (1000 * 60 * 60 * 24));
 
-    checkAndNotify();
-  }, []);
+                if (diffDays === 7 || diffDays === 3 || diffDays === 1) {
+                    const msg = `Chỉ còn ${diffDays} ngày nữa là thi môn ${exam.subjectName}!`;
+                    if (hasPermission) {
+                        new Notification("⏰ Nhắc nhở lịch thi", { body: msg });
+                    }
+                    showInAppNotif("Sắp thi rồi! ⏰", msg, "warning");
+                    hasSentNotification = true;
+                }
+            });
 
-  // Trả về thêm state của InAppNotifs và hàm để đóng thủ công
-  return { permissionDenied, inAppNotifs, setInAppNotifs };
+            if (hasSentNotification) {
+                localStorage.setItem(todayStorageKey, "true");
+            }
+        };
+
+        checkAndNotify();
+    }, [milestones, setMilestones]);
+
+    // Trả về thêm state của InAppNotifs và hàm để đóng thủ công
+    return { permissionDenied, inAppNotifs, setInAppNotifs };
 }

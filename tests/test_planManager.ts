@@ -120,7 +120,12 @@ console.log("\n--- [delete_task] ---");
 console.log("\n--- [move_task] ---");
 
 {
-    const slot = makeSlot({ id: "slot-1", date: "2026-06-01", startTime: "09:00", endTime: "10:00" });
+    const slot = makeSlot({
+        id: "slot-1",
+        date: "2026-06-01",
+        startTime: "09:00",
+        endTime: "10:00",
+    });
     const plan = makePlan([slot]);
     const result = executePlanAction(
         "move_task",
@@ -134,7 +139,10 @@ console.log("\n--- [move_task] ---");
     assert(moved?.startTime === "14:00", "move_task cập nhật đúng startTime");
     assert(moved?.endTime === "15:30", "move_task cập nhật đúng endTime");
     assert(moved?.manualEdited === true, "move_task đánh dấu slot.manualEdited = true");
-    assert(result.success && result.newPlan?.manualEdited === true, "move_task đánh dấu plan.manualEdited = true");
+    assert(
+        result.success && result.newPlan?.manualEdited === true,
+        "move_task đánh dấu plan.manualEdited = true"
+    );
     // Immutability
     assert(plan.slots[0].date === "2026-06-01", "move_task không mutate slot gốc");
 }
@@ -148,7 +156,10 @@ console.log("\n--- [move_task] ---");
         []
     );
     assert(result.success === false, "move_task endTime < startTime → lỗi");
-    assert(!result.success && result.error.includes("kết thúc"), "move_task thông báo lỗi thời gian");
+    assert(
+        !result.success && result.error.includes("kết thúc"),
+        "move_task thông báo lỗi thời gian"
+    );
 }
 
 {
@@ -194,13 +205,21 @@ console.log("\n--- [add_task] ---");
     assert(added?.taskName === "Ôn tập: Chương 2", "add_task sao chép taskName");
     assert(added?.date === "2026-06-05", "add_task gắn đúng date");
     assert(added?.manualEdited === true, "add_task đánh dấu slot.manualEdited = true");
-    assert(result.success && result.newPlan?.manualEdited === true, "add_task đánh dấu plan.manualEdited = true");
+    assert(
+        result.success && result.newPlan?.manualEdited === true,
+        "add_task đánh dấu plan.manualEdited = true"
+    );
 }
 
 {
     // add_task với nhiều slot → kiểm tra thứ tự sắp xếp
     const task = makeTask({ id: "task-X" });
-    const existingSlot = makeSlot({ id: "slot-late", date: "2026-06-10", startTime: "10:00", endTime: "11:00" });
+    const existingSlot = makeSlot({
+        id: "slot-late",
+        date: "2026-06-10",
+        startTime: "10:00",
+        endTime: "11:00",
+    });
     const plan = makePlan([existingSlot]);
     const result = executePlanAction(
         "add_task",
@@ -210,7 +229,10 @@ console.log("\n--- [add_task] ---");
     );
     assert(result.success === true, "add_task sắp xếp — thành công");
     // Slot mới (ngày 05) phải đứng trước slot cũ (ngày 10)
-    assert(result.success && result.newPlan?.slots[0].date === "2026-06-05", "add_task giữ thứ tự slot theo ngày tăng dần");
+    assert(
+        result.success && result.newPlan?.slots[0].date === "2026-06-05",
+        "add_task giữ thứ tự slot theo ngày tăng dần"
+    );
 }
 
 {
@@ -269,7 +291,9 @@ console.log("\n--- [update_task_status] ---");
 
 {
     // Thiếu taskId
-    const result = executePlanAction("update_task_status", { status: "completed" }, null, [makeTask()]);
+    const result = executePlanAction("update_task_status", { status: "completed" }, null, [
+        makeTask(),
+    ]);
     assert(result.success === false, "update_task_status thiếu taskId → lỗi");
 }
 
@@ -282,7 +306,10 @@ console.log("\n--- [invalid action] ---");
     // @ts-expect-error test hành vi runtime
     const result = executePlanAction("unknown_action", {}, makePlan([]), []);
     assert(result.success === false, "Action không hợp lệ → lỗi");
-    assert(!result.success && result.error.includes("unknown_action"), "Thông báo lỗi chứa tên action sai");
+    assert(
+        !result.success && result.error.includes("unknown_action"),
+        "Thông báo lỗi chứa tên action sai"
+    );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

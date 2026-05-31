@@ -19,9 +19,15 @@ export interface PlanManagerDeps {
 }
 
 export type DispatchAction =
-    | { action: "add_task"; payload: { taskId: string; date: string; startTime: string; endTime: string } }
+    | {
+          action: "add_task";
+          payload: { taskId: string; date: string; startTime: string; endTime: string };
+      }
     | { action: "delete_task"; payload: { slotId: string } }
-    | { action: "move_task"; payload: { slotId: string; newDate: string; newStartTime: string; newEndTime: string } }
+    | {
+          action: "move_task";
+          payload: { slotId: string; newDate: string; newStartTime: string; newEndTime: string };
+      }
     | { action: "reset_auto"; payload?: Record<string, never> }
     | { action: "update_task_status"; payload: { taskId: string; status: StudyTask["status"] } };
 
@@ -47,7 +53,7 @@ export function usePlanManager({
 
             if (!result.success) {
                 if (onWarning) onWarning(result.error);
-                else alert(result.error);
+                else console.error(result.error);
                 return false;
             }
 

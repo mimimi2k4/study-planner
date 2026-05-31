@@ -17,24 +17,17 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
     const overdue = countdown?.isOverdue;
 
     return (
-        <div
-            className="rounded-2xl overflow-hidden flex transition-all duration-150"
-            style={{
-                border: "1.5px solid rgba(139,92,246,0.10)",
-                boxShadow: "0 2px 8px rgba(109,40,217,0.05)",
-                background: "#fff",
-            }}
-        >
+        <div className="rounded-2xl overflow-hidden flex transition-all duration-150 border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm">
             <div className="w-1.5 shrink-0" style={{ background: exam.color }} />
 
-            <div className="flex-1 px-5 py-5">
+            <div className="flex-1 px-5 py-4">
                 {/* Name + format badge */}
                 <div className="flex items-start justify-between gap-3">
-                    <p className="font-black text-slate-900 leading-snug" style={{ fontSize: 17 }}>
+                    <p className="font-bold text-slate-900 leading-snug" style={{ fontSize: 16 }}>
                         {exam.subjectName}
                     </p>
                     <span
-                        className="shrink-0 inline-flex items-center px-2.5 py-1 rounded-lg font-bold"
+                        className="shrink-0 inline-flex items-center px-2 py-1 rounded font-bold"
                         style={{ fontSize: 11, background: exam.color + "18", color: exam.color }}
                     >
                         {FORMAT_LABELS[exam.examFormat]}
@@ -42,17 +35,9 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                 </div>
 
                 {/* Info chips */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                    <span
-                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1"
-                        style={{
-                            fontSize: 14,
-                            fontWeight: 600,
-                            background: "#f1f5f9",
-                            color: "#334155",
-                        }}
-                    >
-                        <Clock size={13} />
+                <div className="mt-3 flex flex-wrap gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-semibold bg-slate-100 text-slate-700">
+                        <Clock size={14} />
                         {new Date(exam.examDateTime).toLocaleString("vi-VN", {
                             day: "2-digit",
                             month: "2-digit",
@@ -62,15 +47,13 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                         })}
                     </span>
                     <span
-                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1"
+                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-bold"
                         style={{
-                            fontSize: 14,
-                            fontWeight: 700,
-                            background: exam.color + "20",
+                            background: exam.color + "10",
                             color: exam.color,
                         }}
                     >
-                        <Target size={12} /> {exam.targetScore}/10
+                        <Target size={14} /> {exam.targetScore}/10
                     </span>
                 </div>
 
@@ -83,20 +66,20 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                                 ? "#fff1f2"
                                 : urgent
                                   ? "#fff7ed"
-                                  : exam.color + "0e",
+                                  : exam.color + "0a",
+                            border: `1px solid ${
+                                overdue ? "#ffe4e6" : urgent ? "#ffedd5" : exam.color + "20"
+                            }`,
                         }}
                     >
                         {overdue ? (
-                            <p className="text-sm font-semibold" style={{ color: "#be123c" }}>
+                            <p className="text-sm font-semibold text-rose-600 flex items-center gap-2">
                                 ⚠️ Đã qua ngày thi
                             </p>
                         ) : urgent ? (
                             <div className="flex items-center gap-2">
-                                <Flame size={14} className="text-orange-500 shrink-0" />
-                                <span
-                                    className="font-bold text-orange-600"
-                                    style={{ fontSize: 14 }}
-                                >
+                                <Flame size={16} className="text-orange-500 shrink-0" />
+                                <span className="font-bold text-orange-600 text-sm">
                                     Gấp! Còn {countdown.daysLeft} ngày{" "}
                                     {countdown.hoursLeft > 0 ? `${countdown.hoursLeft} giờ` : ""}
                                 </span>
@@ -105,18 +88,18 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                             <>
                                 <div className="flex items-center justify-between mb-2">
                                     <span
-                                        className="font-bold"
-                                        style={{ fontSize: 15, color: exam.color }}
+                                        className="font-bold text-sm"
+                                        style={{ color: exam.color }}
                                     >
                                         Còn {countdown.daysLeft} ngày
                                     </span>
                                     {countdown.totalTasks > 0 && (
                                         <span
-                                            className="flex items-center gap-1 font-bold"
-                                            style={{ fontSize: 13, color: exam.color }}
+                                            className="flex items-center gap-1.5 font-bold text-xs"
+                                            style={{ color: exam.color }}
                                         >
                                             {countdown.completionRate === 100 && (
-                                                <CheckCircle2 size={11} />
+                                                <CheckCircle2 size={12} />
                                             )}
                                             {countdown.completionRate}% xong
                                         </span>
@@ -124,8 +107,8 @@ export default function ExamCard({ exam, countdown }: ExamCardProps) {
                                 </div>
                                 {countdown.totalTasks > 0 && (
                                     <div
-                                        className="h-2 rounded-full"
-                                        style={{ background: exam.color + "22" }}
+                                        className="h-2 rounded-full overflow-hidden"
+                                        style={{ background: exam.color + "20" }}
                                     >
                                         <div
                                             className="h-full rounded-full transition-all duration-700"

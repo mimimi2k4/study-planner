@@ -1,10 +1,7 @@
 import type { Milestone, MilestoneResult } from "../types";
 import { nanoid } from "../utils/nanoid";
 
-export function generateMilestones(
-    examId: string,
-    examDateStr: string
-): MilestoneResult {
+export function generateMilestones(examId: string, examDateStr: string): MilestoneResult {
     if (!examDateStr) {
         return { success: false, error: "Chưa nhập ngày thi (examDate bị trống)." };
     }
@@ -15,7 +12,10 @@ export function generateMilestones(
 
     const timeDiff = examDate.getTime() - today.getTime();
     if (timeDiff <= 0) {
-        return { success: false, error: "Ngày thi đã qua hoặc là ngày hôm nay. Không thể tạo cột mốc tương lai." };
+        return {
+            success: false,
+            error: "Ngày thi đã qua hoặc là ngày hôm nay. Không thể tạo cột mốc tương lai.",
+        };
     }
 
     const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -27,7 +27,7 @@ export function generateMilestones(
 
     if (daysLeft < 7) {
         const step = Math.floor(daysLeft / 3);
-        
+
         // Mốc 1: 1/3
         const date1 = new Date(today);
         date1.setDate(today.getDate() + (step > 0 ? step : 1));
@@ -36,7 +36,7 @@ export function generateMilestones(
             subjectId: examId,
             name: "Hoàn thành 1/3 khối lượng",
             deadlineDate: formatDate(date1),
-            status: "chưa đạt"
+            status: "chưa đạt",
         });
 
         // Mốc 2: 2/3
@@ -48,7 +48,7 @@ export function generateMilestones(
                 subjectId: examId,
                 name: "Hoàn thành 2/3 khối lượng",
                 deadlineDate: formatDate(date2),
-                status: "chưa đạt"
+                status: "chưa đạt",
             });
         }
 
@@ -61,7 +61,7 @@ export function generateMilestones(
             subjectId: examId,
             name: "Tổng ôn trước ngày thi",
             deadlineDate: formatDate(date3),
-            status: "chưa đạt"
+            status: "chưa đạt",
         });
     } else if (daysLeft >= 8 && daysLeft <= 30) {
         let currentDate = new Date(today);
@@ -74,11 +74,11 @@ export function generateMilestones(
                 subjectId: examId,
                 name: `Cột mốc tuần ${count}`,
                 deadlineDate: formatDate(new Date(currentDate)),
-                status: "chưa đạt"
+                status: "chưa đạt",
             });
             count++;
         }
-        
+
         const finalDate = new Date(examDate);
         finalDate.setDate(examDate.getDate() - 1);
         milestones.push({
@@ -86,7 +86,7 @@ export function generateMilestones(
             subjectId: examId,
             name: "Tổng ôn nước rút",
             deadlineDate: formatDate(finalDate),
-            status: "chưa đạt"
+            status: "chưa đạt",
         });
     } else {
         let currentDate = new Date(today);
@@ -99,11 +99,11 @@ export function generateMilestones(
                 subjectId: examId,
                 name: `Cột mốc 2 tuần lần ${count}`,
                 deadlineDate: formatDate(new Date(currentDate)),
-                status: "chưa đạt"
+                status: "chưa đạt",
             });
             count++;
         }
-        
+
         const finalDate = new Date(examDate);
         finalDate.setDate(examDate.getDate() - 7);
         milestones.push({
@@ -111,12 +111,14 @@ export function generateMilestones(
             subjectId: examId,
             name: "Bắt đầu giai đoạn thi thử",
             deadlineDate: formatDate(finalDate),
-            status: "chưa đạt"
+            status: "chưa đạt",
         });
     }
 
     // Đảm bảo không bị duplicate ngày hoặc ngày lộn xộn
-    const uniqueMilestones = Array.from(new Map(milestones.map(m => [m.deadlineDate, m])).values());
+    const uniqueMilestones = Array.from(
+        new Map(milestones.map((m) => [m.deadlineDate, m])).values()
+    );
     uniqueMilestones.sort((a, b) => a.deadlineDate.localeCompare(b.deadlineDate));
 
     return { success: true, milestones: uniqueMilestones };
