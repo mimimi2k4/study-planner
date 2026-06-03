@@ -21,11 +21,16 @@ export default function ScheduleView({
     warnings,
     overflow = [],
     tasks,
+    freeSlots,
     onRegenerate,
     onSlotsChange,
     onDispatch,
 }: ScheduleViewProps) {
     const [weekStart, setWeekStart] = useState<Date>(() => getWeekStart(new Date()));
+    const [draggedSlot, setDraggedSlot] = useState<{ id: string; durationMinutes: number } | null>(null);
+    const [dragOverCell, setDragOverCell] = useState<{ date: string; hour: number } | null>(null);
+
+
 
     const weekDates = Array.from({ length: 7 }, (_, i) => formatDate(addDays(weekStart, i)));
 
@@ -75,6 +80,24 @@ export default function ScheduleView({
         const durationMinutes = data?.durationMinutes ?? 60;
 
         const newStartTime = `${String(targetHour).padStart(2, "0")}:00`;
+
+        // Chặn thả đè lên chính nó (Vấn đề 6)
+        const draggedSlotDetail = slots.find((s) => s.id === slotId);
+        if (
+            draggedSlotDetail &&
+            draggedSlotDetail.date === targetDate &&
+            draggedSlotDetail.startTime === newStartTime
+        ) {
+            setDraggedSlot(null);
+            setDragOverCell(null);
+            return;
+        }
+
+        // Reset drag states ngay lập tức khi thả thành công
+        // (đề phòng React unmount/render lại làm mất sự kiện onDragEnd của browser)
+        setDraggedSlot(null);
+        setDragOverCell(null);
+
         const endMin = targetHour * 60 + durationMinutes;
         const newEndTime = `${String(Math.floor(endMin / 60)).padStart(2, "0")}:${String(endMin % 60).padStart(2, "0")}`;
 
@@ -237,20 +260,39 @@ export default function ScheduleView({
                                                 {String(h).padStart(2, "0")}:00
                                             </span>
                                         </div>
-                                        {weekDates.map((date) => (
-                                            <div
-                                                key={date}
-                                                className="border-r last:border-r-0 border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors"
-                                                style={{
-                                                    borderBottom: "1px solid #e2e8f0",
-                                                    height: 48,
-                                                    background: isEven ? "#f8fafc" : "#ffffff",
-                                                }}
-                                                onClick={() => handleCellClick(date, h)}
-                                                onDragOver={(e) => e.preventDefault()}
-                                                onDrop={(e) => handleDrop(e, date, h)}
-                                            />
-                                        ))}
+                                        {weekDates.map((date) => {
+                                            const bgClass = isEven ? "bg-slate-50/50 hover:bg-slate-100" : "bg-white hover:bg-slate-50";
+                                            const isOver = dragOverCell && dragOverCell.date === date && dragOverCell.hour === h;
+                                            return (
+                                                <div
+                                                    key={date}
+                                                    className={`border-r last:border-r-0 border-slate-200 cursor-pointer transition-colors ${bgClass} ${isOver ? "bg-emerald-100/30" : ""}`}
+                                                    style={{
+                                                        borderBottom: "1px solid #e2e8f0",
+                                                        height: 48,
+                                                    }}
+                                                    onClick={() => handleCellClick(date, h)}
+                                                    onDragOver={(e) => {
+                                                        e.preventDefault();
+                                                        if (draggedSlot && (!dragOverCell || dragOverCell.date !== date || dragOverCell.hour !== h)) {
+                                                            setDragOverCell({ date, hour: h });
+                                                        }
+                                                    }}
+                                                    onDragLeave={() => {
+                                                        setDragOverCell((current) => {
+                                                            if (current && current.date === date && current.hour === h) {
+                                                                return null;
+                                                            }
+                                                            return current;
+                                                        });
+                                                    }}
+                                                    onDrop={(e) => {
+                                                        setDragOverCell(null);
+                                                        handleDrop(e, date, h);
+                                                    }}
+                                                />
+                                            );
+                                        })}
                                     </div>
                                 );
                             })}
@@ -264,8 +306,79 @@ export default function ScheduleView({
                             <div />
                             {weekDates.map((date, _colIdx) => {
                                 const daySlots = slots.filter((s) => s.date === date);
+                                const parts = date.split("-").map(Number);
+                                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                                const dayIndex = (d.getDay() + 6) % 7;
+                                const dayFreeSlots = freeSlots.filter((fs) => fs.day === dayIndex);
+
                                 return (
-                                    <div key={date} className="relative">
+                                    <div key={date} className="relative h-full">
+                                        {/* Free slots background highlight */}
+                                        {dayFreeSlots.map((fs, idx) => {
+                                            const top = timeToFraction(fs.startTime) * 100;
+                                            const height = slotHeightPercent(fs.startTime, fs.endTime);
+
+                                            // Chỉ highlight Free Slot đủ thời gian (Vấn đề 4)
+                                            const draggedDuration = draggedSlot?.durationMinutes ?? 0;
+                                            const freeSlotDuration = parseTime(fs.endTime) - parseTime(fs.startTime);
+                                            const canFit = draggedSlot ? freeSlotDuration >= draggedDuration : false;
+
+                                            return (
+                                                <div
+                                                    key={`free-${idx}`}
+                                                    className={`absolute left-0 right-0 pointer-events-none transition-all ${
+                                                        draggedSlot
+                                                            ? (canFit
+                                                                ? "bg-emerald-50/90 ring-2 ring-dashed ring-emerald-400"
+                                                                : "bg-slate-100/30 opacity-30")
+                                                            : "bg-emerald-50/40 border-l-2 border-emerald-400/50"
+                                                    }`}
+                                                    style={{
+                                                        top: `${top}%`,
+                                                        height: `${height}%`,
+                                                        zIndex: 0,
+                                                    }}
+                                                />
+                                            );
+                                        })}
+
+                                        {/* Preview vị trí thả (Vấn đề 7) */}
+                                        {dragOverCell && dragOverCell.date === date && draggedSlot && (
+                                            (() => {
+                                                const draggedSlotDetail = slots.find((s) => s.id === draggedSlot.id);
+                                                if (!draggedSlotDetail) return null;
+
+                                                const previewStartHour = dragOverCell.hour;
+                                                const previewStartStr = `${String(previewStartHour).padStart(2, "0")}:00`;
+                                                const previewEndMin = previewStartHour * 60 + draggedSlot.durationMinutes;
+                                                const previewEndStr = `${String(Math.floor(previewEndMin / 60)).padStart(2, "0")}:${String(previewEndMin % 60).padStart(2, "0")}`;
+
+                                                const previewTop = timeToFraction(previewStartStr) * 100;
+                                                const previewHeight = slotHeightPercent(previewStartStr, previewEndStr);
+
+                                                return (
+                                                    <div
+                                                        className="absolute left-1 right-1 rounded-lg px-2 py-1 overflow-hidden border-2 border-dashed opacity-60 z-20 pointer-events-none flex flex-col justify-between"
+                                                        style={{
+                                                            top: `${previewTop}%`,
+                                                            height: `${Math.max(previewHeight, 2)}%`,
+                                                            borderColor: draggedSlotDetail.color,
+                                                            backgroundColor: hexToRgba(draggedSlotDetail.color, 0.15),
+                                                        }}
+                                                    >
+                                                        <div>
+                                                            <p className="text-xs font-bold truncate leading-tight" style={{ color: draggedSlotDetail.color }}>
+                                                                {draggedSlotDetail.taskName} (Dự kiến)
+                                                            </p>
+                                                            <p className="text-[10px] font-medium opacity-80" style={{ color: draggedSlotDetail.color }}>
+                                                                {previewStartStr}–{previewEndStr}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })()
+                                        )}
+
                                         {daySlots.map((slot) => {
                                             const top = timeToFraction(slot.startTime) * 100;
                                             const height = slotHeightPercent(
@@ -276,14 +389,31 @@ export default function ScheduleView({
                                                 <div
                                                     key={slot.id}
                                                     draggable
-                                                    onDragStart={(e) => handleDragStart(e, slot)}
-                                                    className="absolute left-1 right-1 rounded-lg px-2 py-1 overflow-hidden pointer-events-auto cursor-pointer group transition-all duration-150 border hover:opacity-90 shadow-sm"
+                                                    onDragStart={(e) => {
+                                                        handleDragStart(e, slot);
+                                                        const slotId = slot.id;
+                                                        const durationMinutes = parseTime(slot.endTime) - parseTime(slot.startTime);
+                                                        // Sử dụng requestAnimationFrame thay thế setTimeout (Vấn đề 5)
+                                                        requestAnimationFrame(() => {
+                                                            setDraggedSlot({ id: slotId, durationMinutes });
+                                                        });
+                                                    }}
+                                                    onDragEnd={() => {
+                                                        setDraggedSlot(null);
+                                                        setDragOverCell(null);
+                                                    }}
+                                                    className={`absolute left-1 right-1 rounded-lg px-2 py-1 overflow-hidden cursor-pointer group transition-all duration-150 border hover:opacity-90 shadow-sm ${
+                                                        draggedSlot
+                                                            ? (draggedSlot.id === slot.id ? "pointer-events-auto opacity-40" : "pointer-events-none")
+                                                            : "pointer-events-auto"
+                                                    }`}
                                                     style={{
                                                         top: `${top}%`,
                                                         height: `${Math.max(height, 2)}%`,
                                                         background: hexToRgba(slot.color, 0.08),
                                                         borderColor: hexToRgba(slot.color, 0.3),
                                                         borderLeft: `4px solid ${slot.color}`,
+                                                        zIndex: 10,
                                                     }}
                                                     title={`${slot.taskName} (${slot.startTime}–${slot.endTime})`}
                                                 >

@@ -22,11 +22,11 @@ export function addDays(date: Date, n: number): Date {
 
 export function timeToFraction(time: string): number {
     const [h, m] = time.split(":").map(Number);
-    return (h - 6 + m / 60) / 17; // 17 hours total (6–23)
+    return (h - 6 + m / 60) / 18; // 18 hours total (6–24)
 }
 
 export function slotHeightPercent(start: string, end: string): number {
     const [sh, sm] = start.split(":").map(Number);
     const [eh, em] = end.split(":").map(Number);
-    return ((eh * 60 + em - sh * 60 - sm) / 60 / 17) * 100;
+    return ((eh * 60 + em - sh * 60 - sm) / 60 / 18) * 100;
 }

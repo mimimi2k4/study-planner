@@ -76,12 +76,11 @@ export default function SchedulePage({
     }
 
     return (
-        <div className="space-y-8">
+        <div className="flex flex-col gap-8">
             {/* Toast lỗi */}
             {errorMsg && (
                 <div
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-700"
-                    style={{ background: "#fff1f2", border: "1.5px solid #fecdd3" }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-700 bg-rose-50 border-[1.5px] border-rose-200"
                 >
                     <span>⚠️</span>
                     <span>{errorMsg}</span>
@@ -132,6 +131,7 @@ export default function SchedulePage({
                 exams={exams}
                 tasks={tasks}
                 warnings={warnings}
+                freeSlots={freeSlots}
                 onRegenerate={doRegenerate}
                 onSlotsChange={handleSlotsChange}
                 onDispatch={dispatch}

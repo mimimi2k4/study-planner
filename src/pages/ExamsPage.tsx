@@ -49,7 +49,7 @@ export default function ExamsPage({
     }
 
     return (
-        <div className="space-y-8">
+        <div className="flex flex-col gap-8">
             <PageHeader
                 icon={BookOpen}
                 title="Môn thi"

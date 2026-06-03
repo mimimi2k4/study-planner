@@ -51,7 +51,7 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
 
     if (tasks.length === 0) {
         return (
-            <div className="space-y-8 flex flex-col h-full">
+            <div className="flex flex-col gap-8 h-full">
                 <PageHeader
                     icon={CheckSquare}
                     title="Nhiệm vụ học tập"
@@ -77,7 +77,7 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
     }
 
     return (
-        <div className="space-y-8">
+        <div className="flex flex-col gap-8">
             <PageHeader
                 icon={CheckSquare}
                 title="Nhiệm vụ học tập"
@@ -178,7 +178,8 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
                                     return (
                                         <div
                                             key={task.id}
-                                            className={`flex items-center gap-5 px-6 py-4 transition-colors ${
+                                            onClick={() => toggle(task.id)}
+                                            className={`flex items-center gap-5 px-6 py-4 cursor-pointer select-none transition-colors ${
                                                 isCompleted
                                                     ? "bg-slate-50/50"
                                                     : isInProgress
@@ -186,9 +187,8 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
                                                       : "hover:bg-slate-50"
                                             }`}
                                         >
-                                            <button
-                                                onClick={() => toggle(task.id)}
-                                                className="shrink-0 transition-all hover:scale-110 focus:outline-none"
+                                            <div
+                                                className="shrink-0 transition-all hover:scale-110"
                                                 style={{
                                                     color: isCompleted
                                                         ? "#10b981"
@@ -204,7 +204,7 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
                                                 ) : (
                                                     <Circle size={24} strokeWidth={2.5} />
                                                 )}
-                                            </button>
+                                            </div>
 
                                             <div className="flex-1 min-w-0">
                                                 <p

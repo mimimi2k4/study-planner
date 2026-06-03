@@ -83,6 +83,7 @@ export default function SyllabusForm({
     uploadMsg,
     importedChapters,
     onFileUpload,
+    onClearUpload,
 }: SyllabusFormProps) {
     const [subjectId, setSubjectId] = useState("");
     const [chapters, setChapters] = useState<Chapter[]>([newChapter(0)]);
@@ -112,6 +113,7 @@ export default function SyllabusForm({
         setErrors({});
         setSubmitted(false);
         setEditingId(null);
+        onClearUpload?.();
     }
 
     function handleStartEdit(s: Syllabus) {
@@ -241,6 +243,7 @@ export default function SyllabusForm({
                                         disabled={isEditing}
                                         onChange={(e) => {
                                             setSubjectId(e.target.value);
+                                            onClearUpload?.();
                                             if (submitted)
                                                 setErrors(
                                                     validateSyllabusForm({
@@ -566,10 +569,14 @@ export default function SyllabusForm({
 
                                                         {/* Compact difficulty/importance with labels */}
                                                         <div className="flex items-center gap-2 shrink-0">
-                                                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
-                                                                KH
-                                                            </span>
+                                                            <label
+                                                                htmlFor={`difficulty-${c.id}`}
+                                                                className="text-xs font-bold text-slate-400 uppercase tracking-wide cursor-pointer hover:text-slate-600 transition-colors"
+                                                            >
+                                                                Độ khó
+                                                            </label>
                                                             <select
+                                                                id={`difficulty-${c.id}`}
                                                                 value={c.difficulty}
                                                                 onChange={(e) =>
                                                                     changeChapter(
@@ -593,10 +600,14 @@ export default function SyllabusForm({
                                                         </div>
 
                                                         <div className="flex items-center gap-2 shrink-0">
-                                                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
-                                                                QT
-                                                            </span>
+                                                            <label
+                                                                htmlFor={`importance-${c.id}`}
+                                                                className="text-xs font-bold text-slate-400 uppercase tracking-wide cursor-pointer hover:text-slate-600 transition-colors"
+                                                            >
+                                                                Quan trọng
+                                                            </label>
                                                             <select
+                                                                id={`importance-${c.id}`}
                                                                 value={c.importance}
                                                                 onChange={(e) =>
                                                                     changeChapter(
@@ -832,7 +843,7 @@ export default function SyllabusForm({
                                                                     </span>
                                                                     <div className="flex items-center gap-2 shrink-0">
                                                                         <span className="text-xs font-bold text-slate-400 uppercase">
-                                                                            KH
+                                                                            Độ khó
                                                                         </span>
                                                                         <span
                                                                             className={`text-xs px-2 py-1 rounded border font-bold ${BADGE[c.difficulty]}`}
@@ -846,7 +857,7 @@ export default function SyllabusForm({
                                                                     </div>
                                                                     <div className="flex items-center gap-2 shrink-0">
                                                                         <span className="text-xs font-bold text-slate-400 uppercase">
-                                                                            QT
+                                                                            Quan trọng
                                                                         </span>
                                                                         <span
                                                                             className={`text-xs px-2 py-1 rounded border font-bold ${BADGE[c.importance]}`}

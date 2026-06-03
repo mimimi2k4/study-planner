@@ -58,7 +58,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
 
     return (
         <div
-            style={{ display: "flex", flexDirection: "column", gap: 32 }}
+            className="flex flex-col gap-8"
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
         >
@@ -102,7 +102,7 @@ export default function TimeSlotPicker({ freeSlots, onSave }: TimeSlotPickerProp
             {/* ── Grid ── */}
             <div className="card rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm">
                 <div className="overflow-x-auto">
-                    <div style={{ minWidth: 580 }}>
+                    <div className="min-w-[580px]">
                         {/* Day headers */}
                         <div
                             className="grid border-b border-slate-200 bg-slate-50"

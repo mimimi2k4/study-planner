@@ -134,7 +134,10 @@ export function executePlanAction(
 
     const isWithinFreeSlot = (date: string, startTime: string, endTime: string): boolean => {
         if (freeSlots.length === 0) return true; // Nếu chưa setup freeSlots thì thôi, nhưng thường là có
-        const dayOfWeek = (new Date(date).getDay() + 6) % 7;
+        const parts = date.split("-").map(Number);
+        if (parts.length !== 3 || parts.some(isNaN)) return false;
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        const dayOfWeek = (d.getDay() + 6) % 7;
         const start = parseTime(startTime);
         const end = parseTime(endTime);
 
@@ -153,6 +156,9 @@ export function executePlanAction(
     if (action === "update_task_status") {
         const { taskId, status } = payload as { taskId: string; status: StudyTask["status"] };
         if (!taskId) return { success: false, error: "Thiếu taskId" };
+        if (status !== "pending" && status !== "in_progress" && status !== "completed") {
+            return { success: false, error: `Trạng thái không hợp lệ: "${status}"` };
+        }
         const newTasks = currentTasks.map((t) => (t.id === taskId ? { ...t, status } : t));
         return { success: true, newPlan: currentPlan, newTasks };
     }
@@ -189,6 +195,20 @@ export function executePlanAction(
             return { success: false, error: "Thời gian kết thúc phải sau thời gian bắt đầu" };
         if (!isWithinFreeSlot(newDate, newStartTime, newEndTime))
             return { success: false, error: "Ngoài khung giờ rảnh đã thiết lập" };
+
+        // Kiểm tra trùng lịch (overlap check)
+        const start = parseTime(newStartTime);
+        const end = parseTime(newEndTime);
+        const hasOverlap = currentPlan.slots.some((s) => {
+            if (s.id === slotId) return false;
+            if (s.date !== newDate) return false;
+            const sStart = parseTime(s.startTime);
+            const sEnd = parseTime(s.endTime);
+            return start < sEnd && end > sStart;
+        });
+        if (hasOverlap) {
+            return { success: false, error: "Trùng với lịch học đã có sẵn" };
+        }
         const newPlan: StudyPlan = {
             ...currentPlan,
             manualEdited: true,
@@ -224,6 +244,19 @@ export function executePlanAction(
             return { success: false, error: "Thời gian kết thúc phải sau thời gian bắt đầu" };
         if (!isWithinFreeSlot(date, startTime, endTime))
             return { success: false, error: "Ngoài khung giờ rảnh đã thiết lập" };
+
+        // Kiểm tra trùng lịch (overlap check)
+        const start = parseTime(startTime);
+        const end = parseTime(endTime);
+        const hasOverlap = currentPlan.slots.some((s) => {
+            if (s.date !== date) return false;
+            const sStart = parseTime(s.startTime);
+            const sEnd = parseTime(s.endTime);
+            return start < sEnd && end > sStart;
+        });
+        if (hasOverlap) {
+            return { success: false, error: "Trùng với lịch học đã có sẵn" };
+        }
         const task = currentTasks.find((t) => t.id === taskId);
         if (!task) return { success: false, error: `Không tìm thấy task với id "${taskId}"` };
         const newSlot: ScheduleSlot = {
@@ -252,3 +285,18 @@ export function executePlanAction(
 
     return { success: false, error: `Action không hợp lệ: "${action}"` };
 }
+
+// Notifications storage helpers
+export const getNotifiedToday = (key: string): boolean => {
+    try {
+        return localStorage.getItem(key) === "true";
+    } catch {
+        return false;
+    }
+};
+
+export const setNotifiedToday = (key: string): void => {
+    try {
+        localStorage.setItem(key, "true");
+    } catch {}
+};

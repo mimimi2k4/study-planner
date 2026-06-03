@@ -52,10 +52,13 @@ export default function MilestoneTimeline({ milestones }: MilestoneTimelineProps
     // 5. Hiển thị Timeline
     return (
         <div className="bg-white p-7 rounded-2xl border border-slate-100 shadow-sm max-h-[500px] overflow-y-auto relative custom-scrollbar">
-            <h3 className="text-lg font-black text-slate-800 mb-6 flex items-center gap-2">
+            <h3 className="text-lg font-black text-slate-800 mb-2 flex items-center gap-2">
                 <Target size={20} className="text-emerald-500" />
                 Đường mốc tiến độ
             </h3>
+            <p className="text-xs text-slate-500 bg-slate-50 border border-slate-100 rounded-xl p-3.5 mb-6 leading-relaxed">
+                💡 <strong>Lưu ý:</strong> Cột mốc ôn tập được phân bổ đều từ hôm nay đến ngày thi thực tế. Lịch học chi tiết hàng ngày có thể hoàn thành sớm hơn tùy thuộc vào số chương của đề cương và quỹ thời gian rảnh của bạn.
+            </p>
 
             <div className="relative">
                 {/* Đường thẳng timeline chạy dọc */}
