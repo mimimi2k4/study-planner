@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getExams } from "../utils/storage";
+import { getExams, getNotifiedToday, setNotifiedToday } from "../utils/storage";
 import type { Milestone } from "../types";
 
 // Khai báo kiểu dữ liệu cho thông báo trên màn hình
@@ -48,7 +48,7 @@ export function useAppNotification({ milestones, setMilestones }: UseAppNotifica
             const todayStr = new Date().toISOString().split("T")[0];
             const todayStorageKey = `notified_${todayStr}`;
 
-            if (localStorage.getItem(todayStorageKey)) return;
+            if (getNotifiedToday(todayStorageKey)) return;
 
             let hasSentNotification = false;
 
@@ -94,7 +94,7 @@ export function useAppNotification({ milestones, setMilestones }: UseAppNotifica
             });
 
             if (hasSentNotification) {
-                localStorage.setItem(todayStorageKey, "true");
+                setNotifiedToday(todayStorageKey);
             }
         };
 

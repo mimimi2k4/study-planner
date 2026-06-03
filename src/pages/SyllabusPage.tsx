@@ -49,6 +49,14 @@ export default function SyllabusPage({
     }
 
     async function handleFileUpload(file: File) {
+        const MAX_FILE_SIZE_MB = 10;
+        if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+            setUploadMsg({
+                type: "error",
+                text: `Dung lượng file vượt quá giới hạn cho phép (${MAX_FILE_SIZE_MB}MB). Vui lòng chọn file nhỏ hơn.`
+            });
+            return;
+        }
         setUploading(true);
         setUploadMsg(null);
         try {
@@ -72,8 +80,13 @@ export default function SyllabusPage({
         }
     }
 
+    const handleClearUpload = () => {
+        setUploadMsg(null);
+        setImportedChapters(null);
+    };
+
     return (
-        <div className="space-y-8">
+        <div className="flex flex-col gap-8">
             <PageHeader
                 icon={FileText}
                 title="Đề cương môn học"
@@ -89,6 +102,7 @@ export default function SyllabusPage({
                 uploadMsg={uploadMsg}
                 importedChapters={importedChapters}
                 onFileUpload={handleFileUpload}
+                onClearUpload={handleClearUpload}
             />
         </div>
     );

@@ -1,4 +1,4 @@
-import type { ScheduleSlot, ExamInfo, ScheduleWarning, StudyTask } from "../../types";
+import type { ScheduleSlot, ExamInfo, ScheduleWarning, StudyTask, FreeSlot } from "../../types";
 import type { DispatchAction } from "../../hooks/usePlanManager";
 
 export interface ScheduleViewProps {
@@ -7,6 +7,7 @@ export interface ScheduleViewProps {
     warnings: ScheduleWarning[];
     overflow?: StudyTask[];
     tasks: StudyTask[];
+    freeSlots: FreeSlot[];
     onRegenerate: () => void;
     onSlotsChange: (slots: ScheduleSlot[]) => void;
     /** Hook dispatch — dùng để xóa / di chuyển slot qua executePlanAction */

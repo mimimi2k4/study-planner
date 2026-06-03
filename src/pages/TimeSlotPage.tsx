@@ -10,7 +10,7 @@ export interface TimeSlotPageProps {
 
 export default function TimeSlotPage({ freeSlots, onSave }: TimeSlotPageProps) {
     return (
-        <div className="space-y-8">
+        <div className="flex flex-col gap-8">
             <PageHeader
                 icon={Clock}
                 title="Thời gian rảnh"

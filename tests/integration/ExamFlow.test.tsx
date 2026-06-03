@@ -34,7 +34,7 @@ describe("Integration Test: Exam Flow", () => {
         const saveMilestonesSpy = vi.spyOn(storage, "saveMilestones");
 
         render(
-            <MemoryRouter initialEntries={["/study-planner"]}>
+            <MemoryRouter initialEntries={["/"]}>
                 <App />
             </MemoryRouter>
         );

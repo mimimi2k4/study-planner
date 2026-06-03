@@ -115,7 +115,7 @@ export default function DashboardPage({
     const hasData = exams.length > 0 && milestones.length > 0 && (plan?.slots.length ?? 0) > 0;
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+        <div className="flex flex-col gap-8">
             {/* ── Hero ── */}
             <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm px-10 py-8 flex items-center justify-between flex-wrap gap-8">
                 <div className="flex-1">

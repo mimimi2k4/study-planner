@@ -21,6 +21,7 @@ export interface SyllabusFormProps {
     uploadMsg: { type: "success" | "error"; text: string } | null;
     importedChapters: Chapter[] | null;
     onFileUpload: (file: File) => void;
+    onClearUpload?: () => void;
 }
 
 export function validateSyllabusForm(state: SyllabusFormState): FormErrors {

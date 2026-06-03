@@ -11,7 +11,7 @@ export const ExamInfoSchema = z.object({
     examDateTime: z.string(),
     examFormat: ExamFormatSchema,
     targetScore: z.number(),
-    color: z.string(),
+    color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Mã màu Hex phải có định dạng #RRGGBB"),
 });
 
 export const ChapterSchema = z.object({
