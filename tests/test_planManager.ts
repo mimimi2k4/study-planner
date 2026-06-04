@@ -122,20 +122,20 @@ console.log("\n--- [move_task] ---");
 {
     const slot = makeSlot({
         id: "slot-1",
-        date: "2026-06-01",
+        date: "2026-06-10",
         startTime: "09:00",
         endTime: "10:00",
     });
     const plan = makePlan([slot]);
     const result = executePlanAction(
         "move_task",
-        { slotId: "slot-1", newDate: "2026-06-03", newStartTime: "14:00", newEndTime: "15:30" },
+        { slotId: "slot-1", newDate: "2026-06-15", newStartTime: "14:00", newEndTime: "15:30" },
         plan,
         []
     );
     assert(result.success === true, "move_task hợp lệ thành công");
     const moved = result.success ? result.newPlan?.slots[0] : undefined;
-    assert(moved?.date === "2026-06-03", "move_task cập nhật đúng date");
+    assert(moved?.date === "2026-06-15", "move_task cập nhật đúng date");
     assert(moved?.startTime === "14:00", "move_task cập nhật đúng startTime");
     assert(moved?.endTime === "15:30", "move_task cập nhật đúng endTime");
     assert(moved?.manualEdited === true, "move_task đánh dấu slot.manualEdited = true");
@@ -144,14 +144,14 @@ console.log("\n--- [move_task] ---");
         "move_task đánh dấu plan.manualEdited = true"
     );
     // Immutability
-    assert(plan.slots[0].date === "2026-06-01", "move_task không mutate slot gốc");
+    assert(plan.slots[0].date === "2026-06-10", "move_task không mutate slot gốc");
 }
 
 {
     // Thời gian kết thúc trước thời gian bắt đầu
     const result = executePlanAction(
         "move_task",
-        { slotId: "slot-1", newDate: "2026-06-03", newStartTime: "15:00", newEndTime: "14:00" },
+        { slotId: "slot-1", newDate: "2026-06-15", newStartTime: "15:00", newEndTime: "14:00" },
         makePlan([makeSlot()]),
         []
     );
@@ -166,7 +166,7 @@ console.log("\n--- [move_task] ---");
     // Thời gian bằng nhau (endTime === startTime)
     const result = executePlanAction(
         "move_task",
-        { slotId: "slot-1", newDate: "2026-06-03", newStartTime: "10:00", newEndTime: "10:00" },
+        { slotId: "slot-1", newDate: "2026-06-15", newStartTime: "10:00", newEndTime: "10:00" },
         makePlan([makeSlot()]),
         []
     );
@@ -177,7 +177,7 @@ console.log("\n--- [move_task] ---");
     // Thiếu trường bắt buộc
     const result = executePlanAction(
         "move_task",
-        { slotId: "slot-1", newDate: "2026-06-03" },
+        { slotId: "slot-1", newDate: "2026-06-15" },
         makePlan([makeSlot()]),
         []
     );

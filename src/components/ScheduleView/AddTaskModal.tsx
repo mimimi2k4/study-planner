@@ -52,6 +52,12 @@ export default function AddTaskModal({
             return;
         }
 
+        const today = new Date().toISOString().split("T")[0];
+        if (selectedDate < today) {
+            alert("Không thể thêm lịch học vào ngày trong quá khứ.");
+            return;
+        }
+
         const startMin = parseTime(selectedStartTime);
         const endMin = startMin + duration;
         const endTime = formatTime(endMin);

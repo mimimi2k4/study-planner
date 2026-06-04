@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { StudyTask, StudyPlan } from "../types";
+import type { StudyTask, StudyPlan, Milestone } from "../types";
 import { executePlanAction } from "../utils/storage";
 import { savePlan, deletePlan, saveTasks } from "../utils/storage";
 import { generateStudyTasks } from "../logic/studyTaskGenerator";
@@ -15,6 +15,7 @@ export interface PlanManagerDeps {
     exams: ExamInfo[];
     syllabuses: Syllabus[];
     freeSlots: FreeSlot[];
+    milestones: Milestone[];
     onWarning?: (msg: string) => void;
 }
 
@@ -39,6 +40,7 @@ export function usePlanManager({
     exams,
     syllabuses,
     freeSlots,
+    milestones,
     onWarning,
 }: PlanManagerDeps) {
     const dispatch = useCallback(
@@ -71,7 +73,7 @@ export function usePlanManager({
                     const newTasks = generateStudyTasks(syllabuses, exams);
                     setTasks(newTasks);
                     saveTasks(newTasks);
-                    const { plan: newPlan } = generateSchedule(newTasks, freeSlots, exams);
+                    const { plan: newPlan } = generateSchedule(newTasks, freeSlots, exams, milestones);
                     setPlan(newPlan);
                     savePlan(newPlan);
                 }
@@ -89,7 +91,7 @@ export function usePlanManager({
 
             return true;
         },
-        [plan, tasks, exams, syllabuses, freeSlots, setPlan, setTasks, onWarning]
+        [plan, tasks, exams, syllabuses, freeSlots, milestones, setPlan, setTasks, onWarning]
     );
 
     return { dispatch };
