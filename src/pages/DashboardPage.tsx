@@ -197,11 +197,9 @@ export default function DashboardPage({
                 nextCountdown={nextCountdown}
                 nearestMilestone={nearestMilestone}
                 todaySlots={todaySlots}
-                hasData={hasData}
                 hasExams={hasExams}
                 hasMilestones={hasMilestones}
                 hasPlan={hasPlan}
-                steps={STEPS}
             />
 
             {/* ── Body (only when data exists) ── */}

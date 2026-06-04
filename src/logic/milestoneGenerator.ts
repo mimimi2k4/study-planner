@@ -88,7 +88,7 @@ export function generateMilestones(
             status: "chưa đạt",
         });
     } else if (daysLeft >= 8 && daysLeft <= 30) {
-        let currentDate = new Date(startDate);
+        const currentDate = new Date(startDate);
         let count = 1;
         while (true) {
             currentDate.setDate(currentDate.getDate() + 7);
@@ -113,7 +113,7 @@ export function generateMilestones(
             status: "chưa đạt",
         });
     } else {
-        let currentDate = new Date(startDate);
+        const currentDate = new Date(startDate);
         let count = 1;
         while (true) {
             currentDate.setDate(currentDate.getDate() + 14);

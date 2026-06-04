@@ -1,7 +1,6 @@
-import { ArrowRight, BookOpen, Clock, Calendar, Award, Target, FileText } from "lucide-react";
+import { ArrowRight, BookOpen, Clock, Calendar, Award, Target } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ExamInfo, Milestone, ScheduleSlot } from "../../types";
-import type { LucideIcon } from "lucide-react";
 
 interface OverviewCardsProps {
     completionRate: number;
@@ -9,17 +8,9 @@ interface OverviewCardsProps {
     nextCountdown: { daysLeft: number; isOverdue: boolean } | null;
     nearestMilestone?: Milestone;
     todaySlots: ScheduleSlot[];
-    hasData: boolean;
     hasExams: boolean;
     hasMilestones: boolean;
     hasPlan: boolean;
-    steps: {
-        label: string;
-        desc: string;
-        to: string;
-        icon: LucideIcon;
-        key: string;
-    }[];
 }
 
 export default function OverviewCards({
@@ -28,11 +19,9 @@ export default function OverviewCards({
     nextCountdown,
     nearestMilestone,
     todaySlots,
-    hasData,
     hasExams,
     hasMilestones,
     hasPlan,
-    steps,
 }: OverviewCardsProps) {
     // Contextual empty states
     if (!hasExams) {

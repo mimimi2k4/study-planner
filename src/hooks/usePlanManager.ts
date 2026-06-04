@@ -91,7 +91,7 @@ export function usePlanManager({
 
             return true;
         },
-        [plan, tasks, exams, syllabuses, freeSlots, setPlan, setTasks, onWarning]
+        [plan, tasks, exams, syllabuses, freeSlots, milestones, setPlan, setTasks, onWarning]
     );
 
     return { dispatch };

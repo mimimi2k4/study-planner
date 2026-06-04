@@ -168,7 +168,7 @@ export function generateSchedule(
 
     // ── Milestone budgets per subject ──
     const totalMsBySubject = calcTotalMinutesBySubject(tasks);
-    const subjectBudgets = buildSubjectBudgets(milestones, exams, nowMs);
+    const subjectBudgets = buildSubjectBudgets(milestones, exams);
     const scheduledMsBySubject: Record<string, number> = {};
 
     function budgetRemainingForBlock(subjectId: string, blockDate: string): number {
@@ -295,14 +295,12 @@ function calcTotalMinutesBySubject(tasks: StudyTask[]): Record<string, number> {
 
 function buildSubjectBudgets(
     milestones: Milestone[],
-    exams: ExamInfo[],
-    nowMs: number
+    exams: ExamInfo[]
 ): Record<string, MilestoneBudget[]> {
     const result: Record<string, MilestoneBudget[]> = {};
 
     for (const exam of exams) {
         const subjectId = exam.id;
-        const examMs = new Date(exam.examDateTime).getTime();
 
         const subjectMilestones = milestones
             .filter((m) => m.subjectId === subjectId)
@@ -318,28 +316,8 @@ function buildSubjectBudgets(
                 cumulativePct: (i + 1) / subjectMilestones.length,
             }));
             result[subjectId] = budgets;
-        } else {
-            // Fallback: split exam period into 4 equal quarters
-            const totalDays = Math.max(
-                4,
-                Math.ceil((examMs - nowMs) / 86400000)
-            );
-            const quarterDays = Math.ceil(totalDays / 4);
-            const budgets: MilestoneBudget[] = [];
-            for (let i = 1; i <= 4; i++) {
-                const d = new Date(nowMs + i * quarterDays * 86400000);
-                if (d.getTime() >= examMs) break;
-                budgets.push({
-                    deadlineDate: d.toISOString().split("T")[0],
-                    cumulativePct: i / 4,
-                });
-            }
-            budgets.push({
-                deadlineDate: new Date(examMs).toISOString().split("T")[0],
-                cumulativePct: 1,
-            });
-            result[subjectId] = budgets;
         }
+        // Subjects without milestones have no budget constraint
     }
 
     return result;

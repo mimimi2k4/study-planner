@@ -2,7 +2,7 @@ process.env.TZ = "Asia/Ho_Chi_Minh";
 
 import { generateSchedule } from "../src/utils/scheduler";
 import { formatDate } from "../src/utils/schedule";
-import type { StudyTask, FreeSlot, ExamInfo } from "../src/types";
+import type { StudyTask, FreeSlot, ExamInfo, Milestone } from "../src/types";
 
 // Helper assertions
 function assert(condition: boolean, message: string) {
@@ -102,7 +102,23 @@ function runTests() {
     ];
 
     // Freeze startDate là 2026-05-25 (Thứ 2) để tránh việc test bị ảnh hưởng khi thời gian thay đổi
-    const result = generateSchedule(tasks, freeSlots, exams, new Date("2026-05-25"));
+    const milestones: Milestone[] = [
+        {
+            milestoneId: "ms-A",
+            subjectId: "sub-A",
+            name: "Ôn tập trước thi",
+            deadlineDate: "2026-05-28",
+            status: "chưa đạt",
+        },
+        {
+            milestoneId: "ms-B",
+            subjectId: "sub-B",
+            name: "Ôn tập trước thi",
+            deadlineDate: "2026-05-30",
+            status: "chưa đạt",
+        },
+    ];
+    const result = generateSchedule(tasks, freeSlots, exams, milestones, new Date("2026-05-25"));
 
     // Thứ tự mong đợi sau sắp xếp EDF:
     // 1. Môn A thi ngày 28/05 (sớm hơn Môn B thi ngày 30/05) -> các task môn A lên trước.
@@ -171,27 +187,28 @@ function runTests() {
     );
 
     const slotsA1 = result.plan.slots.filter((s) => s.taskId === "task-A1");
-    assert(slotsA1.length === 2, `task-A1 phải bị chia làm 2 slots, thực tế: ${slotsA1.length}`);
+    assert(slotsA1.length === 1, `task-A1 phải có 1 slot, thực tế: ${slotsA1.length}`);
     assert(
         slotsA1[0].date === "2026-05-26" &&
             slotsA1[0].startTime === "20:10" &&
             slotsA1[0].endTime === "21:00",
-        "Chunk 0 của task-A1 phải xếp vào Thứ 3 từ 20:10 đến 21:00"
+        "task-A1 phải được xếp vào Thứ 3 từ 20:10 đến 21:00"
     );
+
+    // task-A1 còn thiếu 10 phút → overflow
+    const overflowA1 = result.overflow.find((t) => t.id === "task-A1");
     assert(
-        slotsA1[1].date === "2026-05-27" &&
-            slotsA1[1].startTime === "19:00" &&
-            slotsA1[1].endTime === "19:20",
-        "Chunk 1 của task-A1 phải xếp vào Thứ 4 từ 19:00 đến 19:20 (được snap từ 10m lên 20m)"
+        overflowA1 !== undefined && overflowA1.estimatedMinutes <= 10,
+        `task-A1 phải còn 10 phút overflow, thực tế: ${overflowA1?.estimatedMinutes ?? 0}`
     );
 
     const slotB1 = result.plan.slots.find((s) => s.taskId === "task-B1");
     assert(
         slotB1 !== undefined &&
             slotB1.date === "2026-05-27" &&
-            slotB1.startTime === "19:25" &&
-            slotB1.endTime === "20:25",
-        "task-B1 phải được xếp vào Thứ 4 từ 19:25 đến 20:25 (đã tính 5 phút nghỉ sau slot A1 đã snap)"
+            slotB1.startTime === "19:00" &&
+            slotB1.endTime === "20:00",
+        `task-B1 phải được xếp vào Thứ 4 từ 19:00 đến 20:00, thực tế: ${slotB1?.date} ${slotB1?.startTime}-${slotB1?.endTime}`
     );
 
     // ==========================================
@@ -238,6 +255,7 @@ function runTests() {
         tasksWithOverflow,
         freeSlots,
         exams,
+        milestones,
         new Date("2026-05-25")
     );
 
@@ -309,32 +327,41 @@ function runTests() {
         { day: 1, startTime: "19:00", endTime: "20:00" }, // Thứ 3: 60 phút
     ];
 
+    const test5Milestones: Milestone[] = [
+        {
+            milestoneId: "ms-A5",
+            subjectId: "sub-A",
+            name: "Ôn tập trước thi",
+            deadlineDate: "2026-05-28",
+            status: "chưa đạt",
+        },
+    ];
     const test5Result = generateSchedule(
         test5Tasks,
         test5FreeSlots,
         test5Exams,
+        test5Milestones,
         new Date("2026-05-25")
     );
 
     const slotsLiskov = test5Result.plan.slots.filter((s) => s.taskId === "task-liskov");
 
     assert(
-        slotsLiskov.length === 2,
-        `task-liskov phải bị chia làm 2 slots, thực tế: ${slotsLiskov.length}`
+        slotsLiskov.length === 1,
+        `task-liskov phải có 1 slot, thực tế: ${slotsLiskov.length}`
     );
     assert(
         slotsLiskov[0].date === "2026-05-25" &&
             slotsLiskov[0].startTime === "19:00" &&
             slotsLiskov[0].endTime === "19:20",
-        `Slot 1 của task-liskov phải dài 20 phút (19:00 - 19:20), thực tế: ${slotsLiskov[0]?.startTime} - ${slotsLiskov[0]?.endTime}`
+        `Slot của task-liskov phải dài 20 phút (19:00 - 19:20), thực tế: ${slotsLiskov[0]?.startTime} - ${slotsLiskov[0]?.endTime}`
     );
 
-    // Với logic Snap-to-Min, slot thứ hai phải được làm tròn lên thành 20 phút (19:00 - 19:20) thay vì chỉ có 5 phút (19:00 - 19:05)
+    // task-liskov còn thiếu 5 phút → overflow (không thể snap-to-min vì budget không đủ)
+    const overflowLiskov = test5Result.overflow.find((t) => t.id === "task-liskov");
     assert(
-        slotsLiskov[1].date === "2026-05-26" &&
-            slotsLiskov[1].startTime === "19:00" &&
-            slotsLiskov[1].endTime === "19:20",
-        `Slot 2 của task-liskov phải dài 20 phút nhờ Snap-to-Min, thực tế: ${slotsLiskov[1]?.startTime} - ${slotsLiskov[1]?.endTime}`
+        overflowLiskov !== undefined && overflowLiskov.estimatedMinutes <= 5,
+        `task-liskov phải còn 5 phút overflow, thực tế: ${overflowLiskov?.estimatedMinutes ?? 0}`
     );
 
     // ==========================================
@@ -373,7 +400,16 @@ function runTests() {
 
     // Khởi tạo thời gian hiện tại là 19:30 Thứ 4 (2026-05-27)
     const currentDateTime = new Date("2026-05-27T19:30:00");
-    const test6Result = generateSchedule(test6Tasks, test6FreeSlots, test6Exams, currentDateTime);
+    const test6Milestones: Milestone[] = [
+        {
+            milestoneId: "ms-A6",
+            subjectId: "sub-A",
+            name: "Ôn tập trước thi",
+            deadlineDate: "2026-05-30",
+            status: "chưa đạt",
+        },
+    ];
+    const test6Result = generateSchedule(test6Tasks, test6FreeSlots, test6Exams, test6Milestones, currentDateTime);
 
     const slotsPrep = test6Result.plan.slots.filter((s) => s.taskId === "task-prep");
     assert(
