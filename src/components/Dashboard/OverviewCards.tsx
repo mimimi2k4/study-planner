@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpen, Clock, Calendar, Award } from "lucide-react";
+import { ArrowRight, BookOpen, Clock, Calendar, Award, Target, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ExamInfo, Milestone, ScheduleSlot } from "../../types";
 import type { LucideIcon } from "lucide-react";
@@ -10,6 +10,9 @@ interface OverviewCardsProps {
     nearestMilestone?: Milestone;
     todaySlots: ScheduleSlot[];
     hasData: boolean;
+    hasExams: boolean;
+    hasMilestones: boolean;
+    hasPlan: boolean;
     steps: {
         label: string;
         desc: string;
@@ -26,44 +29,63 @@ export default function OverviewCards({
     nearestMilestone,
     todaySlots,
     hasData,
+    hasExams,
+    hasMilestones,
+    hasPlan,
     steps,
 }: OverviewCardsProps) {
-    if (!hasData) {
-        const onboarding = steps.slice(0, 3);
+    // Contextual empty states
+    if (!hasExams) {
         return (
-            <div className="card rounded-2xl overflow-hidden shadow-sm">
-                <div className="px-6 py-5 flex items-center gap-3 bg-slate-50 border-b border-slate-100">
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white border border-slate-200 text-slate-700">
-                        <BookOpen size={20} />
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center flex flex-col items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-emerald-50 border border-emerald-100 text-emerald-500">
+                    <BookOpen size={32} />
+                </div>
+                <div>
+                    <h2 className="font-bold text-slate-900 text-xl">Chào mừng đến với Study Planner!</h2>
+                    <p className="text-slate-500 font-medium text-base mt-1.5 max-w-md mx-auto">
+                        Bắt đầu bằng cách thêm môn thi — hệ thống sẽ tự động xây dựng lộ trình ôn tập cho bạn.
+                    </p>
+                </div>
+                <Link
+                    to="/exams"
+                    className="inline-flex items-center gap-2 mt-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition-all shadow-sm"
+                >
+                    <BookOpen size={18} /> Thêm môn thi đầu tiên
+                </Link>
+            </div>
+        );
+    }
+
+    if (!hasPlan && !hasMilestones) {
+        return (
+            <div className="grid gap-4 md:grid-cols-2">
+                <Link
+                    to="/exams"
+                    className="card rounded-2xl p-6 flex items-center gap-4 hover:shadow-md transition-all border border-slate-200"
+                >
+                    <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                        <Target size={24} />
                     </div>
-                    <h2 className="font-bold text-slate-800 text-lg">Bắt đầu - 3 bước thiết lập</h2>
-                </div>
-                <div className="p-5 flex flex-col gap-3">
-                    {onboarding.map((step, i) => {
-                        const Icon = step.icon;
-                        return (
-                            <Link
-                                key={i}
-                                to={step.to}
-                                className="flex items-center gap-4 rounded-xl p-4 transition-all duration-150 group bg-white border border-slate-200 hover:border-slate-300 shadow-sm"
-                            >
-                                <div className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 group-hover:text-emerald-600 group-hover:bg-emerald-50 group-hover:border-emerald-100 transition-colors">
-                                    <Icon size={20} />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-bold text-base text-slate-900">
-                                        {step.label}
-                                    </p>
-                                    <p className="text-slate-500 text-sm mt-0.5">{step.desc}</p>
-                                </div>
-                                <ArrowRight
-                                    size={18}
-                                    className="text-slate-300 group-hover:text-emerald-500 shrink-0 transition-colors"
-                                />
-                            </Link>
-                        );
-                    })}
-                </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="font-bold text-slate-900 text-base">Tạo cột mốc ôn tập</p>
+                        <p className="text-slate-500 text-sm mt-0.5">Vào trang Môn thi để tạo milestone cho từng môn</p>
+                    </div>
+                    <ArrowRight size={18} className="text-slate-300 shrink-0" />
+                </Link>
+                <Link
+                    to="/schedule"
+                    className="card rounded-2xl p-6 flex items-center gap-4 hover:shadow-md transition-all border border-slate-200"
+                >
+                    <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                        <Calendar size={24} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="font-bold text-slate-900 text-base">Tạo lịch học</p>
+                        <p className="text-slate-500 text-sm mt-0.5">Sau khi nhập đề cương và giờ rảnh, AI sẽ tự động sắp xếp</p>
+                    </div>
+                    <ArrowRight size={18} className="text-slate-300 shrink-0" />
+                </Link>
             </div>
         );
     }

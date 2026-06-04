@@ -200,6 +200,7 @@ export default function App() {
                             freeSlots={freeSlots}
                             tasks={tasks}
                             plan={plan}
+                            milestones={milestones}
                             onTasksChange={setTasks}
                             onPlanChange={setPlan}
                         />

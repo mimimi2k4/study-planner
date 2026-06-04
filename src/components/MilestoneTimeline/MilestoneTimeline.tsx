@@ -57,7 +57,7 @@ export default function MilestoneTimeline({ milestones }: MilestoneTimelineProps
                 Đường mốc tiến độ
             </h3>
             <p className="text-xs text-slate-500 bg-slate-50 border border-slate-100 rounded-xl p-3.5 mb-6 leading-relaxed">
-                💡 <strong>Lưu ý:</strong> Cột mốc ôn tập được phân bổ đều từ hôm nay đến ngày thi thực tế. Lịch học chi tiết hàng ngày có thể hoàn thành sớm hơn tùy thuộc vào số chương của đề cương và quỹ thời gian rảnh của bạn.
+                💡 <strong>Lưu ý:</strong> Cột mốc được tính toán dựa trên khối lượng chương học và quỹ thời gian rảnh của bạn. Lịch học ưu tiên các môn có cột mốc sắp đến hạn nhưng chưa đạt tiến độ.
             </p>
 
             <div className="relative">

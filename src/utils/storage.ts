@@ -88,10 +88,25 @@ export const getSyllabuses = (): Syllabus[] => {
         })),
     }));
 };
-export const saveSyllabuses = (list: Syllabus[]): void => save(KEYS.SYLLABUSES, list);
-export const addSyllabus = (s: Syllabus): void => saveSyllabuses([...getSyllabuses(), s]);
+function normalizeSyllabusChapters(s: Syllabus): Syllabus {
+    return {
+        ...s,
+        chapters: s.chapters.map((c) => ({
+            ...c,
+            difficulty: normalizeDifficulty(c.difficulty),
+            importance: normalizeDifficulty(c.importance),
+        })),
+    };
+}
+
+export const saveSyllabuses = (list: Syllabus[]): void =>
+    save(KEYS.SYLLABUSES, list.map(normalizeSyllabusChapters));
+export const addSyllabus = (s: Syllabus): void =>
+    saveSyllabuses([...getSyllabuses(), normalizeSyllabusChapters(s)]);
 export const updateSyllabus = (s: Syllabus): void =>
-    saveSyllabuses(getSyllabuses().map((x) => (x.id === s.id ? s : x)));
+    saveSyllabuses(
+        getSyllabuses().map((x) => (x.id === s.id ? normalizeSyllabusChapters(s) : x))
+    );
 export const deleteSyllabus = (id: string): void =>
     saveSyllabuses(getSyllabuses().filter((x) => x.id !== id));
 
@@ -190,6 +205,10 @@ export function executePlanAction(
                 success: false,
                 error: "Thiếu thông tin dịch chuyển (slotId, newDate, newStartTime, newEndTime)",
             };
+        // Không cho phép chuyển đến ngày trong quá khứ
+        const todayStr = new Date().toISOString().split("T")[0];
+        if (newDate < todayStr)
+            return { success: false, error: "Không thể chuyển lịch học đến ngày trong quá khứ." };
         // Validate thời gian
         if (parseTime(newEndTime) <= parseTime(newStartTime))
             return { success: false, error: "Thời gian kết thúc phải sau thời gian bắt đầu" };
@@ -240,6 +259,10 @@ export function executePlanAction(
                 success: false,
                 error: "Thiếu thông tin thêm slot (taskId, date, startTime, endTime)",
             };
+        // Không cho phép thêm lịch vào ngày trong quá khứ
+        const todayStr = new Date().toISOString().split("T")[0];
+        if (date < todayStr)
+            return { success: false, error: "Không thể thêm lịch học vào ngày trong quá khứ." };
         if (parseTime(endTime) <= parseTime(startTime))
             return { success: false, error: "Thời gian kết thúc phải sau thời gian bắt đầu" };
         if (!isWithinFreeSlot(date, startTime, endTime))

@@ -75,13 +75,16 @@ export default function ScheduleView({
         const slotId = e.dataTransfer.getData("text/plain");
         if (!slotId) return;
 
+        // Chặn thả vào ngày trong quá khứ
+        if (targetDate < todayStr) return;
+
         const dataStr = e.dataTransfer.getData("application/json");
         const data = dataStr ? JSON.parse(dataStr) : null;
         const durationMinutes = data?.durationMinutes ?? 60;
 
         const newStartTime = `${String(targetHour).padStart(2, "0")}:00`;
 
-        // Chặn thả đè lên chính nó (Vấn đề 6)
+        // Chặn thả đè lên chính nó
         const draggedSlotDetail = slots.find((s) => s.id === slotId);
         if (
             draggedSlotDetail &&
@@ -94,7 +97,6 @@ export default function ScheduleView({
         }
 
         // Reset drag states ngay lập tức khi thả thành công
-        // (đề phòng React unmount/render lại làm mất sự kiện onDragEnd của browser)
         setDraggedSlot(null);
         setDragOverCell(null);
 

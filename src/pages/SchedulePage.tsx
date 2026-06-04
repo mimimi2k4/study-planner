@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot } from "../types";
+import type { ExamInfo, Syllabus, FreeSlot, StudyTask, StudyPlan, ScheduleSlot, Milestone } from "../types";
 
 import { generateSchedule } from "../utils/scheduler";
 import type { ScheduleWarning } from "../types";
@@ -14,6 +14,7 @@ export interface SchedulePageProps {
     freeSlots: FreeSlot[];
     tasks: StudyTask[];
     plan: StudyPlan | null;
+    milestones: Milestone[];
     onTasksChange: (t: StudyTask[]) => void;
     onPlanChange: (p: StudyPlan | null) => void;
 }
@@ -24,6 +25,7 @@ export default function SchedulePage({
     freeSlots,
     tasks,
     plan,
+    milestones,
     onTasksChange,
     onPlanChange,
 }: SchedulePageProps) {
@@ -40,6 +42,7 @@ export default function SchedulePage({
         exams,
         syllabuses,
         freeSlots,
+        milestones,
         onWarning: setErrorMsg,
     });
 
@@ -52,10 +55,10 @@ export default function SchedulePage({
             freeSlots.length > 0 &&
             exams.length > 0
         ) {
-            const { warnings: w } = generateSchedule(tasks, freeSlots, exams);
+            const { warnings: w } = generateSchedule(tasks, freeSlots, exams, milestones);
             setWarnings(w);
         }
-    }, [plan, tasks, freeSlots, exams]);
+    }, [plan, tasks, freeSlots, exams, milestones]);
 
     // Tự xoá thông báo lỗi sau 4 giây
     useEffect(() => {
