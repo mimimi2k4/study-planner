@@ -26,7 +26,7 @@ export default function OverviewCards({
     // Contextual empty states
     if (!hasExams) {
         return (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center flex flex-col items-center gap-4">
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 md:p-10 text-center flex flex-col items-center gap-4">
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-emerald-50 border border-emerald-100 text-emerald-500">
                     <BookOpen size={32} />
                 </div>

@@ -38,7 +38,7 @@ describe("Integration Test: AppNotification Flow", () => {
         const setMilestonesSpy = vi.spyOn(storage, "saveMilestones");
 
         render(
-            <MemoryRouter initialEntries={["/study-planner"]}>
+            <MemoryRouter initialEntries={["/"]}>
                 <App />
             </MemoryRouter>
         );

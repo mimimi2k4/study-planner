@@ -174,7 +174,7 @@ export default function ScheduleView({
             ))}
 
             {/* Controls */}
-            <div className="p-4 flex items-center justify-between gap-3 bg-white rounded-2xl border border-slate-200 shadow-sm">
+            <div className="p-4 flex items-center justify-between gap-3 flex-wrap bg-white rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-1.5">
                     <button
                         onClick={prevWeek}
@@ -206,12 +206,13 @@ export default function ScheduleView({
             </div>
 
             {/* Calendar grid */}
-            <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-sm">
-                {/* Header */}
-                <div
-                    className="grid border-b border-slate-200 bg-slate-50"
-                    style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}
-                >
+            <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-sm overflow-x-auto">
+                <div className="min-w-[800px]">
+                    {/* Header */}
+                    <div
+                        className="grid border-b border-slate-200 bg-slate-50"
+                        style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}
+                    >
                     <div className="border-r border-slate-200" />
                     {weekDates.map((date, i) => {
                         const isToday = date === todayStr;
@@ -445,6 +446,7 @@ export default function ScheduleView({
                             })}
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
 

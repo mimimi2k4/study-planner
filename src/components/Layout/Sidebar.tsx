@@ -8,6 +8,7 @@ import {
     CheckSquare,
     Sparkles,
     GraduationCap,
+    X,
 } from "lucide-react";
 
 const NAV = [
@@ -21,28 +22,48 @@ const NAV = [
 
 export interface SidebarProps {
     width: number;
+    isOpen?: boolean;
+    onClose?: () => void;
 }
 
-export default function Sidebar({ width }: SidebarProps) {
+export default function Sidebar({ width, isOpen, onClose }: SidebarProps) {
     return (
-        <aside
-            className="fixed left-0 top-0 h-screen flex flex-col z-50 bg-white border-r border-slate-200"
-            style={{ width }}
-        >
-            {/* Logo */}
-            <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-5">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-emerald-500 text-white shrink-0 shadow-sm">
-                    <GraduationCap size={20} strokeWidth={2.5} />
+        <>
+            {/* Mobile Overlay */}
+            {isOpen && (
+                <div 
+                    className="fixed inset-0 bg-slate-900/20 z-40 md:hidden transition-opacity"
+                    onClick={onClose}
+                />
+            )}
+
+            <aside
+                className={`fixed left-0 top-0 h-[100dvh] flex flex-col z-50 bg-white border-r border-slate-200 transition-transform duration-300 ease-in-out ${
+                    isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+                }`}
+                style={{ width }}
+            >
+                {/* Logo */}
+                <div className="relative z-10 flex items-center gap-3 px-5 pt-6 pb-5">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-emerald-500 text-white shrink-0 shadow-sm">
+                        <GraduationCap size={20} strokeWidth={2.5} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <p className="text-slate-900 font-black text-lg leading-none truncate">
+                            StudyPlanner
+                        </p>
+                        <p className="text-xs font-medium mt-1 truncate text-slate-500">
+                            Ôn thi thông minh
+                        </p>
+                    </div>
+                    {/* Close button for mobile */}
+                    <button 
+                        onClick={onClose}
+                        className="md:hidden p-1.5 -mr-2 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors"
+                    >
+                        <X size={18} />
+                    </button>
                 </div>
-                <div className="min-w-0">
-                    <p className="text-slate-900 font-black text-lg leading-none truncate">
-                        StudyPlanner
-                    </p>
-                    <p className="text-xs font-medium mt-1 truncate text-slate-500">
-                        Ôn thi thông minh
-                    </p>
-                </div>
-            </div>
 
             {/* Divider */}
             <div className="mx-5 h-px bg-slate-100 mb-3" />
@@ -98,6 +119,7 @@ export default function Sidebar({ width }: SidebarProps) {
 
             {/* User */}
             <div className="px-1 py-1"></div>
-        </aside>
+            </aside>
+        </>
     );
 }

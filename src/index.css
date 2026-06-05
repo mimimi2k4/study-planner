@@ -179,3 +179,13 @@ textarea:focus {
         gap: 12px !important;
     }
 }
+
+/* ── Layout ── */
+.layout-main {
+    margin-left: 0;
+}
+@media (min-width: 768px) {
+    .layout-main {
+        margin-left: 240px;
+    }
+}
