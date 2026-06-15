@@ -124,7 +124,6 @@ export default function DashboardPage({
     const hasExams = exams.length > 0;
     const hasMilestones = milestones.length > 0;
     const hasPlan = (plan?.slots.length ?? 0) > 0;
-    const hasData = hasExams && hasMilestones && hasPlan;
 
     return (
         <div className="flex flex-col gap-8">
@@ -138,7 +137,9 @@ export default function DashboardPage({
                                 Dashboard
                             </span>
                         </div>
-                        <h1 className="text-slate-900 font-black text-4xl leading-tight">Xin chào!</h1>
+                        <h1 className="text-slate-900 font-black text-4xl leading-tight">
+                            Xin chào!
+                        </h1>
                         <p className="text-slate-500 font-medium text-base mt-2">{greeting}</p>
 
                         {nextExam && (
@@ -202,8 +203,14 @@ export default function DashboardPage({
                     <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-emerald-50 border border-emerald-100 text-emerald-500 mb-6">
                         <Zap size={32} />
                     </div>
-                    <h1 className="text-slate-900 font-black text-3xl leading-tight">Chào mừng đến với StudyPlanner! 👋</h1>
-                    <p className="text-slate-500 font-medium text-base mt-3 max-w-lg">Để AI có thể tự động xếp lịch ôn tập, hãy nhìn sang bảng <b>"Các bước thiết lập"</b> bên dưới và làm theo đúng thứ tự 5 bước cơ bản nhé.</p>
+                    <h1 className="text-slate-900 font-black text-3xl leading-tight">
+                        Chào mừng đến với StudyPlanner! 👋
+                    </h1>
+                    <p className="text-slate-500 font-medium text-base mt-3 max-w-lg">
+                        Để AI có thể tự động xếp lịch ôn tập, hãy nhìn sang bảng{" "}
+                        <b>"Các bước thiết lập"</b> bên dưới và làm theo đúng thứ tự 5 bước cơ bản
+                        nhé.
+                    </p>
                 </div>
             )}
 

@@ -1,5 +1,4 @@
-import { ArrowRight, BookOpen, Clock, Calendar, Award, Target } from "lucide-react";
-import { Link } from "react-router-dom";
+import { BookOpen, Clock, Calendar, Award } from "lucide-react";
 import type { ExamInfo, Milestone, ScheduleSlot } from "../../types";
 
 interface OverviewCardsProps {
