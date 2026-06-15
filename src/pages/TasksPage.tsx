@@ -57,7 +57,7 @@ export default function TasksPage({ tasks, exams, onTasksChange }: TasksPageProp
                     title="Nhiệm vụ học tập"
                     subtitle="Theo dõi tiến độ hoàn thành từng nhiệm vụ"
                 />
-                <div className="card rounded-2xl p-16 text-center flex flex-col items-center justify-center flex-1 gap-5 bg-white border border-slate-200 shadow-sm border-dashed min-h-[400px]">
+                <div className="card rounded-2xl p-6 md:p-16 text-center flex flex-col items-center justify-center flex-1 gap-5 bg-white border border-slate-200 shadow-sm border-dashed min-h-[400px]">
                     <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-400">
                         <Target size={40} />
                     </div>

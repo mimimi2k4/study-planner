@@ -519,7 +519,7 @@ export default function SyllabusForm({
                                                     <div className="w-4 h-px bg-slate-200 shrink-0" />
 
                                                     <div
-                                                        className="flex-1 flex items-center gap-3 rounded-lg border"
+                                                        className="flex-1 flex flex-wrap items-center gap-3 rounded-lg border"
                                                         style={{
                                                             background: hasError
                                                                 ? "#fef2f2"
@@ -651,6 +651,13 @@ export default function SyllabusForm({
                                                         >
                                                             <Trash2 size={16} />
                                                         </button>
+
+                                                        {c.difficultyReason && (
+                                                            <div className="w-full -mt-1 text-[12px] text-slate-500 italic px-2">
+                                                                <span className="font-semibold text-slate-400 mr-1">AI giải thích:</span>
+                                                                {c.difficultyReason}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             );

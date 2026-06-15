@@ -8,6 +8,7 @@ import {
     FileText,
     Clock,
     Calendar,
+    Target,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ExamInfo, StudyTask, StudyPlan, Syllabus } from "../types";
@@ -30,32 +31,39 @@ export interface DashboardPageProps {
 
 const STEPS = [
     {
-        label: "Thêm môn thi",
+        label: "1. Thêm môn thi",
         desc: "Ngày thi & điểm mục tiêu",
         to: "/exams",
         icon: BookOpen,
         key: "exams",
     },
     {
-        label: "Nhập đề cương",
+        label: "2. Nhập đề cương",
         desc: "Chương học & độ khó",
         to: "/syllabus",
         icon: FileText,
         key: "syllabus",
     },
     {
-        label: "Chọn giờ học",
+        label: "3. Chọn giờ học",
         desc: "Khung giờ rảnh mỗi tuần",
         to: "/timeslots",
         icon: Clock,
         key: "timeslots",
     },
     {
-        label: "Tạo lịch học",
+        label: "4. Tạo lịch học",
         desc: "AI tự động phân bổ",
         to: "/schedule",
         icon: Calendar,
         key: "schedule",
+    },
+    {
+        label: "5. Tạo cột mốc",
+        desc: "Theo dõi tiến độ từng môn",
+        to: "/exams",
+        icon: Target,
+        key: "milestones",
     },
 ];
 
@@ -100,6 +108,7 @@ export default function DashboardPage({
         syllabus: syllabuses.length > 0,
         timeslots: freeHoursPerWeek > 0,
         schedule: totalScheduled > 0,
+        milestones: milestones.length > 0,
     };
 
     const doneCount = Object.values(stepDone).filter(Boolean).length;
@@ -119,8 +128,8 @@ export default function DashboardPage({
 
     return (
         <div className="flex flex-col gap-8">
-            {/* ── Hero (compact when no data) ── */}
-            {hasExams && (
+            {/* ── Hero ── */}
+            {hasExams ? (
                 <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm px-10 py-8 flex items-center justify-between flex-wrap gap-8">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-3">
@@ -159,19 +168,19 @@ export default function DashboardPage({
                                         stroke="#10b981"
                                         strokeWidth="4"
                                         strokeDasharray={`${circumference} ${circumference}`}
-                                        strokeDashoffset={circumference * (1 - doneCount / 4)}
+                                        strokeDashoffset={circumference * (1 - doneCount / 5)}
                                         strokeLinecap="round"
                                         style={{ transition: "stroke-dashoffset 1s ease" }}
                                     />
                                 </svg>
                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                                     <span className="text-slate-900 font-black text-xl leading-none">
-                                        {Math.round((doneCount / 4) * 100)}%
+                                        {Math.round((doneCount / 5) * 100)}%
                                     </span>
                                 </div>
                             </div>
                             <p className="text-slate-600 font-semibold text-xs uppercase tracking-wide mt-3">
-                                Thiết lập: {doneCount}/4
+                                Thiết lập: {doneCount}/5
                             </p>
                         </div>
 
@@ -188,6 +197,14 @@ export default function DashboardPage({
                         )}
                     </div>
                 </div>
+            ) : (
+                <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm px-10 py-12">
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-emerald-50 border border-emerald-100 text-emerald-500 mb-6">
+                        <Zap size={32} />
+                    </div>
+                    <h1 className="text-slate-900 font-black text-3xl leading-tight">Chào mừng đến với StudyPlanner! 👋</h1>
+                    <p className="text-slate-500 font-medium text-base mt-3 max-w-lg">Để AI có thể tự động xếp lịch ôn tập, hãy nhìn sang bảng <b>"Các bước thiết lập"</b> bên dưới và làm theo đúng thứ tự 5 bước cơ bản nhé.</p>
+                </div>
             )}
 
             {/* ── Overview Cards ── */}
@@ -202,8 +219,8 @@ export default function DashboardPage({
                 hasPlan={hasPlan}
             />
 
-            {/* ── Body (only when data exists) ── */}
-            {hasData && (
+            {/* ── Body (Always visible so users see the Stepper) ── */}
+            {true && (
                 <div
                     className="body-grid-responsive"
                     style={{

@@ -34,8 +34,12 @@ const fileChaptersSchema: Schema = {
                         description:
                             "Cấp độ lồng nhau: 0 cho chương lớn gốc (2.), 1 cho chương con (2.1), 2 cho mục nhỏ hơn (2.1.1)",
                     },
+                    difficultyReason: {
+                        type: SchemaType.STRING,
+                        description: "Giải thích ngắn gọn (dưới 15 chữ) lý do tại sao đánh giá mức độ khó và quan trọng như vậy.",
+                    },
                 },
-                required: ["name", "difficulty", "importance", "level"],
+                required: ["name", "difficulty", "importance", "level", "difficultyReason"],
             },
         },
     },
@@ -81,7 +85,7 @@ async function parseTextToChaptersWithAI(rawText: string): Promise<Chapter[]> {
          - Chương lớn / Phần gốc → level = 0
          - Mục con (dạng 2.1, 2.2) → level = 1
          - Mục nhỏ hơn (dạng 2.1.1) → level = 2
-      5. Gán 'difficulty' và 'importance' dựa trên từ khóa kỹ thuật của từng mục.
+      5. Gán 'difficulty' và 'importance' dựa trên từ khóa kỹ thuật của từng mục. Giải thích ngắn gọn (dưới 15 chữ) vào trường 'difficultyReason'.
       6. Nếu tài liệu KHÔNG CÓ mục lục/chương rõ ràng, trả về mảng chapters rỗng [].
     `;
 
@@ -95,6 +99,7 @@ async function parseTextToChaptersWithAI(rawText: string): Promise<Chapter[]> {
                 difficulty: c.difficulty,
                 importance: c.importance,
                 level: c.level ?? 0, // Kế thừa thuộc tính phân cấp tầng
+                difficultyReason: c.difficultyReason,
             }));
         }
         return [];

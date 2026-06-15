@@ -25,58 +25,11 @@ export default function OverviewCards({
 }: OverviewCardsProps) {
     // Contextual empty states
     if (!hasExams) {
-        return (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 md:p-10 text-center flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-emerald-50 border border-emerald-100 text-emerald-500">
-                    <BookOpen size={32} />
-                </div>
-                <div>
-                    <h2 className="font-bold text-slate-900 text-xl">Chào mừng đến với Study Planner!</h2>
-                    <p className="text-slate-500 font-medium text-base mt-1.5 max-w-md mx-auto">
-                        Bắt đầu bằng cách thêm môn thi — hệ thống sẽ tự động xây dựng lộ trình ôn tập cho bạn.
-                    </p>
-                </div>
-                <Link
-                    to="/exams"
-                    className="inline-flex items-center gap-2 mt-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition-all shadow-sm"
-                >
-                    <BookOpen size={18} /> Thêm môn thi đầu tiên
-                </Link>
-            </div>
-        );
+        return null;
     }
 
     if (!hasPlan && !hasMilestones) {
-        return (
-            <div className="grid gap-4 md:grid-cols-2">
-                <Link
-                    to="/exams"
-                    className="card rounded-2xl p-6 flex items-center gap-4 hover:shadow-md transition-all border border-slate-200"
-                >
-                    <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-                        <Target size={24} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="font-bold text-slate-900 text-base">Tạo cột mốc ôn tập</p>
-                        <p className="text-slate-500 text-sm mt-0.5">Vào trang Môn thi để tạo milestone cho từng môn</p>
-                    </div>
-                    <ArrowRight size={18} className="text-slate-300 shrink-0" />
-                </Link>
-                <Link
-                    to="/schedule"
-                    className="card rounded-2xl p-6 flex items-center gap-4 hover:shadow-md transition-all border border-slate-200"
-                >
-                    <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                        <Calendar size={24} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="font-bold text-slate-900 text-base">Tạo lịch học</p>
-                        <p className="text-slate-500 text-sm mt-0.5">Sau khi nhập đề cương và giờ rảnh, AI sẽ tự động sắp xếp</p>
-                    </div>
-                    <ArrowRight size={18} className="text-slate-300 shrink-0" />
-                </Link>
-            </div>
-        );
+        return null;
     }
 
     const formatRange = (slot: ScheduleSlot) => `${slot.startTime}–${slot.endTime}`;

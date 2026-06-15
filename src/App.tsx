@@ -36,7 +36,7 @@ export default function App() {
     const { milestones, addMilestones, clearMilestones, setMilestones } = useMilestones();
 
     // 2. Gọi hook ở cấp độ root để chạy ngay khi mở app
-    const { permissionDenied, inAppNotifs, setInAppNotifs } = useAppNotification({
+    const { permissionDenied, canPrompt, requestPermission, inAppNotifs, setInAppNotifs } = useAppNotification({
         milestones,
         setMilestones,
     });
@@ -91,15 +91,28 @@ export default function App() {
                     <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0 text-amber-600">
                         <BellRing size={16} />
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                         <p className="text-amber-900 font-bold text-sm leading-tight">
-                            Chưa bật thông báo trình duyệt
+                            {canPrompt ? "Chưa bật thông báo trình duyệt" : "Thông báo đã bị chặn"}
                         </p>
                         <p className="text-amber-700 text-xs mt-0.5 font-medium">
-                            Bạn cần cấp quyền thông báo cho trang web này để AI có thể gửi nhắc nhở
-                            ôn thi và chúc mừng các mốc tiến độ!
+                            {canPrompt 
+                                ? "Bạn cần cấp quyền thông báo cho trang web này để AI có thể gửi nhắc nhở ôn thi và chúc mừng các mốc tiến độ!"
+                                : "Vui lòng bấm vào biểu tượng ổ khóa 🔒 cạnh thanh địa chỉ trình duyệt để cho phép hiển thị thông báo."}
                         </p>
                     </div>
+                    {canPrompt ? (
+                        <button
+                            onClick={requestPermission}
+                            className="shrink-0 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition-all shadow-sm"
+                        >
+                            Bật ngay
+                        </button>
+                    ) : (
+                        <div className="shrink-0 px-3 py-1.5 bg-amber-100 text-amber-700 font-semibold text-xs rounded-lg">
+                            Đã chặn
+                        </div>
+                    )}
                 </div>
             )}
 
